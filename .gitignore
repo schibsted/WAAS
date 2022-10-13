@@ -130,3 +130,7 @@ dmypy.json
 
 #macOS files
 .DS_store
+
+
+# ignore mp3 files in temp
+temp/*.mp3
