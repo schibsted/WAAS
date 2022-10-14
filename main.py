@@ -2,6 +2,7 @@ import whisper
 from flask import Flask
 from flask import request
 import uuid 
+import tempfile
 import os
 
 app = Flask(__name__)
@@ -9,7 +10,8 @@ app = Flask(__name__)
 
 @app.route("/", methods=['POST'])
 def transcribe():
-    fileLocation = f"./temp/{uuid.uuid4()}.mp3"
+    filename = '/tmp/%s.mp3' % uuid.uuid4()
+    temp = tempfile.NamedTemporaryFile()
     try:
         # Get variables from request
         requestedModel = request.args.get("model", "tiny")
@@ -41,22 +43,25 @@ def transcribe():
             
         # Download the file
         file = request.files['file']
-        file.save(fileLocation)
+        temp.write(file.read())
 
         model = whisper.load_model(requestedModel)
-        result = model.transcribe(fileLocation, language=language, task=task)
+        result = model.transcribe(temp.name, language=language, task=task)
 
         return result["text"]
     except Exception as e:
         return str(e), 500
     finally:
-        if os.path.exists(fileLocation):
-            os.remove(fileLocation)
+        temp.close()
+        if os.path.exists(filename):
+            os.remove(filename)
 
 
 @app.route("/detect", methods=['POST'])
 def detect():
-    fileLocation = f"./temp/{uuid.uuid4()}.mp3"
+    filename = '/tmp/%s.mp3' % uuid.uuid4()
+    temp = tempfile.NamedTemporaryFile()
+
     try:
         # get model query parameter
         requestedModel = request.args.get("model", "tiny")
@@ -66,14 +71,13 @@ def detect():
             return "Model not available", 400
 
         # Download the file
-        fileLocation = f"./temp/{uuid.uuid4()}.mp3"
         file = request.files['file']
-        file.save(fileLocation)
+        temp.write(file.read())
 
         model = whisper.load_model(requestedModel)
 
         # load audio and pad/trim it to fit 30 seconds
-        audio = whisper.load_audio(fileLocation)
+        audio = whisper.load_audio(temp.name)
         audio = whisper.pad_or_trim(audio)
 
         # make log-Mel spectrogram and move to the same device as the model
@@ -87,8 +91,10 @@ def detect():
     except Exception as e:
         return str(e), 500
     finally:
-        if os.path.exists(fileLocation):
-            os.remove(fileLocation)
+        temp.close()
+        if os.path.exists(filename):
+            os.remove(filename)
+
 
 
 @app.route("/options", methods=['GET'])
