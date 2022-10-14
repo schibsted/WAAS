@@ -1,9 +1,8 @@
 import whisper
 from flask import Flask
 from flask import request
-import uuid 
 import tempfile
-import os
+import logging
 
 app = Flask(__name__)
 
@@ -14,7 +13,6 @@ def transcribe():
         # Get variables from request
         requestedModel = request.args.get("model", "tiny")
         language = request.args.get("language")
-        task = request.args.get("task", "transcribe")
         task = request.args.get("task", "transcribe")
 
         # Check if model is available
@@ -47,18 +45,16 @@ def transcribe():
         model = whisper.load_model(requestedModel)
         result = model.transcribe(tempFile.name, language=language, task=task)
 
-
-            
-        # print(result)
         if request.accept_mimetypes['text/plain']:
             return result["text"]
         if request.accept_mimetypes['application/json']:
             return result        
         if request.accept_mimetypes['text/vtt']:
-            return "MUST IMPLEMENT VTT DOWNLOAD"
-
-        return "MUST IMPLEMENT SRT DOWNLOAD", 200
+            return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
+        
+        return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
     except Exception as e:
+        logging.exception()
         return str(e), 500
     finally:
         tempFile.close()
@@ -124,3 +120,20 @@ def format_timestamp(seconds: float, always_include_hours: bool = False, decimal
 
     hours_marker = f"{hours:02d}:" if always_include_hours or hours > 0 else ""
     return f"{hours_marker}{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}"
+
+def generate_srt(result):
+    srt = []
+    for i, segment in enumerate(result, start=1):
+        srt.append(f"{i}")
+        srt.append(f"{format_timestamp(segment['start'], always_include_hours=True, decimal_marker=',')} --> {format_timestamp(segment['end'], always_include_hours=True, decimal_marker=',')}")
+        srt.append(f"{segment['text'].strip().replace('-->', '->')}\n")
+
+    return "\n".join(srt)
+
+def generate_vtt(result):
+    srt = ["WEBVTT"]
+    for _, segment in enumerate(result, start=1):
+        srt.append(f"{format_timestamp(segment['start'])} --> {format_timestamp(segment['end'])}")
+        srt.append(f"{segment['text'].strip().replace('-->', '->')}\n")
+
+    return "\n".join(srt)
