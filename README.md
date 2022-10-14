@@ -19,6 +19,14 @@ Query parameters:
   - `translate`: Transcribe then translate audio to text
 - REQUIRED: form field `file`: mp3 audio file to transcribe
 
+Headers:
+
+- OPTIONAL: `Accept`: string (default: `SRT file`)
+  - `application/json`: JSON response of the model output
+  - `text/plain`: Plain text response of the detected text
+  - `application/vtt`: WebVTT file with the detected text
+  - unset: SRT file with the detected text
+
 ### POST `/detect`
 
 Detect the language of the audio file.

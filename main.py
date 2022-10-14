@@ -7,7 +7,6 @@ import os
 
 app = Flask(__name__)
 
-
 @app.route("/", methods=['POST'])
 def transcribe():
     tempFile = tempfile.NamedTemporaryFile()
@@ -15,6 +14,7 @@ def transcribe():
         # Get variables from request
         requestedModel = request.args.get("model", "tiny")
         language = request.args.get("language")
+        task = request.args.get("task", "transcribe")
         task = request.args.get("task", "transcribe")
 
         # Check if model is available
@@ -47,7 +47,17 @@ def transcribe():
         model = whisper.load_model(requestedModel)
         result = model.transcribe(tempFile.name, language=language, task=task)
 
-        return result["text"]
+
+            
+        # print(result)
+        if request.accept_mimetypes['text/plain']:
+            return result["text"]
+        if request.accept_mimetypes['application/json']:
+            return result        
+        if request.accept_mimetypes['text/vtt']:
+            return "MUST IMPLEMENT VTT DOWNLOAD"
+
+        return "MUST IMPLEMENT SRT DOWNLOAD", 200
     except Exception as e:
         return str(e), 500
     finally:
@@ -97,3 +107,20 @@ def options():
         "languages": whisper.tokenizer.LANGUAGES,
         "tasks": ["translate", "transcribe"]
     }
+
+
+def format_timestamp(seconds: float, always_include_hours: bool = False, decimal_marker: str = '.'):
+    assert seconds >= 0, "non-negative timestamp expected"
+    milliseconds = round(seconds * 1000.0)
+
+    hours = milliseconds // 3_600_000
+    milliseconds -= hours * 3_600_000
+
+    minutes = milliseconds // 60_000
+    milliseconds -= minutes * 60_000
+
+    seconds = milliseconds // 1_000
+    milliseconds -= seconds * 1_000
+
+    hours_marker = f"{hours:02d}:" if always_include_hours or hours > 0 else ""
+    return f"{hours_marker}{minutes:02d}:{seconds:02d}{decimal_marker}{milliseconds:03d}"
