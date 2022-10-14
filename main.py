@@ -6,37 +6,52 @@ import logging
 
 app = Flask(__name__)
 
+DEFAULT_MODEL = "tiny"
+DEFAULT_TASK = "transcribe"
+
+def is_invalid_params (req):
+    requestedModel = req.args.get("model", DEFAULT_MODEL)
+    language = req.args.get("language")
+    task = req.args.get("task", DEFAULT_TASK)
+
+    # Check if model is available
+    if requestedModel not in whisper.available_models():
+        return "Model not available", 400
+    
+    # when language is set, check if it is in the whisper.tokenizer.LANGUAGES list
+    if language is not None:
+        if language not in whisper.tokenizer.LANGUAGES:
+            return "Language not supported", 400
+
+    # Check if task is either translate or transcribe
+    if task not in ["translate", "transcribe"]:
+        return "Task not supported", 400
+    
+    # Check if the request contains a file
+    if "file" not in req.files:
+        return "No file provided", 400
+    
+    file = req.files['file']
+
+    # check if the file is supported
+    filename = file.filename
+    if not filename.endswith(".mp3") and not filename.endswith(".mp4"):
+        return "Filetype is not accepted", 415
+    
+    return False
+
 @app.route("/", methods=['POST'])
 def transcribe():
     tempFile = tempfile.NamedTemporaryFile()
     try:
         # Get variables from request
-        requestedModel = request.args.get("model", "tiny")
+        requestedModel = request.args.get("model", DEFAULT_MODEL)
+        task = request.args.get("task", DEFAULT_TASK)
         language = request.args.get("language")
-        task = request.args.get("task", "transcribe")
 
-        # Check if model is available
-        if requestedModel not in whisper.available_models():
-            return "Model not available", 400
-        
-        # when language is set, check if it is in the whisper.tokenizer.LANGUAGES list
-        if language is not None:
-            if language not in whisper.tokenizer.LANGUAGES:
-                return "Language not supported", 400
-
-        # Check if task is either translate or transcribe
-        if task not in ["translate", "transcribe"]:
-            return "Task not supported", 400
-        
-        # Check if the request contains a file
-        if "file" not in request.files:
-            return "No file provided", 400
-        
-        file = request.files['file']
-
-        # check if the file is a mp3
-        if not file.filename.endswith(".mp3"):
-            return "File is not a mp3", 400
+        request_is_invalid = is_invalid_params(request)
+        if request_is_invalid:
+            return request_is_invalid
             
         # Download the file
         file = request.files['file']
@@ -66,11 +81,11 @@ def detect():
 
     try:
         # get model query parameter
-        requestedModel = request.args.get("model", "tiny")
+        requestedModel = request.args.get("model", DEFAULT_MODEL)
 
-        # Check if model is available
-        if requestedModel not in whisper.available_models():
-            return "Model not available", 400
+        request_is_invalid = is_invalid_params(request)
+        if request_is_invalid:
+            return request_is_invalid
 
         # Download the file
         file = request.files['file']
