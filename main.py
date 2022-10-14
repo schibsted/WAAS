@@ -10,8 +10,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['POST'])
 def transcribe():
-    filename = '/tmp/%s.mp3' % uuid.uuid4()
-    temp = tempfile.NamedTemporaryFile()
+    tempFile = tempfile.NamedTemporaryFile()
     try:
         # Get variables from request
         requestedModel = request.args.get("model", "tiny")
@@ -43,24 +42,21 @@ def transcribe():
             
         # Download the file
         file = request.files['file']
-        temp.write(file.read())
+        tempFile.write(file.read())
 
         model = whisper.load_model(requestedModel)
-        result = model.transcribe(temp.name, language=language, task=task)
+        result = model.transcribe(tempFile.name, language=language, task=task)
 
         return result["text"]
     except Exception as e:
         return str(e), 500
     finally:
-        temp.close()
-        if os.path.exists(filename):
-            os.remove(filename)
+        tempFile.close()
 
 
 @app.route("/detect", methods=['POST'])
 def detect():
-    filename = '/tmp/%s.mp3' % uuid.uuid4()
-    temp = tempfile.NamedTemporaryFile()
+    tempFile = tempfile.NamedTemporaryFile()
 
     try:
         # get model query parameter
@@ -72,12 +68,12 @@ def detect():
 
         # Download the file
         file = request.files['file']
-        temp.write(file.read())
+        tempFile.write(file.read())
 
         model = whisper.load_model(requestedModel)
 
         # load audio and pad/trim it to fit 30 seconds
-        audio = whisper.load_audio(temp.name)
+        audio = whisper.load_audio(tempFile.name)
         audio = whisper.pad_or_trim(audio)
 
         # make log-Mel spectrogram and move to the same device as the model
@@ -91,10 +87,7 @@ def detect():
     except Exception as e:
         return str(e), 500
     finally:
-        temp.close()
-        if os.path.exists(filename):
-            os.remove(filename)
-
+        tempFile.close()
 
 
 @app.route("/options", methods=['GET'])
