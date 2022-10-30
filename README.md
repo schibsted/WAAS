@@ -44,3 +44,11 @@ Return a JSON object with the following keys:
 - `languages`: list of available languages
 - `models`: list of available models
 - `tasks`: list of available tasks
+
+## Contributing
+
+### Running tests
+
+```bash
+$ pytest
+```
