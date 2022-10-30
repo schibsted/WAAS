@@ -71,7 +71,7 @@ def transcribe():
         return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
     except Exception as e:
         logging.exception(e)
-        return "An unexpected error occurred", 500
+        return 500
     finally:
         tempFile.close()
 
@@ -108,7 +108,7 @@ def detect():
         }
     except Exception as e:
         logging.exception(e)
-        return "An unexpected error occurred", 500
+        return 500
     finally:
         tempFile.close()
 
