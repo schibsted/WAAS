@@ -1,3 +1,4 @@
+from distutils.log import error
 import whisper
 from flask import Flask
 from flask import request
@@ -69,8 +70,8 @@ def transcribe():
         
         return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
     except Exception as e:
-        logging.exception()
-        return str(e), 500
+        logging.exception(e)
+        return "An unexpected error occurred", 500
     finally:
         tempFile.close()
 
@@ -106,7 +107,8 @@ def detect():
             "detectedLanguage": max(probs, key=probs.get)
         }
     except Exception as e:
-        return str(e), 500
+        logging.exception(e)
+        return "An unexpected error occurred", 500
     finally:
         tempFile.close()
 
