@@ -2,6 +2,7 @@ from distutils.log import error
 import whisper
 from flask import Flask
 from flask import request
+from flask import render_template
 import tempfile
 import logging
 
@@ -40,6 +41,10 @@ def is_invalid_params (req):
         return "Filetype is not accepted", 415
     
     return False
+
+@app.route("/",methods=['GET'])
+def index():
+    return render_template("index.html")
 
 @app.route("/", methods=['POST'])
 def transcribe():
