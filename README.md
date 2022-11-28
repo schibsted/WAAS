@@ -47,6 +47,27 @@ Return a JSON object with the following keys:
 
 ## Contributing
 
+### Running
+
+```sh
+python3 -mvenv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+### Running in dev
+
+```sh
+flask --app src/main run 
+```
+
+### Cur 
+
+To upload a file called audunspodssounds.mp3 in norwegian from your download directory
+
+```sh
+curl --location --request POST 'http://localhost:5000/?model=large' \
+--form 'file=@"/Users/ay/Downloads/audunspodssound.mp3"' -H "Accept: SRT file"
+```
 ### Running tests
 
 ```bash
