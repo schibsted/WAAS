@@ -1,0 +1,52 @@
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./assets/fonts/Inter/font-inter.css" />
+    <title>JoJo</title>
+  </head>
+  <body>
+    <header class="header">
+      <h1>JoJo</h1>
+    </header>
+    <main>
+      <section class="input-container">
+        <h1>JoJo transcribing</h1>
+        <p>Start with doing this, then we transcribe. Then it will be nice.</p>
+        <p>Filen sendes til:</p>
+
+        <form
+          action="/api"
+          method="post"
+          enctype="multipart/form-data"
+          id="form"
+          class="form"
+        >
+          <div
+            class="dropzone"
+            id="dropzone-audiofile"
+            ondrop="dropHandler(event);"
+            ondragover="dragOverHandler(event);"
+          >
+            <p>Drop file here</p>
+          </div>
+          <input
+            type="file"
+            accept=".mp3,audio/*"
+            name="audio"
+            id="button-audio-file"
+          />
+        </form>
+      </section>
+    </main>
+    <!-- background img -->
+    <img
+      src="./assets/img/dessert-cave-background.png"
+      alt=""
+      class="background"
+    />
+    <script src="./index.js"></script>
+  </body>
+</html>
