@@ -60,13 +60,13 @@ pip install -r requirements.txt
 flask --app src/main run 
 ```
 
-### Cur 
+### curl 
 
 To upload a file called audunspodssounds.mp3 in norwegian from your download directory
 
 ```sh
 curl --location --request POST 'http://localhost:5000/?model=large' \
---form 'file=@"/Users/ay/Downloads/audunspodssound.mp3"' -H "Accept: SRT file"
+--form 'file=@"/Users/<user>/Downloads/audunspodssound.mp3"' -H "Accept: SRT file"
 ```
 ### Running tests
 
