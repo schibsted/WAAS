@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
+DEFAULT_OUTPUT = "srt"
 
 def is_invalid_params (req):
     requestedModel = req.args.get("model", DEFAULT_MODEL)
@@ -48,80 +49,116 @@ def is_invalid_params (req):
 def index():
     return render_template("index.html")
 
-@app.route("/v1/transcribe", methods=['POST'])
+@app.route("/v1/transcribe", methods=['POST', 'OPTIONS'])
 def transcribe():
-    tempFile = tempfile.NamedTemporaryFile()
-    try:
-        # Get variables from request
-        requestedModel = request.args.get("model", DEFAULT_MODEL)
-        task = request.args.get("task", DEFAULT_TASK)
-        language = request.args.get("language")
-
-        request_is_invalid = is_invalid_params(request)
-        if request_is_invalid:
-            return request_is_invalid
-            
-        # Download the file
-        file = request.files['file']
-        tempFile.write(file.read())
-
-        model = whisper.load_model(requestedModel)
-        result = model.transcribe(tempFile.name, language=language, task=task)
-
-        if request.accept_mimetypes['text/plain']:
-            return result["text"]
-        if request.accept_mimetypes['application/json']:
-            return result        
-        if request.accept_mimetypes['text/vtt']:
-            return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
-        
-        return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
-    except Exception as e:
-        logging.exception(e)
-        return 500
-    finally:
-        tempFile.close()
-
-@app.route("/v1/transcribe/options", methods=['GET'])
-def options():
-    return {
-        "models": whisper.available_models(),
-        "languages": whisper.tokenizer.LANGUAGES,
-        "tasks": ["translate", "transcribe"]
-    }
-
-@app.route("/v1/detect", methods=['POST'])
-def detect():
-    tempFile = tempfile.NamedTemporaryFile()
-
-    try:
-        # get model query parameter
-        requestedModel = request.args.get("model", DEFAULT_MODEL)
-
-        request_is_invalid = is_invalid_params(request)
-        if request_is_invalid:
-            return request_is_invalid
-
-        # Download the file
-        file = request.files['file']
-        tempFile.write(file.read())
-
-        model = whisper.load_model(requestedModel)
-
-        # load audio and pad/trim it to fit 30 seconds
-        audio = whisper.load_audio(tempFile.name)
-        audio = whisper.pad_or_trim(audio)
-
-        # make log-Mel spectrogram and move to the same device as the model
-        mel = whisper.log_mel_spectrogram(audio).to(model.device)
-
-        # detect the spoken language
-        _, probs = model.detect_language(mel)
+    if request.method == 'OPTIONS':
         return {
-            "detectedLanguage": max(probs, key=probs.get)
+            "queryParams": {
+                "model": {
+                    "type": "enum",
+                    "options": whisper.available_models(),
+                    "optional": True,
+                    "default": DEFAULT_MODEL,
+                },
+                "task": {
+                    "type": "enum",
+                    "options": ["translate", "transcribe"],
+                    "optional": True,
+                    "default": DEFAULT_TASK,
+                },                
+                "languages": {
+                    "type": "enum",
+                    "options": list(whisper.tokenizer.LANGUAGES.values()),
+                    "optional": True,
+                },
+                "output": {
+                    "type": "enum",
+                    "options": ["srt", "vtt", "json", "txt"],
+                    "optional": True,
+                    "default": DEFAULT_OUTPUT,
+                },
+            }
         }
-    except Exception as e:
-        logging.exception(e)
-        return 500
-    finally:
-        tempFile.close()
+    else:
+        tempFile = tempfile.NamedTemporaryFile()
+        try:
+            # Get variables from request
+            requestedModel = request.args.get("model", DEFAULT_MODEL)
+            task = request.args.get("task", DEFAULT_TASK)
+            output = request.args.get("output", DEFAULT_OUTPUT)
+            language = request.args.get("language")
+
+            request_is_invalid = is_invalid_params(request)
+            if request_is_invalid:
+                return request_is_invalid
+                
+            # Download the file
+            file = request.files['file']
+            tempFile.write(file.read())
+
+            model = whisper.load_model(requestedModel)
+            result = model.transcribe(tempFile.name, language=language, task=task)
+
+            if output == "txt":
+                return result["text"]
+            if output == "json":
+                return result        
+            if output == "vtt":
+                return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
+            if output == "srt":
+                return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
+
+            return "Output not supported", 400
+        except Exception as e:
+            logging.exception(e)
+            return 500
+        finally:
+            tempFile.close()
+
+@app.route("/v1/detect", methods=['POST', 'OPTIONS'])
+def detect():
+    if request.method == 'OPTIONS':
+        return {
+            "queryParams": {
+                "model": {
+                    "type": "enum",
+                    "options": whisper.available_models(),
+                    "optional": True,
+                    "default": DEFAULT_MODEL,
+                },
+            }
+        }
+    else:
+        tempFile = tempfile.NamedTemporaryFile()
+
+        try:
+            # get model query parameter
+            requestedModel = request.args.get("model", DEFAULT_MODEL)
+
+            request_is_invalid = is_invalid_params(request)
+            if request_is_invalid:
+                return request_is_invalid
+
+            # Download the file
+            file = request.files['file']
+            tempFile.write(file.read())
+
+            model = whisper.load_model(requestedModel)
+
+            # load audio and pad/trim it to fit 30 seconds
+            audio = whisper.load_audio(tempFile.name)
+            audio = whisper.pad_or_trim(audio)
+
+            # make log-Mel spectrogram and move to the same device as the model
+            mel = whisper.log_mel_spectrogram(audio).to(model.device)
+
+            # detect the spoken language
+            _, probs = model.detect_language(mel)
+            return {
+                "detectedLanguage": max(probs, key=probs.get)
+            }
+        except Exception as e:
+            logging.exception(e)
+            return 500
+        finally:
+            tempFile.close()

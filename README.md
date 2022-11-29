@@ -17,25 +17,16 @@ Query parameters:
 - OPTIONAL: task: string (default: `transcribe`)
   - `transcribe`: Transcribe audio to text
   - `translate`: Transcribe then translate audio to text
+- OPTIONAL: `output`: string (default: `txt`)
+  - `json`: JSON response of the model output
+  - `txt`: Plain text response of the detected text
+  - `vtt`: WebVTT file with the detected text
+  - `srt`: WebVTT file with the detected text
 - REQUIRED: form field `file`: mp3 audio file to transcribe
 
-Headers:
+### OPTIONS `/v1/transcribe`
 
-- OPTIONAL: `Accept`: string (default: `SRT file`)
-  - `application/json`: JSON response of the model output
-  - `text/plain`: Plain text response of the detected text
-  - `application/vtt`: WebVTT file with the detected text
-  - unset: SRT file with the detected text
-
-### GET `/v1/transcribe/options`
-
-Get the available options for the service.
-
-Return a JSON object with the following keys:
-
-- `languages`: list of available languages
-- `models`: list of available models
-- `tasks`: list of available tasks
+Get the available options for the transcribe route.
 
 ### POST `/v1/detect`
 
@@ -44,6 +35,10 @@ Detect the language of the audio file.
 Query parameters:
 
 - OPTIONAL: model: string (default: `tiny`)
+
+### OPTIONS `/v1/detect`
+
+Get the available options for the detect route.
 
 ## Contributing
 
