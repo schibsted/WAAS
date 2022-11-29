@@ -1,7 +1,5 @@
 console.log("Hello from frontend");
 
-let backgroundImage = "";
-
 const backgroundHandler = () => {
   const imageNames = [
     "dessert-cave-background.png",
@@ -14,51 +12,13 @@ const backgroundHandler = () => {
   ];
   const imageRootPath = "static/images/";
 
-  const usedBackgroundImages =
-    JSON.parse(localStorage.getItem("usedBackgroundImages")) || [];
+  const index = Number(localStorage.getItem("backgroundIndex") || 0);
 
-  if (usedBackgroundImages.length) {
-    if (usedBackgroundImages.length >= imageNames.length) {
-      localStorage.removeItem("usedBackgroundImages");
+  const nextIndex = (index + 1) % imageNames.length;
 
-      const randomImageIndex = Math.round(
-        Math.random() * (imageNames.length - 1)
-      );
-      backgroundImage = imageNames[randomImageIndex];
+  localStorage.setItem("backgroundIndex", nextIndex);
 
-      localStorage.setItem(
-        "usedBackgroundImages",
-        JSON.stringify([backgroundImage])
-      );
-    } else {
-      const filteredImageNames = imageNames.filter(
-        (imageName) => !usedBackgroundImages.includes(imageName)
-      );
-      const randomImageIndex = Math.round(
-        Math.random() * (filteredImageNames.length - 1)
-      );
-      backgroundImage = filteredImageNames[randomImageIndex];
-
-      localStorage.setItem(
-        "usedBackgroundImages",
-        JSON.stringify([...usedBackgroundImages, backgroundImage])
-      );
-    }
-  }
-
-  if (!usedBackgroundImages.length) {
-    const randomImageIndex = Math.round(
-      Math.random() * (imageNames.length - 1)
-    );
-    backgroundImage = imageNames[randomImageIndex];
-
-    localStorage.setItem(
-      "usedBackgroundImages",
-      JSON.stringify([backgroundImage])
-    );
-  }
-
-  document.body.style.backgroundImage = `url(${imageRootPath}${backgroundImage})`;
+  document.body.style.backgroundImage = `url(${imageRootPath}${imageNames[nextIndex]})`;
 };
 
 backgroundHandler();
