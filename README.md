@@ -12,9 +12,9 @@ Receive the detected text from the audio file.
 
 Query parameters:
 
-- OPTIONAL: language: string (default: automatic detection)
-- OPTIONAL: model: string (default: `tiny`)
-- OPTIONAL: task: string (default: `transcribe`)
+- OPTIONAL: `language`: string (default: automatic detection)
+- OPTIONAL: `model`: string (default: `tiny`)
+- OPTIONAL: `task`: string (default: `transcribe`)
   - `transcribe`: Transcribe audio to text
   - `translate`: Transcribe then translate audio to text
 - OPTIONAL: `output`: string (default: `txt`)
@@ -22,7 +22,10 @@ Query parameters:
   - `txt`: Plain text response of the detected text
   - `vtt`: WebVTT file with the detected text
   - `srt`: WebVTT file with the detected text
-- REQUIRED: form field `file`: mp3 audio file to transcribe
+
+Body (form data):
+
+- REQUIRED: `file`: File with the content to transcribe
 
 ### OPTIONS `/v1/transcribe`
 
@@ -34,7 +37,11 @@ Detect the language of the audio file.
 
 Query parameters:
 
-- OPTIONAL: model: string (default: `tiny`)
+- OPTIONAL: `model`: string (default: `tiny`)
+
+Body (form data):
+
+- REQUIRED: `file`: File with the content to transcribe
 
 ### OPTIONS `/v1/detect`
 
