@@ -10,7 +10,7 @@ def client():
     return app.test_client()
 
 def test_options(client):
-    response = client.get('/options')
+    response = client.get('/v1/transcribe/options')
 
     assert response.status_code == 200
     assert response.get_json() == {
