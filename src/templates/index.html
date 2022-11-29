@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="static/fonts/Inter/font-inter.css" />
     <title>JoJo</title>
   </head>
-  <body>
+  <body
+    ondrop="dropHandler(event);"
+    ondragover="dragOverHandler(event);"
+    ondragenter="funDragStart()"
+  >
     <header class="header">
       <h1>JoJo</h1>
     </header>
@@ -15,7 +19,7 @@
       <section class="input-container">
         <h1>JoJo transcribing</h1>
         <p>Start with doing this, then we transcribe. Then it will be nice.</p>
-        <p>Filen sendes til:</p>
+        <p>The file gets sendt to:</p>
 
         <form
           action="/api"
@@ -24,29 +28,51 @@
           id="form"
           class="form"
         >
-          <div
-            class="dropzone"
-            id="dropzone-audiofile"
-            ondrop="dropHandler(event);"
-            ondragover="dragOverHandler(event);"
-          >
-            <p>Drop file here</p>
+          <div>
+            <label htmlFor="file-upload" class="dropzone">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+              >
+                <path
+                  stroke="#fff"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M4.75 14.75v1.5a3 3 0 0 0 3 3h8.5a3 3 0 0 0 3-3v-1.5M12 14.25V5M8.75 8.25 12 4.75l3.25 3.5"
+                />
+              </svg>
+              <input
+                id="file-upload"
+                name="file-upload"
+                type="file"
+                accept=".mp3,audio/*"
+                class="sr-only"
+              />
+            </label>
           </div>
-          <input
-            type="file"
-            accept=".mp3,audio/*"
-            name="audio"
-            id="button-audio-file"
-          />
+          <label for="file-upload" class="file-upload-button"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="24"
+              fill="none"
+            >
+              <path
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M17.75 19.25H7.25a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2h10.5a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2ZM12.5 8.75v6.5M15.75 12h-6.5"
+              />
+            </svg>
+            Upload file</label
+          >
         </form>
       </section>
     </main>
-    <!-- background img -->
-    <img
-      src="static/images/dessert-cave-background.png"
-      alt=""
-      class="background"
-    />
     <script src="static/scripts/index.js"></script>
   </body>
 </html>

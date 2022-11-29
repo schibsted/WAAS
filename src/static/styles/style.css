@@ -9,22 +9,26 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 100%;
+  background-size: cover;
 }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .header {
   color: #ffffff;
   font-weight: 400;
   font-size: 64px;
   padding: 32px;
-}
-
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;
 }
 
 .input-container {
@@ -67,15 +71,42 @@ body {
 
 .dropzone {
   width: 100%;
-  height: 100px;
+  height: 125px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.17);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+}
+
+.dropzone span {
+  color: #fff;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  font-family: Inter;
 }
 
 .form {
   width: 100%;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
+
+.file-upload-button {
+  width: 100%;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Inter;
+  font-weight: 500;
 }
