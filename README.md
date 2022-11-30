@@ -60,7 +60,7 @@ pip install -r requirements.txt
 ### Running in dev
 
 ```sh
-flask --app src/main run
+flask --app frontend/main run
 ```
 
 ### curl

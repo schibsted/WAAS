@@ -1,0 +1,14 @@
+version: '2'
+services:
+    waas-api:
+        build: .
+        ports:
+            - "5000:5000"
+        volumes:
+            - .:/code
+        depends_on:
+            - redis
+    redis:
+        image: redis
+
+
