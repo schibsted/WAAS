@@ -1,7 +1,7 @@
 import pytest
 import whisper
 
-from src import app
+from frontend import app
 
 @pytest.fixture
 def client():

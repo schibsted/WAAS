@@ -6,7 +6,7 @@ from flask import render_template
 import tempfile
 import logging
 
-from src.utils import generate_srt, generate_vtt
+from frontend.utils import generate_srt, generate_vtt
 
 app = Flask(__name__)
 
