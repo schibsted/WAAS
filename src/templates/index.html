@@ -9,16 +9,55 @@
     <title>JoJo</title>
   </head>
   <body
-    ondrop="dropHandler(event);"
+    ondragenter="dragStartHandler(event);"
+    ondragleave="dragEndHandler(event);"
     ondragover="dragOverHandler(event);"
-    ondragenter="funDragStart()"
+    ondrop="dropHandler(event);"
   >
     <header class="header">
-      <h1>JoJo</h1>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="153"
+        height="51"
+        fill="none"
+      >
+        <g filter="url(#a)">
+          <path
+            fill="#fff"
+            d="M16.884 34.116V15.153H0V51h35.847V.6H18.963v33.516h-2.079ZM38.821 51h35.847V.6H38.821V51Zm16.884-16.884V13.011h2.08v21.105h-2.08Zm38.822 0V15.153H77.643V51h35.847V.6H96.606v33.516h-2.08ZM116.464 51h35.847V.6h-35.847V51Zm16.884-16.884V13.011h2.079v21.105h-2.079Z"
+          />
+        </g>
+        <defs>
+          <filter
+            id="a"
+            width="160.311"
+            height="58.4"
+            x="-4"
+            y="-3.4"
+            color-interpolation-filters="sRGB"
+            filterUnits="userSpaceOnUse"
+          >
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feGaussianBlur in="BackgroundImageFix" stdDeviation="2" />
+            <feComposite
+              in2="SourceAlpha"
+              operator="in"
+              result="effect1_backgroundBlur_2_121"
+            />
+            <feBlend
+              in="SourceGraphic"
+              in2="effect1_backgroundBlur_2_121"
+              result="shape"
+            />
+          </filter>
+        </defs>
+      </svg>
+      <!-- image credit -->
+      <div id="image-credit" class="image-credit"></div>
     </header>
-    <main>
-      <section class="input-container">
-        <h1>JoJo transcribing</h1>
+    <main class="main" id="main">
+      <section id="input-container" class="input-container">
+        <h1 id="header">JoJo transcribing</h1>
         <p>Start with doing this, then we transcribe. Then it will be nice.</p>
         <p>The file gets sendt to:</p>
 
@@ -28,9 +67,10 @@
           enctype="multipart/form-data"
           id="form"
           class="form"
+          onchange="formChangeHandler(event)"
         >
           <div>
-            <label htmlFor="file-upload" class="dropzone">
+            <label for="file-upload" class="dropzone">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -54,8 +94,12 @@
               />
             </label>
           </div>
-          <label for="file-upload" class="file-upload-button"
-            ><svg
+          <label
+            for="file-upload"
+            id="file-upload-button"
+            class="file-upload-button"
+          >
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="25"
               height="24"
@@ -69,8 +113,8 @@
                 d="M17.75 19.25H7.25a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2h10.5a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2ZM12.5 8.75v6.5M15.75 12h-6.5"
               />
             </svg>
-            Upload file</label
-          >
+            Upload file
+          </label>
         </form>
       </section>
     </main>
