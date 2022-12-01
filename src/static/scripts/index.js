@@ -1,14 +1,16 @@
-console.log("Hello from frontend");
+import {
+  getImageCreditElement,
+  getDropGraphic,
+  getFileUploadButton,
+  getInputContainer,
+  imageNames,
+} from "./constants.js";
+
+console.debug("Hello from frontend");
 
 const imageRootPath = "static/images/";
 
 let backgroundImage = "";
-
-const getInputContainer = () => document.getElementById("input-container");
-const getForm = () => document.getElementById("form");
-const getDropGraphic = () => document.getElementById("drop-graphic");
-const getImageCreditElement = () => document.getElementById("image-credit");
-const getFileUploadButton = () => document.getElementById("file-upload-button");
 
 const setBackgroundImage = (image) => {
   document.body.style.backgroundImage = `url(${imageRootPath}${image.name})`;
@@ -19,51 +21,6 @@ const setBackgroundImage = (image) => {
 };
 
 const backgroundHandler = () => {
-  const imageNames = [
-    {
-      name: "dessert-cave-background.png",
-      author: "Joshua Earle",
-      origin: "Unsplash",
-      accentcolor: "#8b5e56",
-    },
-    {
-      name: "glitter-background.png",
-      author: "Joshua Earle",
-      origin: "Unsplash",
-      accentcolor: "#835d6b",
-    },
-    {
-      name: "lagoon-fist-beach-background.png",
-      author: "Nathan Dumlao",
-      origin: "Unsplash",
-      accentcolor: "#8bbcba",
-    },
-    {
-      name: "forrest-background.png",
-      author: "Kaique Rocha",
-      origin: "Unsplash",
-      accentcolor: "#354c33",
-    },
-    {
-      name: "dessert-stones-background.png",
-      author: "Jacek Dylag",
-      origin: "Unsplash",
-      accentcolor: "#b68a7e",
-    },
-    {
-      name: "paint-flow-background.png",
-      author: "Jannis Brandt",
-      origin: "Unsplash",
-      accentcolor: "#453953",
-    },
-    {
-      name: "glitter-2-background.png",
-      author: "Eddie Kopp",
-      origin: "Unsplash",
-      accentcolor: "#775d5d",
-    },
-  ];
-
   const index = Number(localStorage.getItem("backgroundIndex") || 0);
 
   const nextIndex = (index + 1) % imageNames.length;
@@ -79,6 +36,14 @@ const init = () => {
 
   document.body.style.backgroundColor = backgroundImage.accentcolor;
   getFileUploadButton().style.backgroundColor = backgroundImage.accentcolor;
+
+  window.addEventListener("dragover", (event) => dragOverHandler(event));
+  window.addEventListener("dragenter", (event) => dragHandler(event));
+
+  window.addEventListener("dragleave", (event) => dragEndHandler(event));
+  window.addEventListener("dragend", (event) => dragEndHandler(event));
+
+  window.addEventListener("drop", (event) => dropHandler(event));
 };
 
 init();
@@ -96,11 +61,21 @@ const createDropGraphic = () => {
   return dropGraphicElement;
 };
 
+const endFileHover = () => {
+  setBackgroundImage(backgroundImage);
+
+  const dropGraphic = getDropGraphic();
+  dropGraphic.remove();
+
+  getInputContainer().style.display = "flex";
+  getImageCreditElement().style.display = "block";
+};
+
 const dragOverHandler = (event) => {
   event.preventDefault();
 };
 
-const dragStartHandler = (event) => {
+const dragHandler = (event) => {
   console.log("Drag started", event);
 
   if (!getDropGraphic()) {
@@ -111,15 +86,7 @@ const dragStartHandler = (event) => {
   }
 };
 
-const endFileHover = () => {
-  setBackgroundImage(backgroundImage);
-
-  const dropGraphic = getDropGraphic();
-  dropGraphic.remove();
-
-  getInputContainer().style.display = "flex";
-  getImageCreditElement().style.display = "block";
-};
+window.draghandler = dragHandler;
 
 const dragEndHandler = (event) => {
   console.log("Drag ended", event);
