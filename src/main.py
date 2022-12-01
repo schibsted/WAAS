@@ -1,10 +1,11 @@
-from distutils.log import error
 import whisper
+import logging
+import tempfile
 from flask import Flask
 from flask import request
 from flask import render_template
-import tempfile
-import logging
+from distutils.log import error
+from werkzeug.datastructures import FileStorage
 
 from src.utils import generate_srt, generate_vtt
 
@@ -32,16 +33,10 @@ def is_invalid_params (req):
     if task not in ["translate", "transcribe"]:
         return "Task not supported", 400
     
-    # Check if the request contains a file
-    if "file" not in req.files:
-        return "No file provided", 400
-    
-    file = req.files['file']
+    # Check if the body contains binary data
+    if not req.data or not isinstance(req.data, bytes):
+        return "No file uploaded", 400
 
-    # check if the file is supported
-    filename = file.filename
-    if not filename.endswith(".mp3") and not filename.endswith(".mp4"):
-        return "Filetype is not accepted", 415
     
     return False
 
@@ -92,9 +87,9 @@ def transcribe():
             if request_is_invalid:
                 return request_is_invalid
                 
-            # Download the file
-            file = request.files['file']
-            tempFile.write(file.read())
+            # Get the file from the request body and save it to a temporary file
+            file = request.data
+            tempFile.write(file)
 
             model = whisper.load_model(requestedModel)
             result = model.transcribe(tempFile.name, language=language, task=task)
@@ -139,9 +134,9 @@ def detect():
             if request_is_invalid:
                 return request_is_invalid
 
-            # Download the file
-            file = request.files['file']
-            tempFile.write(file.read())
+            # Get the file from the request body and save it to a temporary file
+            file = request.data
+            tempFile.write(file)
 
             model = whisper.load_model(requestedModel)
 

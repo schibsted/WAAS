@@ -23,9 +23,9 @@ Query parameters:
   - `vtt`: WebVTT file with the detected text
   - `srt`: WebVTT file with the detected text
 
-Body (form data):
+Body:
 
-- REQUIRED: `file`: File with the content to transcribe
+- REQUIRED: `binary data`: Raw data with the audio content to transcribe
 
 ### OPTIONS `/v1/transcribe`
 
@@ -39,9 +39,9 @@ Query parameters:
 
 - OPTIONAL: `model`: string (default: `tiny`)
 
-Body (form data):
+Body:
 
-- REQUIRED: `file`: File with the content to transcribe
+- REQUIRED: `binary data`: Raw data with the audio content to detect the language for
 
 ### OPTIONS `/v1/detect`
 
@@ -49,7 +49,7 @@ Get the available options for the detect route.
 
 ## Contributing
 
-### Running
+### Installation
 
 ```sh
 python3 -mvenv .venv
@@ -68,8 +68,9 @@ flask --app src/main run
 To upload a file called audunspodssounds.mp3 in norwegian from your download directory
 
 ```sh
-curl --location --request POST 'http://localhost:5000/v1/transcribe/?model=large' \
---form 'file=@"/Users/<user>/Downloads/audunspodssound.mp3"' -H "Accept: SRT file"
+curl --location --request POST 'localhost:5000/v1/transcribe?output=vtt' \
+  --header 'Content-Type: audio/mpeg' \
+  --data-binary '@/Users/<user>/Downloads/audunspodssounds.mp3'
 ```
 
 ### Running tests
