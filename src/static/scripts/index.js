@@ -1,40 +1,91 @@
-console.log("Hello from frontend");
+import {
+  imageNames,
+  getImageCreditElement,
+  getFileUploadButton,
+  getInputContainer,
+  getDragDropOverlay,
+} from "./constants.js";
+
+console.debug("Hello from frontend");
+
+const imageRootPath = "static/images/";
+
+let backgroundImage = "";
+
+const setBackgroundImage = (image) => {
+  document.body.style.backgroundImage = `url(${imageRootPath}${image.name})`;
+
+  getImageCreditElement().innerHTML = `
+      Photo by ${image.author} on ${image.origin}
+  `;
+};
 
 const backgroundHandler = () => {
-  const imageNames = [
-    "dessert-cave-background.png",
-    "glitter-background.png",
-    "lagoon-fist-beach-background.png",
-    "forrest-background.png",
-    "dessert-stones-background.png",
-    "paint-flow-background.png",
-    "glitter-2-background.png",
-  ];
-  const imageRootPath = "static/images/";
-
   const index = Number(localStorage.getItem("backgroundIndex") || 0);
 
   const nextIndex = (index + 1) % imageNames.length;
 
   localStorage.setItem("backgroundIndex", nextIndex);
 
-  document.body.style.backgroundImage = `url(${imageRootPath}${imageNames[nextIndex]})`;
+  backgroundImage = imageNames[nextIndex];
+  setBackgroundImage(backgroundImage);
 };
 
-backgroundHandler();
+const init = () => {
+  backgroundHandler();
 
-const dropHandler = (event) => {
-  console.log("File dropped", event);
+  document.body.style.backgroundColor = backgroundImage.accentcolor;
+  getFileUploadButton().style.backgroundColor = backgroundImage.accentcolor;
 
-  event.preventDefault();
+  window.addEventListener("dragover", (event) => dragOverHandler(event));
+  window.addEventListener("dragenter", (event) => dragHandler(event));
 
-  const files = event.dataTransfer.files;
+  window.addEventListener("dragleave", (event) => dragEndHandler(event));
+  window.addEventListener("dragend", (event) => dragEndHandler(event));
 
-  console.log(files);
+  window.addEventListener("drop", (event) => dropHandler(event));
+};
+
+init();
+
+const endFileHover = () => {
+  setBackgroundImage(backgroundImage);
+
+  const dragDropOverlay = getDragDropOverlay();
+  dragDropOverlay.hidden = true;
+
+  getInputContainer().style.display = "flex";
+  getImageCreditElement().style.display = "block";
 };
 
 const dragOverHandler = (event) => {
   event.preventDefault();
+};
 
-  // console.log(backgroundImage);
+const dragHandler = () => {
+  document.body.style.backgroundImage = "none";
+  getImageCreditElement().style.display = "none";
+  getInputContainer().style.display = "none";
+
+  const dragDropOverlay = getDragDropOverlay();
+  dragDropOverlay.hidden = false;
+};
+
+const dragEndHandler = (event) => {
+  if (event.relatedTarget) {
+    return;
+  }
+
+  endFileHover();
+};
+
+const dropHandler = (event) => {
+  event.preventDefault();
+  console.log("File dropped", event);
+
+  endFileHover();
+};
+
+const formChangeHandler = (event) => {
+  event.preventDefault();
 };
