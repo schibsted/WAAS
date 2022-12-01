@@ -129,13 +129,21 @@ body {
   }
 }
 
-.drop-graphic {
+.drag-drop-overlay {
   justify-self: center;
   align-self: center;
   width: 100%;
   text-align: center;
   font-family: Inter;
-  font-size: 5rem;
-  font-weight: 600;
   color: #fff;
+}
+
+.drag-drop-overlay h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+}
+
+.drag-drop-overlay p {
+  font-size: 1.5rem;
+  font-weight: 400;
 }

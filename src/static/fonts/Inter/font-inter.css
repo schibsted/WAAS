@@ -24,3 +24,12 @@
   src: local(""), url("./inter-v12-latin-600.woff2") format("woff2");
   /* Chrome 26+, Opera 23+, Firefox 39+ */
 }
+
+/* inter-800 - latin */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 800;
+  src: local(""), url("./inter-v12-latin-800.woff2") format("woff2");
+  /* Chrome 26+, Opera 23+, Firefox 39+ */
+}
