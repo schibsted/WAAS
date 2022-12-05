@@ -5,7 +5,7 @@ services:
         ports:
             - "5000:5000"
         volumes:
-            - .:/code
+            - .:/workspace
         depends_on:
             - redis
     redis:

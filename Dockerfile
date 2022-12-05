@@ -7,4 +7,4 @@ RUN pip3 install -r requirements.txt
 
 COPY src src
 
-CMD [ "python3", "-m" , "frontend/main", "run", "--host=0.0.0.0"]
+CMD [ "flask", "--app" , "src/main", "--debug", "run"]
