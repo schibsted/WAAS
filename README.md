@@ -63,6 +63,21 @@ pip install -r requirements.txt
 flask --app  --debug src/main run
 ```
 
+### Running full setup
+```sh
+docker compose up
+```
+
+This will start three docker containes. 
+* redis
+* api running flask fra src
+* worker running rq from src
+
+### Running full setup using devcontainers
+Install remote-development extensions (containes)
+And then in vscode do `Devcontaines: open folder in container`
+Then you are inside the api-containe and can do stuff
+
 ### curl
 
 To upload a file called audunspodssounds.mp3 in norwegian from your download directory
