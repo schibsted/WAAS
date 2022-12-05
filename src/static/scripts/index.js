@@ -4,6 +4,7 @@ import {
   getFileUploadButton,
   getInputContainer,
   getDragDropOverlay,
+  getUploadForm,
 } from "./constants.js";
 
 console.debug("Hello from frontend");
@@ -44,6 +45,10 @@ const init = () => {
   window.addEventListener("dragend", (event) => dragEndHandler(event));
 
   window.addEventListener("drop", (event) => dropHandler(event));
+
+  getUploadForm().addEventListener("change", (event) =>
+    formUploadHandler(event)
+  );
 };
 
 init();
@@ -86,6 +91,25 @@ const dropHandler = (event) => {
   endFileHover();
 };
 
-const formChangeHandler = (event) => {
+const formUploadHandler = (event) => {
   event.preventDefault();
+
+  console.log("File uploade`", event);
+
+  const file = event.target.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      console.log("reader result", reader.result);
+      fetch("/v1/transcribe?model=tiny", {
+        method: "POST",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: event.target.result,
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
 };

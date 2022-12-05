@@ -1,7 +1,7 @@
 export const getInputContainer = () =>
   document.getElementById("input-container");
 
-export const getForm = () => document.getElementById("form");
+export const getUploadForm = () => document.getElementById("upload-form");
 
 export const getDragDropOverlay = () =>
   document.getElementById("drag-drop-overlay");
