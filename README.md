@@ -60,7 +60,7 @@ pip install -r requirements.txt
 ### Running in dev
 
 ```sh
-flask --app src/main run
+flask --app  --debug src/main run
 ```
 
 ### curl
@@ -77,4 +77,12 @@ curl --location --request POST 'localhost:5000/v1/transcribe?output=vtt' \
 
 ```bash
 $ pytest
+```
+
+## FAQ
+
+### How to fix `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate`?
+
+```sh
+$ /Applications/Python\ 3.7/Install\ Certificates.command
 ```
