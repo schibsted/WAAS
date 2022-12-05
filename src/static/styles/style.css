@@ -77,7 +77,7 @@ body {
   line-height: 17px;
 }
 
-.form {
+.upload-form {
   width: 100%;
   display: flex;
   gap: 16px;
