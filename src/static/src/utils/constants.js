@@ -1,18 +1,4 @@
-export const getInputContainer = () =>
-  document.getElementById("input-container");
-
-export const getUploadForm = () => document.getElementById("upload-form");
-
-export const getDragDropOverlay = () =>
-  document.getElementById("drag-drop-overlay");
-
-export const getImageCreditElement = () =>
-  document.getElementById("image-credit");
-
-export const getFileUploadButton = () =>
-  document.getElementById("file-upload-button");
-
-export const imageNames = [
+export const images = [
   {
     name: "dessert-cave-background.png",
     author: "Joshua Earle",

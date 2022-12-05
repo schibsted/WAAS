@@ -1,115 +1,23 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="static/styles/style.css" />
+    <link rel="stylesheet" href="static/src/styles/style.css" />
     <link rel="stylesheet" href="static/fonts/Inter/font-inter.css" />
     <title>JoJo</title>
   </head>
   <body>
-    <header class="header">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="153"
-        height="51"
-        fill="none"
-      >
-        <g filter="url(#a)">
-          <path
-            fill="#fff"
-            d="M16.884 34.116V15.153H0V51h35.847V.6H18.963v33.516h-2.079ZM38.821 51h35.847V.6H38.821V51Zm16.884-16.884V13.011h2.08v21.105h-2.08Zm38.822 0V15.153H77.643V51h35.847V.6H96.606v33.516h-2.08ZM116.464 51h35.847V.6h-35.847V51Zm16.884-16.884V13.011h2.079v21.105h-2.079Z"
-          />
-        </g>
-        <defs>
-          <filter
-            id="a"
-            width="160.311"
-            height="58.4"
-            x="-4"
-            y="-3.4"
-            color-interpolation-filters="sRGB"
-            filterUnits="userSpaceOnUse"
-          >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-            <feGaussianBlur in="BackgroundImageFix" stdDeviation="2" />
-            <feComposite
-              in2="SourceAlpha"
-              operator="in"
-              result="effect1_backgroundBlur_2_121"
-            />
-            <feBlend
-              in="SourceGraphic"
-              in2="effect1_backgroundBlur_2_121"
-              result="shape"
-            />
-          </filter>
-        </defs>
-      </svg>
-      <!-- image credit -->
-      <div id="image-credit" class="image-credit"></div>
-    </header>
-    <main class="main" id="main">
-      <section id="input-container" class="input-container">
-        <h1 id="header">JoJo transcribing</h1>
-        <p>Start with doing this, then we transcribe. Then it will be nice.</p>
-        <p>The file gets sendt to:</p>
-
-        <form id="upload-form" class="upload-form">
-          <div>
-            <label for="file-upload" class="dropzone">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-              >
-                <path
-                  stroke="#fff"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M4.75 14.75v1.5a3 3 0 0 0 3 3h8.5a3 3 0 0 0 3-3v-1.5M12 14.25V5M8.75 8.25 12 4.75l3.25 3.5"
-                />
-              </svg>
-              <input
-                id="file-upload"
-                name="file-upload"
-                type="file"
-                accept=".mp3,audio/*"
-                class="sr-only"
-              />
-            </label>
-          </div>
-          <label
-            for="file-upload"
-            id="file-upload-button"
-            class="file-upload-button"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="24"
-              fill="none"
-            >
-              <path
-                stroke="#fff"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M17.75 19.25H7.25a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2h10.5a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2ZM12.5 8.75v6.5M15.75 12h-6.5"
-              />
-            </svg>
-            Upload file
-          </label>
-        </form>
-      </section>
-      <div id="drag-drop-overlay" class="drag-drop-overlay" hidden>
-        <h1>Drop it like it’s hot 🔥</h1>
-        <p>Upload files by dropping them here</p>
+    <noscript>
+      <div class="no-script">
+        <h1>Enable JavaScript</h1>
+        <p>
+          This website requires JavaScript to function properly. Please enable
+          JavaScript in your browser.
+        </p>
       </div>
-    </main>
-    <script type="module" src="static/scripts/index.js"></script>
+    </noscript>
+    <script type="module" src="static/src/index.js"></script>
   </body>
 </html>
