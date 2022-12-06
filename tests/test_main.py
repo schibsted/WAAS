@@ -56,6 +56,11 @@ def test_transcribe_options(client):
         }
     }
 
+def test_download_not_found(client):
+    response = client.get('/v1/download/1')
+
+    assert response.status_code == 404
+
 def test_queue(client):
     response = client.get('/v1/queue')
 
