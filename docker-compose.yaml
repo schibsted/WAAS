@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-    waas-api:
+    api:
         build: .
         ports:
             - "5000:5000"
@@ -8,6 +8,14 @@ services:
             - .:/workspace
         depends_on:
             - redis
+        command: flask --app src/main.py --debug run --host 0.0.0.0
+    worker:
+        build: .
+        volumes:
+            - .:/workspace
+        depends_on:
+            - redis
+        command: python src/worker.py
     redis:
         image: redis
 

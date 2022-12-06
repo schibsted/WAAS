@@ -7,6 +7,7 @@ from flask import render_template
 from distutils.log import error
 from werkzeug.datastructures import FileStorage
 
+from src import transcriber
 from src.utils import generate_srt, generate_vtt
 
 app = Flask(__name__)
@@ -76,23 +77,23 @@ def transcribe():
         }
     else:
         tempFile = tempfile.NamedTemporaryFile()
-        try:
-            # Get variables from request
-            requestedModel = request.args.get("model", DEFAULT_MODEL)
-            task = request.args.get("task", DEFAULT_TASK)
-            output = request.args.get("output", DEFAULT_OUTPUT)
-            language = request.args.get("language")
 
+        # Get the file from the request body and save it to a temporary file
+        file = request.data
+        tempFile.write(file)
+
+        try:
             request_is_invalid = is_invalid_params(request)
             if request_is_invalid:
                 return request_is_invalid
                 
-            # Get the file from the request body and save it to a temporary file
-            file = request.data
-            tempFile.write(file)
-
-            model = whisper.load_model(requestedModel)
-            result = model.transcribe(tempFile.name, language=language, task=task)
+            result = transcriber.transcribe(
+                file = tempFile.name,
+                requestedModel = request.args.get("model", DEFAULT_MODEL),
+                task = request.args.get("task", DEFAULT_TASK),
+                output = request.args.get("output", DEFAULT_OUTPUT),
+                language = request.args.get("language")
+            )
 
             if output == "txt":
                 return result["text"]
