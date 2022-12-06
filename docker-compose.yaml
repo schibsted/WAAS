@@ -3,12 +3,12 @@ services:
     api:
         build: .
         ports:
-            - "5000:5000"
+            - "3000:3000"
         volumes:
             - .:/workspace
         depends_on:
             - redis
-        command: flask --app src/main.py --debug run --host 0.0.0.0
+        command: flask --app src/main.py --debug run --host 0.0.0.0 --port 3000
     worker:
         build: .
         volumes:
