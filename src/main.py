@@ -81,7 +81,7 @@ def transcribe():
             }
         }
     else:
-        tempFile = tempfile.NamedTemporaryFile()
+        tempFile = tempfile.NamedTemporaryFile(dir='./upload-shared-tmp', delete=False)
 
         # Get the file from the request body and save it to a temporary file
         file = request.data
@@ -92,7 +92,7 @@ def transcribe():
             if request_is_invalid:
                 return request_is_invalid
 
-            filename = tempFile.name,
+            filename = tempFile.name
             requestedModel = request.args.get("model", DEFAULT_MODEL)
             task = request.args.get("task", DEFAULT_TASK)
             output = request.args.get("output", DEFAULT_OUTPUT)
@@ -104,7 +104,18 @@ def transcribe():
                 result_ttl=3600*24*7
             )
 
-            return 201
+            return 'Bananese',201
+
+            if output == "txt":
+                return result["text"]
+            if output == "json":
+                return result        
+            if output == "vtt":
+                return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
+            if output == "srt":
+                return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
+
+            return "Output not supported", 400
         except Exception as e:
             logging.exception(e)
             return 500
