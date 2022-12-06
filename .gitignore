@@ -133,3 +133,6 @@ dmypy.json
 
 # Testfiles
 testfiles
+
+#Uploads
+upload-shared-tmp
