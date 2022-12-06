@@ -91,7 +91,7 @@ def transcribe():
                 file = tempFile.name,
                 requestedModel = request.args.get("model", DEFAULT_MODEL),
                 task = request.args.get("task", DEFAULT_TASK),
-                output = request.args.get("output", DEFAULT_OUTPUT)
+                output = request.args.get("output", DEFAULT_OUTPUT),
                 language = request.args.get("language")
             )
 
