@@ -7,5 +7,5 @@ def send_success_email(job, connection, result, *args, **kwargs):
         server.login('my@gmail.com', 'password')
         server.sendmail('jojo@vg.no', email, 'Hello here is your transcript!')
 
-def send_failure_email(job, connection, result, *args, **kwargs):
+def send_failure_email(job, connection, type, value, traceback):
     pass
