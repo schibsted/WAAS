@@ -88,7 +88,7 @@ def transcribe():
                 return request_is_invalid
                 
             result = transcriber.transcribe(
-                file = tempFile.name,
+                file = tempFile,
                 requestedModel = request.args.get("model", DEFAULT_MODEL),
                 task = request.args.get("task", DEFAULT_TASK),
                 output = request.args.get("output", DEFAULT_OUTPUT),
