@@ -55,3 +55,11 @@ def test_transcribe_options(client):
             },
         }
     }
+
+def test_queue(client):
+    response = client.get('/v1/queue')
+
+    assert response.status_code == 200
+    assert response.get_json() == {
+        'length': 0,
+    }

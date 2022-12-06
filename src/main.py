@@ -15,7 +15,7 @@ from src.utils import generate_srt, generate_vtt
 from src.worker import conn
 
 app = Flask(__name__)
-queue = Queue(connection=conn)
+rq_queue = Queue(connection=conn)
 
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
@@ -98,7 +98,7 @@ def transcribe():
             output = request.args.get("output", DEFAULT_OUTPUT)
             language = request.args.get("language")
 
-            job = queue.enqueue_call(
+            job = rq_queue.enqueue_call(
                 func='transcriber.transcribe',
                 args=(filename,requestedModel,task,output,language),
                 result_ttl=3600*24*7
@@ -133,6 +133,12 @@ def download(job_id):
         return "Output not supported", 400
     else:
         return "Job not done yet", 425
+
+@app.route('/v1/queue', methods=['GET'])
+def queue():
+    return {
+        'length': len(rq_queue)
+    }, 200
 
 @app.route("/v1/detect", methods=['POST', 'OPTIONS'])
 def detect():
