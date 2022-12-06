@@ -1,4 +1,4 @@
-const uploadHandler = (file) => {
+const uploadHandler = ({ file, setError }) => {
   const reader = new FileReader();
   reader.onload = (event) => {
     fetch("/v1/transcribe?model=tiny", {
@@ -7,7 +7,15 @@ const uploadHandler = (file) => {
         "Content-Type": file.type,
       },
       body: event.target.result,
-    });
+    })
+      .then((response) => {
+        if (!response.ok) {
+          setError("Something went wrong");
+        }
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   };
   reader.readAsArrayBuffer(file);
 };

@@ -157,3 +157,38 @@ body {
   font-size: 1.5rem;
   font-weight: 400;
 }
+
+.error {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  font-family: Inter;
+  color: #fff;
+}
+
+.error h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+}
+
+.error p {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.error button {
+  padding: 8px 26px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.17);
+  backdrop-filter: blur(2px);
+  margin: 16px 0px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+}

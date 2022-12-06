@@ -1,13 +1,15 @@
 import DragAndDrop from "./components/DragAndDrop.js";
+import Error from "./components/Error.js";
 import Header from "./components/Header.js";
 import UploadForm from "./components/UploadForm.js";
-import { images } from "./utils/constants.js";
+import { allowedFileTypes, images } from "./utils/constants.js";
 import uploadHandler from "./utils/UploadHandler.js";
 
 const App = () => {
   const { useState, useEffect } = preact;
   const [image, setImage] = useState({});
   const [isDragging, setIsDragging] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const index = Number(localStorage.getItem("backgroundIndex") || 0);
@@ -32,14 +34,24 @@ const App = () => {
         break;
 
       case "dragenter":
-      case "dragstart":
         setIsDragging(true);
+        setErrorMessage("");
         break;
 
       case "drop":
         setIsDragging(false);
-        const file = event.dataTransfer.files[0];
-        uploadHandler(file);
+        const files = event.dataTransfer.files;
+        if (files.length > 1) {
+          setErrorMessage("Please upload only one file");
+          return;
+        }
+        const file = files[0];
+        if (!allowedFileTypes.some((type) => file.type.includes(type))) {
+          setErrorMessage("Please upload a valid file");
+          return;
+        }
+
+        uploadHandler({ file, setError: setErrorMessage });
         break;
 
       default:
@@ -47,14 +59,14 @@ const App = () => {
     }
   };
 
+  const shouldShowBackground = image.name && !isDragging && !errorMessage;
+
   return html`
     <div
       style=${{
         backgroundColor: image.accentcolor,
-        backgroundImage: image.name
-          ? isDragging
-            ? "none"
-            : `url(static/images/${image.name})`
+        backgroundImage: shouldShowBackground
+          ? `url(static/images/${image.name})`
           : "none",
       }}
       class="app"
@@ -66,20 +78,26 @@ const App = () => {
       ondragleave=${(event) => handleDragEvent(event)}
       ondrop=${(event) => handleDragEvent(event)}
     >
-      ${!isDragging
-        ? html`
+      ${isDragging
+        ? html`<${DragAndDrop} />`
+        : errorMessage
+        ? html`<${Error}
+            errorMessage=${errorMessage}
+            setError=${setErrorMessage}
+          />`
+        : html`
             <${Header}
               imageAuthor=${image.author}
               imageOrigin=${image.origin}
             />
             <main class="main">
               <${UploadForm}
-                uploadHandler=${uploadHandler}
+                onChange=${(file) =>
+                  uploadHandler({ file, setError: setErrorMessage })}
                 accentColor=${image.accentcolor}
               />
             </main>
-          `
-        : html`<${DragAndDrop} />`}
+          `}
     </div>
   `;
 };
