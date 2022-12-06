@@ -1,13 +1,13 @@
 import whisper
 import logging
 import tempfile
-from src import transcriber
 from flask import Flask
 from flask import request
 from flask import render_template
 from distutils.log import error
 from werkzeug.datastructures import FileStorage
 
+from src import transcriber
 from src.utils import generate_srt, generate_vtt
 
 app = Flask(__name__)
