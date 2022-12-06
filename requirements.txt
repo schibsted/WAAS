@@ -1,5 +1,5 @@
 Flask==2.2.2
 whisper @ git+https://github.com/openai/whisper.git@eff383b27b783e280c089475852ba83f20f64998
 pytest==7.2
-redis==4.3.5
+redis==4.4.0
 rq==1.11.1
