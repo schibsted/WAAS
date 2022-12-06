@@ -6,11 +6,14 @@ from flask import request
 from flask import render_template
 from distutils.log import error
 from werkzeug.datastructures import FileStorage
+from rq import Queue
 
 from src import transcriber
 from src.utils import generate_srt, generate_vtt
+from src.worker import conn
 
 app = Flask(__name__)
+queue = Queue(connection=conn)
 
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
@@ -87,13 +90,19 @@ def transcribe():
             if request_is_invalid:
                 return request_is_invalid
 
-            result = transcriber.transcribe(
-                file = tempFile,
-                requestedModel = request.args.get("model", DEFAULT_MODEL),
-                task = request.args.get("task", DEFAULT_TASK),
-                output = request.args.get("output", DEFAULT_OUTPUT),
-                language = request.args.get("language")
+            filename = tempFile.name,
+            requestedModel = request.args.get("model", DEFAULT_MODEL)
+            task = request.args.get("task", DEFAULT_TASK)
+            output = request.args.get("output", DEFAULT_OUTPUT)
+            language = request.args.get("language")
+
+            job = queue.enqueue_call(
+                func='transcriber.transcribe',
+                args=(filename,requestedModel,task,output,language),
+                result_ttl=3600*24*7
             )
+
+            return 201
 
             if output == "txt":
                 return result["text"]
