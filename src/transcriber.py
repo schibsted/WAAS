@@ -1,11 +1,7 @@
 import whisper
 import os
 
-def transcribe(filename, requestedModel, task, output, language):
-    print("Jeg er en fin banan")  
-    print(filename);  
-#    print(os.path.isfile(filename))
-
+def transcribe(file, requestedModel, task, output, language):
     model = whisper.load_model(requestedModel)
 
     return model.transcribe(filename, language=language, task=task)

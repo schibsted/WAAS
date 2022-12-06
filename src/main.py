@@ -22,7 +22,8 @@ DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
 DEFAULT_OUTPUT = "srt"
 
-def is_invalid_params (req):
+
+def is_invalid_params(req):
     requestedModel = req.args.get("model", DEFAULT_MODEL)
     language = req.args.get("language")
     task = req.args.get("task", DEFAULT_TASK)
@@ -30,7 +31,7 @@ def is_invalid_params (req):
     # Check if model is available
     if requestedModel not in whisper.available_models():
         return "Model not available", 400
-    
+
     # when language is set, check if it is in the whisper.tokenizer.LANGUAGES list
     if language is not None:
         if language not in whisper.tokenizer.LANGUAGES:
@@ -39,17 +40,18 @@ def is_invalid_params (req):
     # Check if task is either translate or transcribe
     if task not in ["translate", "transcribe"]:
         return "Task not supported", 400
-    
+
     # Check if the body contains binary data
     if not req.data or not isinstance(req.data, bytes):
         return "No file uploaded", 400
 
-    
     return False
 
-@app.route("/",methods=['GET'])
+
+@app.route("/", methods=['GET'])
 def index():
     return render_template("index.html")
+
 
 @app.route("/v1/transcribe", methods=['POST', 'OPTIONS'])
 def transcribe():
@@ -67,7 +69,7 @@ def transcribe():
                     "options": ["translate", "transcribe"],
                     "optional": True,
                     "default": DEFAULT_TASK,
-                },                
+                },
                 "languages": {
                     "type": "enum",
                     "options": list(whisper.tokenizer.LANGUAGES.values()),
@@ -112,7 +114,7 @@ def transcribe():
             if output == "txt":
                 return result["text"]
             if output == "json":
-                return result        
+                return result
             if output == "vtt":
                 return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
             if output == "srt":

@@ -60,12 +60,14 @@ const App = () => {
 
   const shouldShowBackground = image.name && !isDragging && !errorMessage;
 
+  const onBack = () => {
+    setErrorMessage("");
+    setUploadStatus(null);
+  };
+
   const pageToShow = () => {
     if (errorMessage) {
-      return html`<${Error}
-        errorMessage=${errorMessage}
-        setError=${setErrorMessage}
-      />`;
+      return html`<${Error} errorMessage=${errorMessage} onBack=${onBack} />`;
     }
 
     if (isDragging) {
