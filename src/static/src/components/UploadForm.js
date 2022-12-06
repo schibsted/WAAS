@@ -1,12 +1,12 @@
 import { PlusIcon, UploadIcon } from "./icons/index.js";
 
-const UploadForm = ({ uploadHandler, accentColor }) => {
+const UploadForm = ({ onChange, accentColor }) => {
   return html`
     <form
       class="upload-form"
       onchange=${(event) => {
         const file = event.target.files[0];
-        uploadHandler(file);
+        onChange(file);
       }}
     >
       <legend>
@@ -18,7 +18,7 @@ const UploadForm = ({ uploadHandler, accentColor }) => {
         <${UploadIcon} />
         <input
           id="file-upload"
-          name="file-upload"
+          name="file-dropzone-upload"
           type="file"
           accept=".mp3,audio/*"
           class="sr-only"

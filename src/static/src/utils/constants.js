@@ -42,3 +42,5 @@ export const images = [
     accentcolor: "#775d5d",
   },
 ];
+
+export const allowedFileTypes = ["video/", "audio/", "application/ogg"];
