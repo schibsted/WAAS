@@ -7,6 +7,8 @@ from flask import render_template
 from distutils.log import error
 from werkzeug.datastructures import FileStorage
 from rq import Queue
+from rq.job import Job
+from rq.exceptions import NoSuchJobError
 
 from src import transcriber
 from src.utils import generate_srt, generate_vtt
@@ -103,22 +105,34 @@ def transcribe():
             )
 
             return 201
-
-            if output == "txt":
-                return result["text"]
-            if output == "json":
-                return result        
-            if output == "vtt":
-                return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
-            if output == "srt":
-                return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
-
-            return "Output not supported", 400
         except Exception as e:
             logging.exception(e)
             return 500
         finally:
             tempFile.close()
+
+@app.route('/v1/download/<job_id>', methods=['GET'])
+def download(job_id):
+    output = request.args.get("output", DEFAULT_OUTPUT)
+
+    try:
+        job = Job.fetch(job_id, connection=conn)
+    except NoSuchJobError:
+        return "No such job", 404
+    
+    if job.is_finished:
+        if output == "txt":
+            return result["text"]
+        if output == "json":
+            return result        
+        if output == "vtt":
+            return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
+        if output == "srt":
+            return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
+
+        return "Output not supported", 400
+    else:
+        return "Job not done yet", 425
 
 @app.route("/v1/detect", methods=['POST', 'OPTIONS'])
 def detect():
