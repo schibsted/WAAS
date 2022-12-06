@@ -10,6 +10,7 @@ const App = () => {
   const [image, setImage] = useState({});
   const [isDragging, setIsDragging] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [uploadStatus, setUploadStatus] = useState(null);
 
   useEffect(() => {
     const index = Number(localStorage.getItem("backgroundIndex") || 0);
@@ -23,13 +24,13 @@ const App = () => {
   const handleDragEvent = (event) => {
     event.preventDefault();
     event.stopPropagation();
+    if (uploadStatus) return;
 
     switch (event.type) {
       case "dragleave":
       case "dragend":
-        if (event.relatedTarget) {
-          return;
-        }
+        if (event.relatedTarget) return;
+
         setIsDragging(false);
         break;
 
@@ -41,17 +42,15 @@ const App = () => {
       case "drop":
         setIsDragging(false);
         const files = event.dataTransfer.files;
-        if (files.length > 1) {
-          setErrorMessage("Please upload only one file");
-          return;
-        }
-        const file = files[0];
-        if (!allowedFileTypes.some((type) => file.type.includes(type))) {
-          setErrorMessage("Please upload a valid file");
-          return;
-        }
+        if (files.length > 1)
+          return setErrorMessage("Please upload only one file");
 
-        uploadHandler({ file, setError: setErrorMessage });
+        const file = files[0];
+
+        if (!allowedFileTypes.some((type) => file.type.includes(type)))
+          return setErrorMessage("Please upload a valid file");
+
+        uploadHandler({ file, setErrorMessage, setUploadStatus });
         break;
 
       default:
@@ -60,6 +59,31 @@ const App = () => {
   };
 
   const shouldShowBackground = image.name && !isDragging && !errorMessage;
+
+  const pageToShow = () => {
+    if (errorMessage) {
+      return html`<${Error}
+        errorMessage=${errorMessage}
+        setError=${setErrorMessage}
+      />`;
+    }
+
+    if (isDragging) {
+      return html`<${DragAndDrop} />`;
+    }
+
+    return html`
+      <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
+      <main class="main">
+        <${UploadForm}
+          uploadStatus=${uploadStatus}
+          onChange=${(file) =>
+            uploadHandler({ file, setErrorMessage, setUploadStatus })}
+          accentColor=${image.accentcolor}
+        />
+      </main>
+    `;
+  };
 
   return html`
     <div
@@ -78,26 +102,7 @@ const App = () => {
       ondragleave=${(event) => handleDragEvent(event)}
       ondrop=${(event) => handleDragEvent(event)}
     >
-      ${isDragging
-        ? html`<${DragAndDrop} />`
-        : errorMessage
-        ? html`<${Error}
-            errorMessage=${errorMessage}
-            setError=${setErrorMessage}
-          />`
-        : html`
-            <${Header}
-              imageAuthor=${image.author}
-              imageOrigin=${image.origin}
-            />
-            <main class="main">
-              <${UploadForm}
-                onChange=${(file) =>
-                  uploadHandler({ file, setError: setErrorMessage })}
-                accentColor=${image.accentcolor}
-              />
-            </main>
-          `}
+      ${pageToShow()}
     </div>
   `;
 };
