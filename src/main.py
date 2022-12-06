@@ -13,6 +13,7 @@ from rq.exceptions import NoSuchJobError
 from src import transcriber
 from src.utils import generate_srt, generate_vtt
 from src.worker import conn
+from src.mailer import send_success_email, send_failure_email
 
 app = Flask(__name__)
 rq_queue = Queue(connection=conn)
@@ -101,7 +102,9 @@ def transcribe():
             job = rq_queue.enqueue_call(
                 func='transcriber.transcribe',
                 args=(filename,requestedModel,task,output,language),
-                result_ttl=3600*24*7
+                result_ttl=3600*24*7,
+                on_success=send_success_email,
+                on_failure=send_failure_email
             )
 
             return 201
