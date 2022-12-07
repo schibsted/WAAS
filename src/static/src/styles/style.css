@@ -161,7 +161,7 @@ body {
 .settings {
   position: relative;
   align-self: center;
-  width: 350px;
+  max-width: 350px;
   font-family: Inter;
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
@@ -192,19 +192,6 @@ body {
   cursor: pointer;
 }
 
-.button-upload {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.17);
-  backdrop-filter: blur(2px);
-  color: #fff;
-  font-weight: 500;
-  font-size: 1rem;
-  width: 100%;
-  cursor: pointer;
-}
-
 .file-info {
   display: flex;
   flex-direction: row;
@@ -224,7 +211,39 @@ body {
   white-space: nowrap;
 }
 
-.select-language {
+.email-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.email-input label {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.email-description {
+  font-size: 0.825rem;
+  font-weight: 400;
+  margin: 8px 0px;
+}
+
+.email-input input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.17);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.email-input input::placeholder {
+  color: #fff;
+}
+
+.select-dropdown {
   padding: 10px 12px;
   margin: 16px 0;
   border-radius: 8px;
@@ -236,6 +255,25 @@ body {
   font-size: 1rem;
   width: 100%;
   cursor: pointer;
+}
+
+.button-upload {
+  margin: 16px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.17);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+}
+
+.button-upload:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
 }
 
 .error {
