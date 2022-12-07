@@ -3,10 +3,15 @@ const uploadHandler = async ({
   setErrorMessage,
   setUploadStatus,
   selectedLanguage,
+  selectedModel,
+  email,
 }) => {
   try {
     const apiUrl = new URL(`${window.location.href}v1/transcribe`);
-    apiUrl.searchParams.set("model", "tiny");
+    const urlFormattedEmail = encodeURIComponent(email);
+    
+    apiUrl.searchParams.set("model", selectedModel || "large");
+    apiUrl.searchParams.set("email_callback", urlFormattedEmail || "");
 
     if (selectedLanguage !== "detect-language" && selectedLanguage) {
       apiUrl.searchParams.set("language", selectedLanguage);
