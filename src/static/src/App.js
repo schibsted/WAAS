@@ -1,14 +1,15 @@
 import DragAndDrop from "./components/DragAndDrop.js";
 import Error from "./components/Error.js";
 import Header from "./components/Header.js";
+import Settings from "./components/Settings.js";
 import UploadForm from "./components/UploadForm.js";
 import { allowedFileTypes, images } from "./utils/constants.js";
-import uploadHandler from "./utils/UploadHandler.js";
 
 const App = () => {
   const { useState, useEffect } = preact;
   const [image, setImage] = useState({});
   const [isDragging, setIsDragging] = useState(false);
+  const [fileStored, setFileStored] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [uploadStatus, setUploadStatus] = useState(null);
 
@@ -46,11 +47,11 @@ const App = () => {
           return setErrorMessage("Please upload only one file");
 
         const file = files[0];
-
         if (!allowedFileTypes.some((type) => file.type.includes(type)))
           return setErrorMessage("Please upload a valid file");
 
-        uploadHandler({ file, setErrorMessage, setUploadStatus });
+        setFileStored(file);
+        setUploadStatus("pending");
         break;
 
       default:
@@ -74,13 +75,25 @@ const App = () => {
       return html`<${DragAndDrop} />`;
     }
 
+    if (uploadStatus === "pending") {
+      return html`<${Settings}
+        fileStored=${fileStored}
+        setFileStored=${setFileStored}
+        setUploadStatus=${setUploadStatus}
+        setErrorMessage=${setErrorMessage}
+        onCancel=${onBack}
+      />`;
+    }
+
     return html`
       <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
       <main class="main">
         <${UploadForm}
           uploadStatus=${uploadStatus}
-          onChange=${(file) =>
-            uploadHandler({ file, setErrorMessage, setUploadStatus })}
+          onChange=${(file) => {
+            setFileStored(file);
+            setUploadStatus("pending");
+          }}
           accentColor=${image.accentcolor}
         />
       </main>
