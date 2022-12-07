@@ -27,7 +27,7 @@ def is_invalid_params (req):
     
     # when language is set, check if it is in the whisper.tokenizer.LANGUAGES list
     if language is not None:
-        if language not in whisper.tokenizer.LANGUAGES:
+        if language not in whisper.tokenizer.LANGUAGES.values():
             return "Language not supported", 400
 
     # Check if task is either translate or transcribe

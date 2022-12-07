@@ -1,8 +1,19 @@
-const uploadHandler = ({ file, setErrorMessage, setUploadStatus }) => {
+const uploadHandler = ({
+  file,
+  setErrorMessage,
+  setUploadStatus,
+  selectedLanguage,
+}) => {
+  const apiUrl = new URL(`${window.location.href}v1/transcribe`);
+  apiUrl.searchParams.set("model", "tiny");
+  if (selectedLanguage !== "detect-language" && selectedLanguage) {
+    apiUrl.searchParams.set("language", selectedLanguage);
+  }
+
   setUploadStatus("uploading");
   const reader = new FileReader();
   reader.onload = (event) => {
-    fetch("/v1/transcribe?model=tiny", {
+    fetch(apiUrl.toString(), {
       method: "POST",
       headers: {
         "Content-Type": file.type,
