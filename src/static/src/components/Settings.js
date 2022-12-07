@@ -12,8 +12,7 @@ const Settings = ({
 
   const [languages, setLanguages] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState("detect-language");
-
-  console.log(selectedLanguage);
+  
   useEffect(() => {
     const fetchLanguages = async () => {
       const response = await fetch("/v1/transcribe", { method: "OPTIONS" });
