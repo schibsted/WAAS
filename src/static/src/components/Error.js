@@ -3,8 +3,9 @@ const Error = ({ errorMessage, onBack }) => {
     <main class="error">
       <h1>OoOops 💩</h1>
       <p>${errorMessage}</p>
-      <button onclick=${() => onBack()}>Go back</button>
+      <button onclick=${onBack}>Go back</button>
     </main>
   `;
 };
+
 export default Error;
