@@ -15,7 +15,6 @@ const App = () => {
 
   useEffect(() => {
     const index = Number(localStorage.getItem("backgroundIndex") || 0);
-
     const nextIndex = (index + 1) % images.length;
 
     localStorage.setItem("backgroundIndex", nextIndex);
@@ -25,6 +24,7 @@ const App = () => {
   const handleDragEvent = (event) => {
     event.preventDefault();
     event.stopPropagation();
+
     if (uploadStatus) return;
 
     switch (event.type) {
@@ -43,10 +43,12 @@ const App = () => {
       case "drop":
         setIsDragging(false);
         const files = event.dataTransfer.files;
+
         if (files.length > 1)
           return setErrorMessage("Please upload only one file");
 
         const file = files[0];
+
         if (!allowedFileTypes.some((type) => file.type.includes(type)))
           return setErrorMessage("Please upload a valid file");
 
@@ -94,7 +96,7 @@ const App = () => {
             setFileStored(file);
             setUploadStatus("pending");
           }}
-          accentColor=${image.accentcolor}
+          accentColor=${image.accentColor}
         />
       </main>
     `;
@@ -103,7 +105,7 @@ const App = () => {
   return html`
     <div
       style=${{
-        backgroundColor: image.accentcolor,
+        backgroundColor: image.accentColor,
         backgroundImage: shouldShowBackground
           ? `url(static/images/${image.name})`
           : "none",
