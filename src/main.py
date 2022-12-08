@@ -109,18 +109,7 @@ def transcribe():
                 on_failure=mailer.send_failure_email
             )
 
-            return 'Bananese',201
-
-            if output == "txt":
-                return result["text"]
-            if output == "json":
-                return result
-            if output == "vtt":
-                return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
-            if output == "srt":
-                return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
-
-            return "Output not supported", 400
+            return 'Added to queue', 201
         except Exception as e:
             logging.exception(e)
             return 500
