@@ -1,20 +1,20 @@
 import DragAndDrop from "./components/DragAndDrop.js";
 import Error from "./components/Error.js";
 import Header from "./components/Header.js";
+import Settings from "./components/Settings.js";
 import UploadForm from "./components/UploadForm.js";
 import { allowedFileTypes, images } from "./utils/constants.js";
-import uploadHandler from "./utils/UploadHandler.js";
 
 const App = () => {
   const { useState, useEffect } = preact;
   const [image, setImage] = useState({});
   const [isDragging, setIsDragging] = useState(false);
+  const [fileStored, setFileStored] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [uploadStatus, setUploadStatus] = useState(null);
 
   useEffect(() => {
     const index = Number(localStorage.getItem("backgroundIndex") || 0);
-
     const nextIndex = (index + 1) % images.length;
 
     localStorage.setItem("backgroundIndex", nextIndex);
@@ -24,6 +24,7 @@ const App = () => {
   const handleDragEvent = (event) => {
     event.preventDefault();
     event.stopPropagation();
+
     if (uploadStatus) return;
 
     switch (event.type) {
@@ -42,6 +43,7 @@ const App = () => {
       case "drop":
         setIsDragging(false);
         const files = event.dataTransfer.files;
+
         if (files.length > 1)
           return setErrorMessage("Please upload only one file");
 
@@ -50,7 +52,8 @@ const App = () => {
         if (!allowedFileTypes.some((type) => file.type.includes(type)))
           return setErrorMessage("Please upload a valid file");
 
-        uploadHandler({ file, setErrorMessage, setUploadStatus });
+        setFileStored(file);
+        setUploadStatus("pending");
         break;
 
       default:
@@ -74,14 +77,26 @@ const App = () => {
       return html`<${DragAndDrop} />`;
     }
 
+    if (uploadStatus === "pending") {
+      return html`<${Settings}
+        fileStored=${fileStored}
+        setFileStored=${setFileStored}
+        setUploadStatus=${setUploadStatus}
+        setErrorMessage=${setErrorMessage}
+        onCancel=${onBack}
+      />`;
+    }
+
     return html`
       <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
       <main class="main">
         <${UploadForm}
           uploadStatus=${uploadStatus}
-          onChange=${(file) =>
-            uploadHandler({ file, setErrorMessage, setUploadStatus })}
-          accentColor=${image.accentcolor}
+          onChange=${(file) => {
+            setFileStored(file);
+            setUploadStatus("pending");
+          }}
+          accentColor=${image.accentColor}
         />
       </main>
     `;
@@ -90,7 +105,7 @@ const App = () => {
   return html`
     <div
       style=${{
-        backgroundColor: image.accentcolor,
+        backgroundColor: image.accentColor,
         backgroundImage: shouldShowBackground
           ? `url(static/images/${image.name})`
           : "none",

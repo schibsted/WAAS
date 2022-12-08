@@ -158,6 +158,124 @@ body {
   font-weight: 400;
 }
 
+.settings {
+  position: relative;
+  align-self: center;
+  max-width: 350px;
+  font-family: Inter;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  margin: auto 0;
+  backdrop-filter: blur(18px);
+  padding: 24px;
+  border-radius: 15px;
+}
+
+.settings h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.language-description {
+  font-size: 0.825rem;
+  font-weight: 400;
+  margin: 8px 0px;
+}
+
+.button-cancel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: row;
+  border: 2px solid rgba(255, 255, 255, 0.17);
+  padding: 2px 4px;
+  border-radius: 4px;
+  gap: 4px;
+}
+
+.file-info svg {
+  flex: none;
+}
+
+.file-info p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.email-input label {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.email-description {
+  font-size: 0.825rem;
+  font-weight: 400;
+  margin: 8px 0px;
+}
+
+.email-input input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.17);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.email-input input::placeholder {
+  color: #fff;
+}
+
+.select-dropdown {
+  padding: 10px 12px;
+  margin: 16px 0;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.17);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+}
+
+.button-upload {
+  margin: 16px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.17);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+}
+
+.button-upload:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+}
+
 .error {
   display: flex;
   flex: 1 1 auto;
@@ -191,4 +309,28 @@ body {
   font-weight: 500;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.no-script {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-family: Inter;
+  color: #fff;
+  background-color: #dd0000;
+}
+
+.no-script h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+}
+
+.no-script p {
+  font-size: 1.5rem;
+  font-weight: 400;
 }
