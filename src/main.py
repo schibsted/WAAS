@@ -92,12 +92,11 @@ def transcribe():
             filename = tempFile.name
             requestedModel = request.args.get("model", DEFAULT_MODEL)
             task = request.args.get("task", DEFAULT_TASK)
-            output = request.args.get("output", DEFAULT_OUTPUT)
             language = request.args.get("language")
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
-                args=(filename,requestedModel,task,output,language),
+                args=(filename,requestedModel,task,language),
                 result_ttl=3600*24*7,
                 on_success=mailer.send_success_email,
                 on_failure=mailer.send_failure_email
