@@ -94,10 +94,15 @@ def transcribe():
             task = request.args.get("task", DEFAULT_TASK)
             language = request.args.get("language")
 
+            email = request.args.get("email_callback")
+
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
                 args=(filename,requestedModel,task,language),
                 result_ttl=3600*24*7,
+                meta = {
+                    'email': email
+                },
                 on_success=mailer.send_success_email,
                 on_failure=mailer.send_failure_email
             )
