@@ -1,6 +1,7 @@
 import whisper
 import logging
 import tempfile
+import urllib.parse
 from flask import Flask
 from flask import request
 from flask import render_template
@@ -94,7 +95,7 @@ def transcribe():
             task = request.args.get("task", DEFAULT_TASK)
             language = request.args.get("language")
 
-            email = request.args.get("email_callback")
+            email = urllib.parse.unquote(request.args.get("email_callback"))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
