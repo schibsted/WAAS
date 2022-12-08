@@ -122,16 +122,16 @@ def download(job_id):
         job = Job.fetch(job_id, connection=conn)
     except NoSuchJobError:
         return "No such job", 404
-    
+
     if job.is_finished:
         if output == "txt":
-            return result["text"]
+            return job.result["text"]
         if output == "json":
             return result        
         if output == "vtt":
-            return generate_vtt(result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
+            return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
         if output == "srt":
-            return generate_srt(result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
+            return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
 
         return "Output not supported", 400
     else:
