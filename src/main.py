@@ -75,12 +75,6 @@ def transcribe():
                     "options": list(whisper.tokenizer.LANGUAGES.values()),
                     "optional": True,
                 },
-                "output": {
-                    "type": "enum",
-                    "options": ["srt", "vtt", "json", "txt"],
-                    "optional": True,
-                    "default": DEFAULT_OUTPUT,
-                },
             }
         }
     else:
