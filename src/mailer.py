@@ -37,6 +37,6 @@ def send_failure_email(job, connection, type, value, traceback):
   email = job.meta.get('email')
   subject = 'The transcription failed'
 
-  body = 'Your file failed, were sorry, please try again :D'
+  body = "We're sorry, but we were unable to transcribe the file you uploaded. Please try again or contact the team for assistance."
 
   send_mail(email, subject, body)
