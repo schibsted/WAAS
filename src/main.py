@@ -101,6 +101,7 @@ def transcribe():
                 'transcriber.transcribe',
                 args=(filename,requestedModel,task,language),
                 result_ttl=3600*24*7,
+                job_timeout=3600*4,
                 meta = {
                     'email': email
                 },
@@ -108,7 +109,7 @@ def transcribe():
                 on_failure=mailer.send_failure_email
             )
 
-            return 'Added to queue', 201
+            return job.id, 201
         except Exception as e:
             logging.exception(e)
             return 500
