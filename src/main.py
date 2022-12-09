@@ -6,13 +6,10 @@ import urllib.parse
 from flask import Flask
 from flask import request
 from flask import render_template
-from distutils.log import error
-from werkzeug.datastructures import FileStorage
 from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
-from src import transcriber
 from src.utils import generate_srt, generate_vtt
 from src.worker import conn
 from src import mailer

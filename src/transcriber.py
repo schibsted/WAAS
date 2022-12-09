@@ -1,5 +1,4 @@
 import whisper
-import os
 
 def transcribe(filename, requestedModel, task, language):
     model = whisper.load_model(requestedModel)
