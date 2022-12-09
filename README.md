@@ -8,20 +8,18 @@ This service is powered by [OpenAI Whisper](https://github.com/openai/whisper)
 
 ### POST `/v1/transcribe`
 
-Receive the detected text from the audio file.
+Add a new transcribe job to the queue. The job will be processed by the worker asynchroniously.
+
+The response will be a JSON object with `job_id` that can be used to check the status of the job.
 
 Query parameters:
 
+- REQUIRED: `email_callback`: string
 - OPTIONAL: `language`: string (default: automatic detection)
 - OPTIONAL: `model`: string (default: `tiny`)
 - OPTIONAL: `task`: string (default: `transcribe`)
   - `transcribe`: Transcribe audio to text
   - `translate`: Transcribe then translate audio to text
-- OPTIONAL: `output`: string (default: `txt`)
-  - `json`: JSON response of the model output
-  - `txt`: Plain text response of the detected text
-  - `vtt`: WebVTT file with the detected text
-  - `srt`: WebVTT file with the detected text
 
 Body:
 
@@ -47,6 +45,30 @@ Body:
 
 Get the available options for the detect route.
 
+### GET `/v1/download/<job_id>`
+
+Receive the finished job result as the requested output format.
+
+Query parameters:
+
+- OPTIONAL: `output`: string (default: `srt`)
+  - `json`: JSON response of the model output
+  - `txt`: Plain text response of the detected text
+  - `vtt`: WebVTT file with the detected text
+  - `srt`: WebVTT file with the detected text
+
+### OPTIONS `/v1/download/<job_id>`
+
+Get the available options for the download route.
+
+### GET `/v1/jobs/<job_id>`
+
+Get the status and metadata of the provided job.
+
+### GET `/v1/queue`
+
+Get the available length of the queue as JSON object with the key `length`.
+
 ## Contributing
 
 ### Installation
@@ -64,16 +86,19 @@ flask --app  --debug src/main run
 ```
 
 ### Running full setup
+
 ```sh
 docker compose up
 ```
 
-This will start three docker containes. 
-* redis
-* api running flask fra src
-* worker running rq from src
+This will start three docker containes.
+
+- redis
+- api running flask fra src
+- worker running rq from src
 
 ### Running full setup using devcontainers
+
 Install remote-development extensions (containes)
 And then in vscode do `Devcontaines: open folder in container`
 Then you are inside the api-containe and can do stuff

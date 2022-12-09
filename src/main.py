@@ -74,6 +74,10 @@ def transcribe():
                     "options": list(whisper.tokenizer.LANGUAGES.values()),
                     "optional": True,
                 },
+                "email_callback": {
+                    "type": "string",
+                    "optional": False,
+                },
             }
         }
     else:
