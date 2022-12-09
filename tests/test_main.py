@@ -53,6 +53,20 @@ def test_transcribe_options(client):
         }
     }
 
+def test_download_options(client):
+    response = client.options('/v1/download/abc123')
+
+    assert response.status_code == 200
+    assert response.get_json() == {
+            "queryParams": {
+                "output": {
+                    "type": "enum",
+                    "options": ["srt", "vtt", "json", "txt"],
+                    "optional": True,
+                    "default": "srt",
+                },
+            }
+        }
 
 def test_download_not_found(client):
     response = client.get('/v1/download/1')

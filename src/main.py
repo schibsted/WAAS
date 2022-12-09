@@ -148,28 +148,40 @@ def jobs(job_id):
     }
 
 
-@app.route('/v1/download/<job_id>', methods=['GET'])
+@app.route('/v1/download/<job_id>', methods=['GET', 'OPTIONS'])
 def download(job_id):
-    output = request.args.get("output", DEFAULT_OUTPUT)
-
-    try:
-        job = Job.fetch(job_id, connection=conn)
-    except NoSuchJobError:
-        return "No such job", 404
-
-    if job.is_finished:
-        if output == "txt":
-            return job.result["text"]
-        if output == "json":
-            return job.result
-        if output == "vtt":
-            return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
-        if output == "srt":
-            return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
-
-        return "Output not supported", 400
+    if request.method == 'OPTIONS':
+        return {
+            "queryParams": {
+                "output": {
+                    "type": "enum",
+                    "options": ["srt", "vtt", "json", "txt"],
+                    "optional": True,
+                    "default": DEFAULT_OUTPUT,
+                },
+            }
+        }
     else:
-        return "Job not done yet", 425
+        output = request.args.get("output", DEFAULT_OUTPUT)
+
+        try:
+            job = Job.fetch(job_id, connection=conn)
+        except NoSuchJobError:
+            return "No such job", 404
+
+        if job.is_finished:
+            if output == "txt":
+                return job.result["text"]
+            if output == "json":
+                return job.result
+            if output == "vtt":
+                return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
+            if output == "srt":
+                return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
+
+            return "Output not supported", 400
+        else:
+            return "Job not done yet", 425
 
 
 @app.route('/v1/queue', methods=['GET'])
