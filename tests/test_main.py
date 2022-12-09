@@ -50,6 +50,10 @@ def test_transcribe_options(client):
                 "options": list(whisper.tokenizer.LANGUAGES.values()),
                 "optional": True,
             },
+            "email_callback": {
+                "type": "string",
+                "optional": False,
+            },
         }
     }
 
