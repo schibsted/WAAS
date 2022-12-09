@@ -1,4 +1,7 @@
 import os
+import sys
+
+sys.path.append('./')
 
 import redis
 from rq import Worker, Queue, Connection

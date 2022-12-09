@@ -9,7 +9,7 @@ const uploadHandler = async ({
   try {
     const apiUrl = new URL(`${window.location.href}v1/transcribe`);
     const urlFormattedEmail = encodeURIComponent(email);
-    
+
     apiUrl.searchParams.set("model", selectedModel || "large");
     apiUrl.searchParams.set("email_callback", urlFormattedEmail || "");
 

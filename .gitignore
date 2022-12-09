@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
+.envrc
 .venv
 env/
 venv/
@@ -133,3 +134,6 @@ dmypy.json
 
 # Testfiles
 testfiles
+
+#Uploads
+upload-shared-tmp

@@ -8,6 +8,11 @@ services:
             - .:/workspace
         depends_on:
             - redis
+        environment:
+            - BASE_URL
+            - EMAIL_SENDER_ADDRESS
+            - EMAIL_SENDER_PASSWORD
+            - EMAIL_SENDER_HOST
         command: flask --app src/main.py --debug run --host 0.0.0.0 --port 3000
     worker:
         build: .
@@ -15,6 +20,11 @@ services:
             - .:/workspace
         depends_on:
             - redis
+        environment:
+            - BASE_URL
+            - EMAIL_SENDER_ADDRESS
+            - EMAIL_SENDER_PASSWORD
+            - EMAIL_SENDER_HOST
         command: python src/worker.py
     redis:
         image: redis
