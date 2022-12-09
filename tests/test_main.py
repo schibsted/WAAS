@@ -1,5 +1,6 @@
 import pytest
 import whisper
+import json
 
 from src import app
 
@@ -85,3 +86,16 @@ def test_queue(client):
     assert response.get_json() == {
         'length': 0,
     }
+
+def test_transcribe_enqueue(client):
+    with open('tests/test.mp3', 'rb') as f:
+        data = f.read()
+
+    response = client.post('/v1/transcribe?model=tiny&task=transcribe&languages=english&email_callback=example@example.com',  data=data, content_type='audio/mp3')
+
+    print(response.get_json().job_id)
+
+    assert response.status_code == 201
+
+    response_data = json.loads(response.data)
+    assert 'job_id' in response_data and bool(response_data['job_id'])
