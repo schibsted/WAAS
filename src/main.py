@@ -81,7 +81,6 @@ def transcribe():
             }
         }
     else:
-        print("smile")
         tempFile = tempfile.NamedTemporaryFile(
             dir='./upload-shared-tmp', delete=False)
 
