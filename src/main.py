@@ -1,6 +1,5 @@
 import whisper
 import logging
-import json
 import tempfile
 from datetime import datetime
 import urllib.parse
@@ -81,7 +80,9 @@ def transcribe():
             }
         }
     else:
-        tempFile = tempfile.NamedTemporaryFile(dir='./upload-shared-tmp', delete=False)
+        print("smile")
+        tempFile = tempfile.NamedTemporaryFile(
+            dir='./upload-shared-tmp', delete=False)
 
         # Get the file from the request body and save it to a temporary file
         file = request.data
@@ -101,17 +102,21 @@ def transcribe():
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
-                args=(filename,requestedModel,task,language),
+                args=(filename, requestedModel, task, language),
                 result_ttl=3600*24*7,
                 job_timeout=3600*4,
-                meta = {
+                meta={
                     'email': email
                 },
                 on_success=mailer.send_success_email,
                 on_failure=mailer.send_failure_email
             )
 
-            return job.id, 201
+            # Return the job id to the client with a 201 status code
+            return {
+                "job_id": job.get_id()
+            }, 201
+            
         except Exception as e:
             logging.exception(e)
             return 500
@@ -127,9 +132,9 @@ def jobs(job_id):
         return "No such job",
     if (job.ended_at):
         delta = job.ended_at-job.enqueued_at
-    else: 
+    else:
         delta = datetime.now()-job.enqueued_at
-    return { 
+    return {
         "status": job.get_status(),
         "meta": job.get_meta(),
         "origin": job.origin,
@@ -146,7 +151,6 @@ def jobs(job_id):
     }
 
 
-
 @app.route('/v1/download/<job_id>', methods=['GET'])
 def download(job_id):
     output = request.args.get("output", DEFAULT_OUTPUT)
@@ -160,7 +164,7 @@ def download(job_id):
         if output == "txt":
             return job.result["text"]
         if output == "json":
-            return result        
+            return job.result
         if output == "vtt":
             return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
         if output == "srt":
@@ -170,11 +174,13 @@ def download(job_id):
     else:
         return "Job not done yet", 425
 
+
 @app.route('/v1/queue', methods=['GET'])
 def queue():
     return {
         'length': len(rq_queue)
     }, 200
+
 
 @app.route("/v1/detect", methods=['POST', 'OPTIONS'])
 def detect():
