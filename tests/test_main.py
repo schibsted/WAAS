@@ -93,8 +93,6 @@ def test_transcribe_enqueue(client):
 
     response = client.post('/v1/transcribe?model=tiny&task=transcribe&languages=english&email_callback=example@example.com',  data=data, content_type='audio/mp3')
 
-    print(response.get_json().job_id)
-
     assert response.status_code == 201
 
     response_data = json.loads(response.data)
