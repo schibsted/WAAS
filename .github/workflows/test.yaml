@@ -8,27 +8,20 @@ on:
 
 jobs:
   test:
-    # Containers must run in Linux based operating systems
+    # Linux runner
     runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
+    # Container image that the job will run in
     container: python:3.10
 
-    # Service containers to run with `container-job`
+    # Service containers
     services:
-      # Label used to access the service container
       redis:
-        # Docker Hub image
         image: redis
-        # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-    strategy:
-      matrix:
-        python-version: ["3.10"]
 
     steps:
       - uses: actions/checkout@v3
