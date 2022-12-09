@@ -2,6 +2,7 @@ import whisper
 import logging
 import json
 import tempfile
+from datetime import datetime
 import urllib.parse
 from flask import Flask
 from flask import request
@@ -123,7 +124,11 @@ def jobs(job_id):
     try:
         job = Job.fetch(job_id, connection=conn)
     except NoSuchJobError:
-        return "No such job", 404
+        return "No such job",
+    if (job.ended_at):
+        delta = job.ended_at-job.enqueued_at
+    else: 
+        delta = datetime.now()-job.enqueued_at
     return { 
         "status": job.get_status(),
         "meta": job.get_meta(),
@@ -136,7 +141,8 @@ def jobs(job_id):
         "ended_at": job.ended_at,
         "exc_info": job.exc_info,
         "last_heartbeat": job.last_heartbeat,
-        "worker_name": job.worker_name
+        "worker_name": job.worker_name,
+        "time": delta.total_seconds()
     }
 
 
