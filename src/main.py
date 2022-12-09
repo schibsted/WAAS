@@ -142,7 +142,7 @@ def jobs(job_id):
         "exc_info": job.exc_info,
         "last_heartbeat": job.last_heartbeat,
         "worker_name": job.worker_name,
-        "time": delta.total_seconds()
+        "seconds_used": delta.total_seconds()
     }
 
 
