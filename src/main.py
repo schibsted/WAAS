@@ -1,5 +1,6 @@
 import whisper
 import logging
+import json
 import tempfile
 import urllib.parse
 from flask import Flask
@@ -115,6 +116,30 @@ def transcribe():
             return 500
         finally:
             tempFile.close()
+
+
+@app.route('/v1/jobs/<job_id>', methods=['GET'])
+def jobs(job_id):
+    try:
+        job = Job.fetch(job_id, connection=conn)
+    except NoSuchJobError:
+        return "No such job", 404
+    return { 
+        "status": job.get_status(),
+        "meta": job.get_meta(),
+        "origin": job.origin,
+        "func_name": job.func_name,
+        "args": job.args,
+        "result": job.result,
+        "enqueued_at": job.enqueued_at,
+        "started_at": job.started_at,
+        "ended_at": job.ended_at,
+        "exc_info": job.exc_info,
+        "last_heartbeat": job.last_heartbeat,
+        "worker_name": job.worker_name
+    }
+
+
 
 @app.route('/v1/download/<job_id>', methods=['GET'])
 def download(job_id):
