@@ -130,10 +130,17 @@ def jobs(job_id):
         job = Job.fetch(job_id, connection=conn)
     except NoSuchJobError:
         return "No such job",
+
     if (job.ended_at):
         delta = job.ended_at-job.enqueued_at
     else:
         delta = datetime.now()-job.enqueued_at
+
+    if job.id in rq_queue.job_ids:
+        position_in_queue = rq_queue.job_ids.index(job.id)
+    else:
+        position_in_queue = None
+
     return {
         "status": job.get_status(),
         "meta": job.get_meta(),
@@ -147,7 +154,9 @@ def jobs(job_id):
         "exc_info": job.exc_info,
         "last_heartbeat": job.last_heartbeat,
         "worker_name": job.worker_name,
-        "seconds_used": delta.total_seconds()
+        "seconds_used": delta.total_seconds(),
+        "position_in_queue": position_in_queue,
+        "queue_size": len(rq_queue.jobs)
     }
 
 
@@ -183,6 +192,12 @@ def download(job_id):
                 return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
 
             return "Output not supported", 400
+        if job.is_failed:
+            return "Job failed", 500
+        if job.is_canceled:
+            return "Job canceled", 400
+        if job.is_stopped:
+            return "Job stopped", 200
         else:
             return "Job not done yet", 425
 
