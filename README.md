@@ -88,7 +88,7 @@ export BASE_URL=https://example.com
 export EMAIL_SENDER_ADDRESS=example@example.com
 export EMAIL_SENDER_PASSWORD=example
 export EMAIL_SENDER_HOST=smtp.example.com
-
+export EMAIL_SENDER_PORT=25
 ```
 
 Then run the following command
