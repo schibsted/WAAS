@@ -79,16 +79,22 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Running in dev
+### Running full setup using docker-compose
+
+First create a `.envrc` file with the following content:
 
 ```sh
-flask --app  --debug src/main run
+export BASE_URL=https://example.com
+export EMAIL_SENDER_ADDRESS=example@example.com
+export EMAIL_SENDER_PASSWORD=example
+export EMAIL_SENDER_HOST=smtp.example.com
+
 ```
 
-### Running full setup
+Then run the following command
 
 ```sh
-docker compose up
+docker-compose --env-file .envrc up
 ```
 
 This will start three docker containes.
