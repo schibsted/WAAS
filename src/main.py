@@ -234,8 +234,10 @@ def detect():
 
             # detect the spoken language
             _, probs = model.detect_language(mel)
-            return {
-                "detectedLanguage": max(probs, key=probs.get)
+            detected_lang = max(probs, key=probs.get)
+            return { 
+                "detectedLanguage": whisper.tokenizer.LANGUAGES[detected_lang],
+                "languageCode" : detected_lang 
             }
         except Exception as e:
             logging.exception(e)

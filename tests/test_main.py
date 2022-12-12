@@ -97,3 +97,12 @@ def test_transcribe_enqueue(client):
 
     response_data = json.loads(response.data)
     assert 'job_id' in response_data and bool(response_data['job_id'])
+
+def test_detect_language(client):
+    with open('tests/test.mp3', 'rb') as f:
+        data = f.read()
+
+    response = client.post('/v1/detect?model=tiny',  data=data, content_type='audio/mp3')
+
+    assert response.status_code == 200
+    assert response.get_json() == {'detectedLanguage': 'english', 'languageCode': 'en'}
