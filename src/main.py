@@ -190,8 +190,8 @@ def download(job_id):
 @app.route('/v1/queue', methods=['GET'])
 def queue():
     return {
-        'length': len(rq_queue)
-    }, 200
+        "count": len(rq_queue.jobs)
+    }
 
 
 @app.route("/v1/detect", methods=['POST', 'OPTIONS'])

@@ -79,14 +79,6 @@ def test_download_not_found(client):
     assert response.status_code == 404
 
 
-def test_queue(client):
-    response = client.get('/v1/queue')
-
-    assert response.status_code == 200
-    assert response.get_json() == {
-        'length': 0,
-    }
-
 def test_transcribe_enqueue(client):
     with open('tests/test.mp3', 'rb') as f:
         data = f.read()
@@ -106,3 +98,17 @@ def test_detect_language(client):
 
     assert response.status_code == 200
     assert response.get_json() == {'detectedLanguage': 'english', 'languageCode': 'en'}
+
+def test_queue(client):
+    with open('tests/test.mp3', 'rb') as f:
+        data = f.read()
+
+    client.post('/v1/transcribe?model=tiny&task=transcribe&languages=english&email_callback=example@example.com',  data=data, content_type='audio/mp3')
+
+    response = client.get('/v1/queue',  data=data, content_type='audio/mp3')
+
+    assert response.status_code == 200
+   
+    response_data = json.loads(response.data)
+    assert 'count' in response_data and response_data['count'] > 0
+    
