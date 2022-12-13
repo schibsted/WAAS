@@ -51,7 +51,7 @@ def send_success_email(job, connection, result, *args, **kwargs):
       txt_url=download_txt_url,
       srt_url=download_srt_url,
       background_image=imagePath + "richard-horvath-RAZU_R66vUc-unsplash.jpg",
-      logo=imagePath + "jojo-logo.png"
+      logo=imagePath + "jojo-logo.png",
       disclaimer=disclaimer
     )
 
