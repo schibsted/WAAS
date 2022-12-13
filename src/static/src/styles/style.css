@@ -255,6 +255,7 @@ body {
   font-size: 1rem;
   width: 100%;
   cursor: pointer;
+  text-transform: capitalize;
 }
 
 .button-upload {
