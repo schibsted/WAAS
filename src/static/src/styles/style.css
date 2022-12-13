@@ -21,6 +21,9 @@ body {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 17px;
 }
 
 .app {
@@ -55,10 +58,38 @@ body {
 .main {
   flex: 1 1 auto;
   display: flex;
+  flex-direction: column;
+  font-family: Inter;
+  color: #fff;
+  position: absolute;
+  bottom: 32px;
+}
+
+.disclaimer {
+  align-self: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(18px);
+  padding: 24px;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 32px 15px 32px;
+}
+
+.disclaimer a {
+  font-weight: bold;
+  color: #fff;
+}
+
+.disclaimer p {
+  margin-bottom: 20px;
+}
+
+.disclaimer p:last-of-type {
+  margin-bottom: 0;
 }
 
 .upload-form {
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -69,12 +100,10 @@ body {
   padding: 24px;
   max-width: 100%;
   height: 100%;
-  margin: 32px;
+  margin: 0 32px;
 }
 
 .upload-form legend {
-  font-family: Inter;
-  color: #fff;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -86,17 +115,10 @@ body {
   line-height: 24px;
 }
 
-.upload-form p {
-  font-weight: 400;
-  font-size: 0.875rem;
-  line-height: 17px;
-}
-
 @media (min-width: 480px) {
-  .upload-form {
-    max-width: 250px;
-    margin: 82px;
-    align-self: flex-end;
+  .main {
+    max-width: 380px;
+    align-self: flex-start;
   }
 }
 
