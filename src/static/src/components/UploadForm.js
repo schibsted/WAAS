@@ -22,7 +22,14 @@ const UploadForm = ({ onChange, accentColor, uploadStatus }) => {
       return "When the file is finished transcribing you will receive an email with a download link. You can now safely close this page without interferring with the transcription. See you!";
     }
 
-    return "Upload your audio or video file and let us transcribe it.. Save countless hours with the JOJO™ transcribtion service, so that you can put your mind to more important things.";
+    return html`
+      <p>
+        Upload your audio or video file and let us transcribe it.. Save countless hours with the JOJO™ transcribtion service, so that you can put your mind to more important things.
+      </p>
+      <p>
+        Jojo is a new service, so there could still be some bugs. If you find any please let us know in the Slack channel <a href="https://sch-chat.slack.com/archives/C04FFQQ8NSC">#jojo</a>
+      </p>
+    `;
   };
 
   const getIcon = () => {

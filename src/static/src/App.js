@@ -90,16 +90,6 @@ const App = () => {
     return html`
       <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
       <main class="main">
-        <div class="disclaimer">
-          <p>
-            Hi! We made Jojo to help you save time. It’s brand new, so there could still be bugs. ${window.disclaimer}
-          </p>
-
-          <p>
-            From VG with love,<br />
-            JOhannes, JOhannes, Janni, Audun, Christian and Edvard
-          </p>
-        </div>
         <${UploadForm}
           uploadStatus=${uploadStatus}
           onChange=${(file) => {
