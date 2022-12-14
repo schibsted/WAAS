@@ -24,11 +24,11 @@ const UploadForm = ({ onChange, accentColor, uploadStatus }) => {
 
     return html`
       <p>
-        Upload your audio or video file and let us transcribe it. Save countless hours with the JOJO™ transcription service, so that you can put your mind to more important things.
+        Upload your audio or video file and let us transcribe it. Save countless
+        hours with the JOJO™ transcription service, so that you can put your
+        mind to more important things.
       </p>
-      <p>
-        ${window.disclaimer}
-      </p>
+      <p dangerouslySetInnerHTML=${{ __html: window.disclaimer }} />
     `;
   };
 
