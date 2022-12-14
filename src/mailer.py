@@ -1,33 +1,23 @@
 import smtplib
 import os
-# from email.mime.multipart import MIMEMultipart
-# from email.mime.text import MIMEText
-from src import app
-from flask import render_template
 
 def send_mail(recipient, subject, body):
-  # Enviroment
+  # Sender email and password
   email_sender_address = os.environ.get('EMAIL_SENDER_ADDRESS')
   email_sender_password = os.environ.get('EMAIL_SENDER_PASSWORD')
-  email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
-
-  # Construct the email message
-  # msg = MIMEMultipart()
-  # msg['From'] = email_sender_address
-  # msg['To'] = recipient
-  # msg['Subject'] = subject
-
-  # attach the body to the email message
-  # msg.attach(MIMEText(body, 'html'))
 
   # Connect to the Gmail SMTP server
-  smtp_server = smtplib.SMTP(email_sender_host)
+  email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
+  smtp_server = smtplib.SMTP_SSL(email_sender_host, 465)
 
   # Login to the Gmail server
   smtp_server.login(email_sender_address, email_sender_password)
 
+  # Construct the email message
+  message = f'Subject: {subject}\n\n{body}'
+
   # Send the email
-  smtp_server.sendmail(email_sender_address, recipient, body)
+  smtp_server.sendmail(email_sender_address, recipient, message)
 
   # Disconnect from the server
   smtp_server.quit()
@@ -37,23 +27,9 @@ def send_success_email(job, connection, result, *args, **kwargs):
   subject = 'Your file is ready'
 
   base_url = os.environ.get('BASE_URL')
-  disclaimer = os.environ.get('DISCLAIMER', '')
 
-  download_base_url = base_url + "/v1/download/" + job.id
-  download_txt_url = download_base_url + "?output=txt"
-  download_srt_url = download_base_url + "?output=srt"
-  
-  imagePath = base_url + "/static/images/"
-
-  with app.app_context():
-    body = render_template(
-      "success.html",
-      txt_url=download_txt_url,
-      srt_url=download_srt_url,
-      background_image=imagePath + "richard-horvath-RAZU_R66vUc-unsplash.jpg",
-      logo=imagePath + "jojo-logo.png",
-      disclaimer=disclaimer
-    )
+  download_url = base_url + "/v1/download/" + job.id
+  body = f'Your file is ready. Download it here: {download_url}'
 
   send_mail(email, subject, body)
 
