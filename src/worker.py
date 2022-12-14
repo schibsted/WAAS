@@ -1,7 +1,9 @@
 import os
 import sys
-
+from dotenv import load_dotenv
 sys.path.append('./')
+load_dotenv()
+
 
 import redis
 from rq import Worker, Queue, Connection

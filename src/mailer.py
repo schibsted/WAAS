@@ -21,10 +21,15 @@ def send_mail(recipient, subject, body):
   # msg.attach(MIMEText(body, 'html'))
 
   # Connect to the Gmail SMTP server
-  smtp_server = smtplib.SMTP(email_sender_host)
+  email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
+  if (email_sender_password): 
+    smtp_server = smtplib.SMTP_SSL(email_sender_host, 465)
+  else:
+    smtp_server = smtplib.SMTP(email_sender_host, 25)
 
   # Login to the Gmail server
-  smtp_server.login(email_sender_address, email_sender_password)
+  if (email_sender_password): 
+    smtp_server.login(email_sender_address, email_sender_password)
 
   # Send the email
   smtp_server.sendmail(email_sender_address, recipient, body)

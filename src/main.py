@@ -1,3 +1,4 @@
+import os
 import whisper
 import logging
 import tempfile
@@ -18,6 +19,7 @@ rq_queue = Queue(connection=conn)
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
 DEFAULT_OUTPUT = "srt"
+DISCLAIMER = os.environ.get("DISCLAIMER", "")
 
 
 def is_invalid_params(req):
@@ -47,7 +49,7 @@ def is_invalid_params(req):
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template("index.html")
+    return render_template("index.html", disclaimer=DISCLAIMER)
 
 
 @app.route("/v1/transcribe", methods=['POST', 'OPTIONS'])
