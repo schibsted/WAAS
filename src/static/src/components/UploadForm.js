@@ -27,7 +27,7 @@ const UploadForm = ({ onChange, accentColor, uploadStatus }) => {
         Upload your audio or video file and let us transcribe it.. Save countless hours with the JOJO™ transcribtion service, so that you can put your mind to more important things.
       </p>
       <p>
-        Jojo is a new service, so there could still be some bugs. If you find any please let us know in the Slack channel <a href="https://sch-chat.slack.com/archives/C04FFQQ8NSC">#jojo</a>
+        ${window.disclaimer}
       </p>
     `;
   };
