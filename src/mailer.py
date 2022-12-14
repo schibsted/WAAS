@@ -8,10 +8,14 @@ def send_mail(recipient, subject, body):
 
   # Connect to the Gmail SMTP server
   email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
-  smtp_server = smtplib.SMTP_SSL(email_sender_host, 465)
+  if (email_sender_password): 
+    smtp_server = smtplib.SMTP_SSL(email_sender_host, 465)
+  else:
+    smtp_server = smtplib.SMTP(email_sender_host, 25)
 
   # Login to the Gmail server
-  smtp_server.login(email_sender_address, email_sender_password)
+  if (email_sender_password): 
+    smtp_server.login(email_sender_address, email_sender_password)
 
   # Construct the email message
   message = f'Subject: {subject}\n\n{body}'
