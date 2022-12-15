@@ -68,7 +68,13 @@ const Queue = ({
     <details class="advanced-settings">
       <summary>Advanced view</summary>
       <div class="advanced-settings-content">
-        <pre style=${{ whiteSpace: "pre-wrap" }}>
+        <pre
+          style=${{
+            overflowY: "scroll",
+            maxHeight: "200px",
+            whiteSpace: "pre-wrap",
+          }}
+        >
           ${JSON.stringify(jobStatus, undefined, 2)}
         </pre
         >
