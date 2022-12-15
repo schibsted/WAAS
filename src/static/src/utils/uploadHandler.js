@@ -2,6 +2,7 @@ const uploadHandler = async ({
   file,
   setErrorMessage,
   setUploadStatus,
+  setJobId,
   selectedLanguage,
   selectedModel,
   email,
@@ -39,7 +40,10 @@ const uploadHandler = async ({
       return setErrorMessage("Something went wrong");
     }
 
+    const data = await response.json();
+
     setUploadStatus("transcribing");
+    setJobId(data.job_id);
   } catch (error) {
     setErrorMessage(error.message);
   }
