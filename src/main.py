@@ -4,6 +4,7 @@ import logging
 import tempfile
 from datetime import datetime
 import urllib.parse
+from flask import Flask
 from flask import request
 from flask import render_template
 from rq import Queue
@@ -12,8 +13,9 @@ from rq.exceptions import NoSuchJobError
 
 from src.utils import generate_srt, generate_vtt
 from src.worker import conn
-from src import mailer, app
+from src import mailer
 
+app = Flask(__name__)
 rq_queue = Queue(connection=conn)
 
 DEFAULT_MODEL = "tiny"
