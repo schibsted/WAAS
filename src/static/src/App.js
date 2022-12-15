@@ -95,15 +95,20 @@ const App = () => {
       uploadStatus === "transcribing" ||
       uploadStatus === "transcribed"
     ) {
-      return html`<${Queue}
-        jobId=${jobId}
-        setJobId=${setJobId}
-        uploadStatus=${uploadStatus}
-        setUploadStatus=${setUploadStatus}
-        setJobStatus=${setJobStatus}
-        jobStatus=${jobStatus}
-        setErrorMessage=${setErrorMessage}
-      />`;
+      return html`
+        <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
+        <main class="main">
+          <${Queue}
+            jobId=${jobId}
+            setJobId=${setJobId}
+            uploadStatus=${uploadStatus}
+            setUploadStatus=${setUploadStatus}
+            setJobStatus=${setJobStatus}
+            jobStatus=${jobStatus}
+            setErrorMessage=${setErrorMessage}
+          />
+        </main>
+      `;
     }
 
     return html`

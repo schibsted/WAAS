@@ -49,7 +49,17 @@ const Queue = ({
     }
   }, [uploadStatus]);
 
-  return html`<p>${JSON.stringify(jobStatus, undefined, 2)}</p>`;
+  return html`<div class="upload-form">
+    <details class="advanced-settings">
+      <summary>Advanced view</summary>
+      <div class="advanced-settings-content">
+        <pre style=${{ whiteSpace: "pre-wrap" }}>
+          ${JSON.stringify(jobStatus, undefined, 2)}
+        </pre
+        >
+      </div>
+    </details>
+  </div>`;
 };
 
 export default Queue;
