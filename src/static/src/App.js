@@ -2,6 +2,7 @@ import DragAndDrop from "./components/DragAndDrop.js";
 import Error from "./components/Error.js";
 import Header from "./components/Header.js";
 import Settings from "./components/Settings.js";
+import Queue from "./components/Queue.js";
 import UploadForm from "./components/UploadForm.js";
 import { allowedFileTypes, images } from "./utils/constants.js";
 
@@ -12,6 +13,8 @@ const App = () => {
   const [fileStored, setFileStored] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [uploadStatus, setUploadStatus] = useState(null);
+  const [jobId, setJobId] = useState(null);
+  const [jobStatus, setJobStatus] = useState(null);
 
   useEffect(() => {
     const index = Number(localStorage.getItem("backgroundIndex") || 0);
@@ -80,18 +83,39 @@ const App = () => {
     if (uploadStatus === "pending") {
       return html`<${Settings}
         fileStored=${fileStored}
-        setFileStored=${setFileStored}
         setUploadStatus=${setUploadStatus}
         setErrorMessage=${setErrorMessage}
+        setJobId=${setJobId}
         onCancel=${onBack}
       />`;
+    }
+
+    if (
+      uploadStatus === "uploading" ||
+      uploadStatus === "queued" ||
+      uploadStatus === "transcribing" ||
+      uploadStatus === "transcribed"
+    ) {
+      return html`
+        <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
+        <main class="main">
+          <${Queue}
+            jobId=${jobId}
+            setJobId=${setJobId}
+            uploadStatus=${uploadStatus}
+            setUploadStatus=${setUploadStatus}
+            setJobStatus=${setJobStatus}
+            jobStatus=${jobStatus}
+            setErrorMessage=${setErrorMessage}
+          />
+        </main>
+      `;
     }
 
     return html`
       <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
       <main class="main">
         <${UploadForm}
-          uploadStatus=${uploadStatus}
           onChange=${(file) => {
             setFileStored(file);
             setUploadStatus("pending");

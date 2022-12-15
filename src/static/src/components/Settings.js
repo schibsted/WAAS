@@ -3,7 +3,7 @@ import { Close, File } from "./icons/index.js";
 
 const Settings = ({
   fileStored,
-  setFileStored,
+  setJobId,
   setUploadStatus,
   setErrorMessage,
   onCancel,
@@ -93,6 +93,7 @@ const Settings = ({
             setErrorMessage,
             setUploadStatus,
             selectedLanguage,
+            setJobId,
             selectedModel,
             email,
           })}
