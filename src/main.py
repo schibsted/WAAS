@@ -21,7 +21,7 @@ rq_queue = Queue(connection=conn)
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
 DEFAULT_OUTPUT = "srt"
-DEFAULT_FILENAME= "untitled-transcription"
+DEFAULT_UPLOADED_FILENAME= "untitled-transcription"
 DISCLAIMER = os.environ.get("DISCLAIMER", "")
 
 
@@ -106,7 +106,7 @@ def transcribe():
             language = request.args.get("language")
 
             email = urllib.parse.unquote(request.args.get("email_callback"))
-            filename = urllib.parse.unquote(request.args.get("filename"))
+            uploaded_filename = urllib.parse.unquote(request.args.get("filename"))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
@@ -115,7 +115,7 @@ def transcribe():
                 job_timeout=3600*4,
                 meta={
                     'email': email,
-                    'filename': filename
+                    'uploaded_filename': uploaded_filename
                 },
                 on_success=mailer.send_success_email,
                 on_failure=mailer.send_failure_email
@@ -187,6 +187,7 @@ def download(job_id):
 
         try:
             job = Job.fetch(job_id, connection=conn)
+            job_meta = job.get_meta()
         except NoSuchJobError:
             return "No such job", 404
 
@@ -196,9 +197,9 @@ def download(job_id):
             if output == "json":
                 return job.result
             if output == "vtt":
-                return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=' + job.meta.get('filename', DEFAULT_FILENAME)}
+                return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=' + job_meta.get('uploaded_filename', DEFAULT_UPLOADED_FILENAME)}
             if output == "srt":
-                return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=' + job.meta.get('filename', DEFAULT_FILENAME)}
+                return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=' + job_meta.get('uploaded_filename', DEFAULT_UPLOADED_FILENAME)}
 
             return "Output not supported", 400
         if job.is_failed:

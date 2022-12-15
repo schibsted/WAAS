@@ -28,12 +28,12 @@ def send_mail(recipient, subject, body):
 
 def send_success_email(job, connection, result, *args, **kwargs):
   email = job.meta.get('email')
-  filename = job.meta.get('filename')
+  uploaded_filename = job.meta.get('uploaded_filename')
   base_url = os.environ.get('BASE_URL')
 
   download_url = base_url + "/v1/download/" + job.id
 
-  subject = filename + " is finished transcribing!"
+  subject = uploaded_filename + " is finished transcribing!"
   body = f'Your file is ready. Download it here:\n Textfile without timecodes: {download_url + "?output=txt"} \n Captions file with timecodes(SRT) {download_url + "?output=srt"}'
 
   send_mail(email, subject, body)
