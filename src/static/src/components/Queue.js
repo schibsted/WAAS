@@ -74,6 +74,29 @@ const Queue = ({
         >
       </div>
     </details>
+    ${uploadStatus === "transcribed"
+      ? html`<a
+            href=${`/v1/download/${jobId}?output=srt`}
+            class="button"
+            download=${`${jobId}.srt`}
+          >
+            Download as SRT
+          </a>
+          <a
+            href=${`/v1/download/${jobId}?output=vtt`}
+            class="button"
+            download=${`${jobId}.vtt`}
+          >
+            Download as VTT
+          </a>
+          <a
+            href=${`/v1/download/${jobId}?output=txt`}
+            class="button"
+            download=${`${jobId}.txt`}
+          >
+            Download as TXT
+          </a>`
+      : ""}
   </div>`;
 };
 
