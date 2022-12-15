@@ -22,8 +22,10 @@ const Settings = ({
     const fetchLanguages = async () => {
       const response = await fetch("/v1/transcribe", { method: "OPTIONS" });
       const data = await response.json();
-      setLanguages(data.queryParams.languages.options);
-      setModels(data.queryParams.model.options);
+      const { queryParams } = data;
+      const { languages, model } = queryParams;
+      setLanguages(languages.options.sort());
+      setModels(model.options);
     };
     fetchLanguages();
   }, []);
@@ -57,7 +59,6 @@ const Settings = ({
           (language) =>
             html`
               <option
-                class="language-option"
                 selected=${language === selectedLanguage}
                 value=${language}
               >

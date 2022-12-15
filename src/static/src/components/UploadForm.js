@@ -12,10 +12,11 @@ const UploadForm = ({ onChange, accentColor }) => {
       <legend>
         <h1>Let us transcribe</h1>
         <p>
-          Upload your audio or video file and let us transcribe it.. Save
-          countless hours with the JOJO™ transcribtion service, so that you can
+          Upload your audio or video file and let us transcribe it. Save
+          countless hours with the JOJO™ transcription service, so that you can
           put your mind to more important things.
         </p>
+        <p dangerouslySetInnerHTML=${{ __html: window.disclaimer }} />
       </legend>
       <label for="file-upload" class="dropzone">
         <${UploadIcon} />
