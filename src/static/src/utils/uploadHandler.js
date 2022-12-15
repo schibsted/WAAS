@@ -42,7 +42,7 @@ const uploadHandler = async ({
 
     const data = await response.json();
 
-    setUploadStatus("transcribing");
+    setUploadStatus("queued");
     setJobId(data.job_id);
   } catch (error) {
     setErrorMessage(error.message);

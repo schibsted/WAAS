@@ -92,6 +92,7 @@ const App = () => {
 
     if (
       uploadStatus === "uploading" ||
+      uploadStatus === "queued" ||
       uploadStatus === "transcribing" ||
       uploadStatus === "transcribed"
     ) {

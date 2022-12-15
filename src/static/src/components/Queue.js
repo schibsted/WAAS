@@ -11,7 +11,7 @@ const Queue = ({
   const { useEffect } = preact;
 
   useEffect(() => {
-    if (uploadStatus === "transcribing") {
+    if (uploadStatus === "queued" || uploadStatus === "transcribing") {
       getJobStatus(jobId).then((data) => {
         setJobStatus(data);
       });
@@ -20,13 +20,8 @@ const Queue = ({
         getJobStatus(jobId).then((data) => {
           setJobStatus(data);
 
-          // Stop polling when the job isn't queued for processing
-          if (
-            !["queued", "scheduled", "deferred", "started"].includes(
-              data.status
-            )
-          ) {
-            clearInterval(interval);
+          if (data.status === "started") {
+            setUploadStatus("transcribing");
           }
 
           // Set an error message if the job failed
@@ -40,7 +35,7 @@ const Queue = ({
           // Set the upload status to finished if the job succeeded
           if (data.status === "finished") {
             clearInterval(interval);
-            setUploadStatus("finished");
+            setUploadStatus("transcribed");
           }
         });
       }, 10_000);
@@ -49,7 +44,27 @@ const Queue = ({
     }
   }, [uploadStatus]);
 
+  const getTitle = () => {
+    if (uploadStatus === "uploading") return "Uploading your file";
+    if (uploadStatus === "queued") return "Your file is queued for processing";
+    if (uploadStatus === "transcribing") return "Transcribing your file";
+    if (uploadStatus === "transcribed") return "Your file is ready";
+  };
+
+  const getDescription = () => {
+    if (uploadStatus === "uploading")
+      return "Your file is being uploaded to our servers. This may take a few minutes. Please don't close this page.";
+    if (uploadStatus === "queued")
+      return "Your file is now in the queue! When the file is finished transcribing you will receive an email with a download link. You can now safely close this page without interfering with the transcription. See you!";
+    if (uploadStatus === "transcribing")
+      return "Your file is being transcribed. When the file is finished transcribing you will receive an email with a download link. You can now safely close this page without interfering with the transcription. See you!";
+    if (uploadStatus === "transcribed")
+      return "Your file is ready. You can download it below.";
+  };
+
   return html`<div class="upload-form">
+    <h1>${getTitle()}</h1>
+    <p>${getDescription()}</p>
     <details class="advanced-settings">
       <summary>Advanced view</summary>
       <div class="advanced-settings-content">
