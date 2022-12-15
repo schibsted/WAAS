@@ -21,6 +21,7 @@ rq_queue = Queue(connection=conn)
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
 DEFAULT_OUTPUT = "srt"
+DEFAULT_FILENAME= "untitled-transcription"
 DISCLAIMER = os.environ.get("DISCLAIMER", "")
 
 
@@ -80,6 +81,10 @@ def transcribe():
                     "type": "string",
                     "optional": False,
                 },
+                "filename": {
+                    "type": "string",
+                    "optional": False,
+                },
             }
         }
     else:
@@ -101,6 +106,7 @@ def transcribe():
             language = request.args.get("language")
 
             email = urllib.parse.unquote(request.args.get("email_callback"))
+            filename = urllib.parse.unquote(request.args.get("filename"))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
@@ -108,7 +114,8 @@ def transcribe():
                 result_ttl=3600*24*7,
                 job_timeout=3600*4,
                 meta={
-                    'email': email
+                    'email': email,
+                    'filename': filename
                 },
                 on_success=mailer.send_success_email,
                 on_failure=mailer.send_failure_email
@@ -189,9 +196,9 @@ def download(job_id):
             if output == "json":
                 return job.result
             if output == "vtt":
-                return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=transcription.vtt'}
+                return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=' + job.meta.get('filename', DEFAULT_FILENAME)}
             if output == "srt":
-                return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=transcription.srt'}
+                return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=' + job.meta.get('filename', DEFAULT_FILENAME)}
 
             return "Output not supported", 400
         if job.is_failed:
