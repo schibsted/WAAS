@@ -25,8 +25,11 @@ services:
             - EMAIL_SENDER_ADDRESS
             - EMAIL_SENDER_PASSWORD
             - EMAIL_SENDER_HOST
-        command: python src/worker.py
+        command: rq worker --url redis://redis:6379 -c worker-settings
+
     redis:
         image: redis
+        ports:
+            - "6379:6379"
 
 

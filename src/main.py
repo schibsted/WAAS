@@ -10,12 +10,12 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.rq import RqIntegration
 from flask import request
 from flask import render_template, Response
+import redis
 from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
 from src.utils import generate_srt, generate_vtt, generate_text
-from src.worker import conn
 from src import mailer
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
@@ -45,6 +45,8 @@ if SENTRY_DSN:
 
 
 app = Flask(__name__)
+redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
+conn = redis.from_url(redis_url)
 rq_queue = Queue(connection=conn)
 
 DEFAULT_MODEL = "tiny"
