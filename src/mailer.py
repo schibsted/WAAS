@@ -33,7 +33,7 @@ def send_mail(recipient, subject, body):
         smtp_server.login(email_sender_address, email_sender_password)
 
     # Send the email
-    smtp_server.sendmail(email_sender_address, recipient, body.as_string())
+    smtp_server.sendmail(email_sender_address, recipient, msg.as_string())
 
     # Disconnect from the server
     smtp_server.quit()
