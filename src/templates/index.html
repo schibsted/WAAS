@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="static/fonts/Inter/font-inter.css" />
     <title>JoJo</title>
 
+    <script type="application/javascript">
+      (function (w, d, n, t, s, a, b) {w[n] = w[n] || function() {
+      (window[n].q = window[n].q || []).push(arguments)}; a = d.createElement(t);
+      b = document.getElementsByTagName(t)[0];a.async = 1;a.src = s;b.parentNode.insertBefore(a, b)}
+      )(window, document, 'pulse', 'script', '//sdk.pulse.schibsted.com/pulse.min.js');
+
+      pulse('init', 'jojo');
+      pulse('trackPageView');
+    </script>
+
     <script>
       window.disclaimer = "{{ disclaimer | safe }}";
     </script>
