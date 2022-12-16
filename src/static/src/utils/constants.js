@@ -25,7 +25,7 @@ const images = [
   },
   {
     name: "grobelska.jpg",
-    author: "MARIOLA GROBELSKA",
+    author: "Mariola Grobelska",
     origin: "Unsplash",
     accentColor: "#722a3d",
   },
