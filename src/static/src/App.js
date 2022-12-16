@@ -131,6 +131,7 @@ const App = () => {
         backgroundImage: shouldShowBackground
           ? `url(static/images/${image.name})`
           : "none",
+        backgroundBlendMode: uploadStatus === "pending" ? "multiply" : "normal",
       }}
       class=${["app", isDragging ? "isDragging" : ""].join(" ")}
       ondragstart=${(event) => handleDragEvent(event)}
