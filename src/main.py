@@ -83,7 +83,8 @@ def transcribe():
                 },
                 "filename": {
                     "type": "string",
-                    "optional": False,
+                    "optional": True,
+                    "default": DEFAULT_UPLOADED_FILENAME
                 },
             }
         }

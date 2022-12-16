@@ -55,6 +55,11 @@ def test_transcribe_options(client):
                 "type": "string",
                 "optional": False,
             },
+            "filename": {
+                "type": "string",
+                "optional": True,
+                "default": "untitled-transcription"
+            },
         }
     }
 

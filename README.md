@@ -20,6 +20,7 @@ Query parameters:
 - OPTIONAL: `task`: string (default: `transcribe`)
   - `transcribe`: Transcribe audio to text
   - `translate`: Transcribe then translate audio to text
+- OPTIONAL: `filename`: string (default: `untitled-transcription`)
 
 Body:
 
