@@ -1,17 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html>
   <body
     style="
-        margin: 100px auto;
-        display: flex;
-        flex-direction: column;
-        max-width: 425px;
-        align-items: center;
-        text-align: center;
-        font-family: system-ui;
-        gap: 48px;
-        background: black url('{{background_image}}');
-        background-size: cover;
-        "
+      display: flex; 
+      flex-direction: column;
+      max-width: 425px; 
+      align-items: center; 
+      text-align: center; 
+      font-family: system-ui; 
+      gap: 48px; 
+      background: url('{{background_image}}') 0% 0% / cover; 
+      margin: 100px auto;
+     "
+    bgcolor="black"
   >
     <img style="max-width: 160px" class="logo" src="{{ logo }}" />
     <h1 style="color: white; font-size: 2.25rem; margin: 0">
@@ -23,12 +24,12 @@
       style="
         background-color: white;
         color: black;
-        padding: 20px 0;
         width: 100%;
         border-radius: 60px;
         font-weight: 600;
         font-size: 1.5rem;
         text-decoration: none;
+        padding: 20px 0;
       "
     >
       Download text with timestamps
@@ -38,25 +39,21 @@
       style="
         background-color: white;
         color: black;
-        padding: 20px 0;
         width: 100%;
         border-radius: 60px;
         font-weight: 600;
         font-size: 1.5rem;
         text-decoration: none;
+        padding: 20px 0;
       "
     >
       Download subtitle format
     </a>
 
-    <p
-      class="disclaimer"
-      style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700"
-    >
+    <p style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0">
       {{ disclaimer }}
     </p>
     <div
-      class="footer"
       style="
         font-weight: 400;
         font-size: 1.25rem;
@@ -65,7 +62,7 @@
         gap: 14px;
       "
     >
-      <p class="footer-jojo" style="font-weight: 700; color: white">Jojo</p>
+      <p style="font-weight: 700; color: white">Jojo</p>
       <p style="color: white; margin: 0">
         Automatic transcription tool created by VG
       </p>
