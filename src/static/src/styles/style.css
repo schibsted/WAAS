@@ -57,6 +57,10 @@ body {
   white-space: nowrap;
 }
 
+.app * {
+  pointer-events: none;
+}
+
 .main {
   flex: 1 1 auto;
   display: flex;

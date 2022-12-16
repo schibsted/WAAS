@@ -33,8 +33,6 @@ const App = () => {
     switch (event.type) {
       case "dragleave":
       case "dragend":
-        if (event.relatedTarget) return;
-
         setIsDragging(false);
         break;
 
