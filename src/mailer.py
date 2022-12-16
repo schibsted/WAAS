@@ -1,11 +1,25 @@
 import smtplib
 import os
+# from email.mime.multipart import MIMEMultipart
+# from email.mime.text import MIMEText
+from src import app
+from flask import render_template
 
 
 def send_mail(recipient, subject, body):
-    # Sender email and password
+    # Enviroment
     email_sender_address = os.environ.get('EMAIL_SENDER_ADDRESS')
     email_sender_password = os.environ.get('EMAIL_SENDER_PASSWORD')
+    email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
+
+    # Construct the email message
+    # msg = MIMEMultipart()
+    # msg['From'] = email_sender_address
+    # msg['To'] = recipient
+    # msg['Subject'] = subject
+
+    # attach the body to the email message
+    # msg.attach(MIMEText(body, 'html'))
 
     # Connect to the Gmail SMTP server
     email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
@@ -18,11 +32,8 @@ def send_mail(recipient, subject, body):
     if (email_sender_password):
         smtp_server.login(email_sender_address, email_sender_password)
 
-    # Construct the email message
-    message = f'Subject: {subject}\n\n{body}'
-
     # Send the email
-    smtp_server.sendmail(email_sender_address, recipient, message)
+    smtp_server.sendmail(email_sender_address, recipient, body)
 
     # Disconnect from the server
     smtp_server.quit()
@@ -31,12 +42,25 @@ def send_mail(recipient, subject, body):
 def send_success_email(job, connection, result, *args, **kwargs):
     email = job.meta.get('email')
     uploaded_filename = job.meta.get('uploaded_filename')
-    base_url = os.environ.get('BASE_URL')
-
-    download_url = base_url + "/v1/download/" + job.id
-
     subject = uploaded_filename + " is finished transcribing!"
-    body = f'Your file is ready. Download it here:\n Textfile without timecodes: {download_url + "?output=txt"} \n Captions file with timecodes(SRT) {download_url + "?output=srt"}'
+
+    disclaimer = os.environ.get('DISCLAIMER', '')
+
+    base_url = os.environ.get('BASE_URL')
+    imagePath = base_url + "/static/images/"
+    download_base_url = base_url + "/v1/download/" + job.id
+    download_txt_url = download_base_url + "?output=txt"
+    download_srt_url = download_base_url + "?output=srt"
+
+    with app.app_context():
+        body = render_template(
+            "success.html",
+            txt_url=download_txt_url,
+            srt_url=download_srt_url,
+            background_image=imagePath + "richard-horvath-RAZU_R66vUc-unsplash.jpg",
+            logo=imagePath + "jojo-logo.png",
+            disclaimer=disclaimer
+        )
 
     send_mail(email, subject, body)
 

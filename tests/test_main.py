@@ -2,7 +2,7 @@ import pytest
 import whisper
 import json
 
-from src import app
+from src.main import app
 
 
 @pytest.fixture

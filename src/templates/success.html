@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <style>
+      body {
+        margin: 100px auto;
+        background-color: green;
+        display: flex;
+        flex-direction: column;
+        max-width: 425px;
+        align-items: center;
+        text-align: center;
+        font-family: system-ui;
+        gap: 48px;
+        background: url({background_image});
+        background-size: cover;
+      }
+
+      .logo {
+        max-width: 160px;
+      }
+
+      h1 {
+        color: white;
+        font-size: 2.25rem;
+        margin: 0;
+      }
+
+      p {
+        color: white;
+        margin: 0;
+      }
+
+      a {
+        color: white;
+      }
+
+      .button {
+        background-color: white;
+        color: black;
+        padding: 20px 0;
+        width: 100%;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 1.5rem;
+        text-decoration: none;
+      }
+
+      .disclaimer {
+        font-size: 1.5rem;
+      }
+
+      .footer {
+        font-weight: 400;
+        font-size: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .footer-jojo {
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <img class="logo" src="{{ logo }}" />
+    <h1>Hello! Your transcription is ready.</h1>
+
+    <a class="button" href="{{ txt_url }}">Download text with timestamps</a>
+    <a class="button" href="{{ srt_url }}">Download subtitle format</a>
+    <p class="disclaimer">{{ disclaimer }}</p>
+    <div class="footer">
+      <p class="footer-jojo">Jojo</p>
+      <p>Automatic transcription tool created by VG</p>
+      <p>Copyright 2022</p>
+    </div>
+  </body>
+</html>
