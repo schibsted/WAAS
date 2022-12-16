@@ -15,7 +15,12 @@
       )(window, document, 'pulse', 'script', '//sdk.pulse.schibsted.com/pulse.min.js');
 
       pulse('init', 'jojo');
-      pulse('trackPageView');
+      pulse('trackPageView', {
+        object: {
+           id: 'Front',
+           type: 'Page'
+         }
+      });
     </script>
 
     <script>
