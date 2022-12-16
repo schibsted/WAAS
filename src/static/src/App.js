@@ -132,7 +132,7 @@ const App = () => {
           ? `url(static/images/${image.name})`
           : "none",
       }}
-      class="app"
+      class=${["app", isDragging ? "isDragging" : ""].join(" ")}
       ondragstart=${(event) => handleDragEvent(event)}
       ondrag=${(event) => handleDragEvent(event)}
       ondragend=${(event) => handleDragEvent(event)}

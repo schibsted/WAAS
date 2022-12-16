@@ -57,7 +57,7 @@ body {
   white-space: nowrap;
 }
 
-.app * {
+.isDragging * {
   pointer-events: none;
 }
 
