@@ -87,28 +87,28 @@ const Queue = ({
             class="button"
             download=${`${jobId}.txt`}
           >
-            Download as TXT with timecodes
-          </a>
-          <a
-            href=${`/v1/download/${jobId}?output=srt`}
-            class="button"
-            download=${`${jobId}.srt`}
-          >
-            Download as SRT
-          </a>
-          <a
-            href=${`/v1/download/${jobId}?output=vtt`}
-            class="button"
-            download=${`${jobId}.vtt`}
-          >
-            Download as VTT
+            Download as text file with timecodes
           </a>
           <a
             href=${`/v1/download/${jobId}?output=txt`}
             class="button"
             download=${`${jobId}.txt`}
           >
-            Download as TXT
+            Download as text file without timecodes
+          </a>
+          <a
+            href=${`/v1/download/${jobId}?output=srt`}
+            class="button"
+            download=${`${jobId}.srt`}
+          >
+            Download as SRT file
+          </a>
+          <a
+            href=${`/v1/download/${jobId}?output=vtt`}
+            class="button"
+            download=${`${jobId}.vtt`}
+          >
+            Download as VTT file
           </a>
         `
       : ""}
