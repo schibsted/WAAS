@@ -1,3 +1,5 @@
+import removeFileExtension from "./removeFileExtension.js";
+
 const uploadHandler = async ({
   file,
   setErrorMessage,
@@ -10,9 +12,14 @@ const uploadHandler = async ({
   try {
     const apiUrl = new URL(`${window.location.href}v1/transcribe`);
     const urlFormattedEmail = encodeURIComponent(email);
+    const urlFormattedFileName = encodeURIComponent(removeFileExtension(file.name));
 
     apiUrl.searchParams.set("model", selectedModel || "large");
     apiUrl.searchParams.set("email_callback", urlFormattedEmail || "");
+    
+    if (file.name){
+      apiUrl.searchParams.set("filename", urlFormattedFileName);
+    }
 
     if (selectedLanguage !== "detect-language" && selectedLanguage) {
       apiUrl.searchParams.set("language", selectedLanguage);
