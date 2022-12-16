@@ -5,12 +5,12 @@ import tempfile
 from datetime import datetime
 import urllib.parse
 from flask import request
-from flask import render_template, send_file, Response
+from flask import render_template, Response
 from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
-from src.utils import generate_srt, generate_vtt
+from src.utils import generate_srt, generate_vtt, generate_text
 from src.worker import conn
 from src import mailer, app
 
@@ -194,7 +194,7 @@ def download(job_id):
         if job.is_finished:
             if output == "txt":
                 return Response(
-                    job.result["text"],
+                    generate_text(job.result["segments"]),
                     mimetype="text/plain",
                     headers={
                         'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.txt"'

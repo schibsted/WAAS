@@ -46,21 +46,8 @@ def send_success_email(job, connection, result, *args, **kwargs):
 
     disclaimer = os.environ.get('DISCLAIMER', '')
 
-    base_url = os.environ.get('BASE_URL')
-    imagePath = base_url + "/static/images/"
-    download_base_url = base_url + "/v1/download/" + job.id
-    download_txt_url = download_base_url + "?output=txt"
-    download_srt_url = download_base_url + "?output=srt"
-
-    with app.app_context():
-        body = render_template(
-            "success.html",
-            txt_url=download_txt_url,
-            srt_url=download_srt_url,
-            background_image=imagePath + "richard-horvath-RAZU_R66vUc-unsplash.jpg",
-            logo=imagePath + "jojo-logo.png",
-            disclaimer=disclaimer
-        )
+    subject = uploaded_filename + " is finished transcribing!"
+    body = f'Your file is ready. Download it here: \n\n Text file with timecodes {download_url + "?output=timecode_txt"} \n Textfile without timecodes: {download_url + "?output=txt"} \n Captions file with timecodes(SRT) {download_url + "?output=srt"}'
 
     send_mail(email, subject, body)
 
