@@ -33,7 +33,7 @@ def send_mail(recipient, subject, body):
         smtp_server.login(email_sender_address, email_sender_password)
 
     # Send the email
-    smtp_server.sendmail(email_sender_address, recipient, body)
+    smtp_server.sendmail(email_sender_address, recipient, body.as_string())
 
     # Disconnect from the server
     smtp_server.quit()
@@ -41,13 +41,27 @@ def send_mail(recipient, subject, body):
 
 def send_success_email(job, connection, result, *args, **kwargs):
     email = job.meta.get('email')
-    subject = uploaded_filename + " has finished transcribing!"
     uploaded_filename = job.meta.get('uploaded_filename')
 
     disclaimer = os.environ.get('DISCLAIMER', '')
 
-    subject = uploaded_filename + " is finished transcribing!"
-    body = f'Your file is ready. Download it here: \n\n Text file with timecodes {download_url + "?output=timecode_txt"} \n Textfile without timecodes: {download_url + "?output=txt"} \n Captions file with timecodes(SRT) {download_url + "?output=srt"}'
+    base_url = os.environ.get('BASE_URL')
+    imagePath = base_url + "/static/images/"
+    download_base_url = base_url + "/v1/download/" + job.id
+    download_txt_url = download_base_url + "?output=txt"
+    download_srt_url = download_base_url + "?output=srt"
+
+    subject = uploaded_filename + " has finished transcribing!"
+
+    with app.app_context():
+        body = render_template(
+            "success.html",
+            txt_url=download_txt_url,
+            srt_url=download_srt_url,
+            background_image=imagePath + "richard-horvath-RAZU_R66vUc-unsplash.jpg",
+            logo=imagePath + "jojo-logo.png",
+            disclaimer=disclaimer
+        )
 
     send_mail(email, subject, body)
 
