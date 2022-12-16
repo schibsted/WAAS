@@ -14,8 +14,16 @@
       b = document.getElementsByTagName(t)[0];a.async = 1;a.src = s;b.parentNode.insertBefore(a, b)}
       )(window, document, 'pulse', 'script', '//sdk.pulse.schibsted.com/pulse.min.js');
 
-      pulse('init', 'jojo');
-      pulse('trackPageView');
+      pulse('init', 'vg');
+      pulse('trackPageView', {
+        object: {
+          id: '/jojo',
+          type: 'Page'
+        },
+        provider: {
+          productTag: 'jojo',
+        }
+      });
     </script>
 
     <script>
