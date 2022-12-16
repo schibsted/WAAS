@@ -34,3 +34,11 @@ def generate_vtt(result):
         srt.append(f"{segment['text'].strip().replace('-->', '->')}\n")
 
     return "\n".join(srt)
+
+
+def generate_text(result):
+    text = [""]
+    for _, segment in enumerate(result, start=1):
+        text.append(f"{segment['text'].strip().replace('-->', '->')}")
+
+    return "\n".join(text)
