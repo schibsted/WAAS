@@ -108,7 +108,7 @@ def transcribe():
 
             email = urllib.parse.unquote(request.args.get("email_callback"))
             uploaded_filename = urllib.parse.unquote(
-                request.args.get("filename"))
+                request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
@@ -199,7 +199,7 @@ def download(job_id):
                     job.result["text"],
                     mimetype="text/plain",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.txt"'
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.txt"'
                     },
                     status=200
                 )
@@ -210,7 +210,7 @@ def download(job_id):
                     generate_vtt(job.result["segments"]),
                     mimetype="text/vtt",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.vtt"'
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.vtt"'
                     },
                     status=200
                 )
@@ -219,7 +219,7 @@ def download(job_id):
                     generate_srt(job.result["segments"]),
                     mimetype="text/plain",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.srt"'
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.srt"'
                     },
                     status=200
                 )
@@ -228,7 +228,7 @@ def download(job_id):
                     generate_srt(job.result["segments"]),
                     mimetype="text/plain",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.txt"'
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.txt"'
                     },
                     status=200
                 )
