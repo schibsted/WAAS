@@ -6,7 +6,7 @@ from datetime import datetime
 import urllib.parse
 from flask import Flask
 from flask import request
-from flask import render_template
+from flask import render_template, send_file, Response
 from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
@@ -21,7 +21,7 @@ rq_queue = Queue(connection=conn)
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
 DEFAULT_OUTPUT = "srt"
-DEFAULT_UPLOADED_FILENAME= "untitled-transcription"
+DEFAULT_UPLOADED_FILENAME = "untitled-transcription"
 DISCLAIMER = os.environ.get("DISCLAIMER", "")
 
 
@@ -107,7 +107,8 @@ def transcribe():
             language = request.args.get("language")
 
             email = urllib.parse.unquote(request.args.get("email_callback"))
-            uploaded_filename = urllib.parse.unquote(request.args.get("filename"))
+            uploaded_filename = urllib.parse.unquote(
+                request.args.get("filename"))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
@@ -126,7 +127,7 @@ def transcribe():
             return {
                 "job_id": job.get_id()
             }, 201
-            
+
         except Exception as e:
             logging.exception(e)
             return 500
@@ -177,7 +178,7 @@ def download(job_id):
             "queryParams": {
                 "output": {
                     "type": "enum",
-                    "options": ["srt", "vtt", "json", "txt"],
+                    "options": ["srt", "vtt", "json", "txt", "timecode_txt"],
                     "optional": True,
                     "default": DEFAULT_OUTPUT,
                 },
@@ -188,19 +189,49 @@ def download(job_id):
 
         try:
             job = Job.fetch(job_id, connection=conn)
-            job_meta = job.get_meta()
+
         except NoSuchJobError:
             return "No such job", 404
 
         if job.is_finished:
             if output == "txt":
-                return job.result["text"]
+                return Response(
+                    job.result["text"],
+                    mimetype="text/plain",
+                    headers={
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.txt"'
+                    },
+                    status=200
+                )
             if output == "json":
                 return job.result
             if output == "vtt":
-                return generate_vtt(job.result["segments"]), 200, {'Content-Type': 'text/vtt', 'Content-Disposition': 'attachment; filename=' + job_meta.get('uploaded_filename', DEFAULT_UPLOADED_FILENAME)}
+                return Response(
+                    generate_vtt(job.result["segments"]),
+                    mimetype="text/vtt",
+                    headers={
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.vtt"'
+                    },
+                    status=200
+                )
             if output == "srt":
-                return generate_srt(job.result["segments"]), 200, {'Content-Type': 'text/plain', 'Content-Disposition': 'attachment; filename=' + job_meta.get('uploaded_filename', DEFAULT_UPLOADED_FILENAME)}
+                return Response(
+                    generate_srt(job.result["segments"]),
+                    mimetype="text/plain",
+                    headers={
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.srt"'
+                    },
+                    status=200
+                )
+            if output == "timecode_txt":
+                return Response(
+                    generate_srt(job.result["segments"]),
+                    mimetype="text/plain",
+                    headers={
+                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename", DEFAULT_UPLOADED_FILENAME)}.txt"'
+                    },
+                    status=200
+                )
 
             return "Output not supported", 400
         if job.is_failed:
@@ -260,9 +291,9 @@ def detect():
             # detect the spoken language
             _, probs = model.detect_language(mel)
             detected_lang = max(probs, key=probs.get)
-            return { 
+            return {
                 "detectedLanguage": whisper.tokenizer.LANGUAGES[detected_lang],
-                "languageCode" : detected_lang 
+                "languageCode": detected_lang
             }
         except Exception as e:
             logging.exception(e)

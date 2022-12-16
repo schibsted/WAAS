@@ -54,7 +54,8 @@ Query parameters:
 
 - OPTIONAL: `output`: string (default: `srt`)
   - `json`: JSON response of the model output
-  - `txt`: Plain text response of the detected text
+  - `timecode_txt`: Plain text file with timecodes(srt)
+  - `txt`: Plain text file of the detected text
   - `vtt`: WebVTT file with the detected text
   - `srt`: WebVTT file with the detected text
 

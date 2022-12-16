@@ -81,7 +81,15 @@ const Queue = ({
       </div>
     </details>
     ${uploadStatus === "transcribed"
-      ? html`<a
+      ? html`
+          <a
+            href=${`/v1/download/${jobId}?output=timecode_txt`}
+            class="button"
+            download=${`${jobId}.txt`}
+          >
+            Download as TXT with timecodes
+          </a>
+          <a
             href=${`/v1/download/${jobId}?output=srt`}
             class="button"
             download=${`${jobId}.srt`}
@@ -101,7 +109,8 @@ const Queue = ({
             download=${`${jobId}.txt`}
           >
             Download as TXT
-          </a>`
+          </a>
+        `
       : ""}
   </div>`;
 };
