@@ -1,5 +1,10 @@
 import os
 import sys
+import sentry_sdk
+from sentry_sdk.integrations.rq import RqIntegration
+
+
+
 from dotenv import load_dotenv
 sys.path.append('./')
 load_dotenv()

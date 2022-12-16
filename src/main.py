@@ -1,10 +1,13 @@
 import os
+import sentry_sdk
 import whisper
 import logging
 import tempfile
 from datetime import datetime
 import urllib.parse
 from flask import Flask
+from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.rq import RqIntegration
 from flask import request
 from flask import render_template, Response
 from rq import Queue
@@ -14,6 +17,32 @@ from rq.exceptions import NoSuchJobError
 from src.utils import generate_srt, generate_vtt, generate_text
 from src.worker import conn
 from src import mailer
+
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
+
+if SENTRY_DSN:
+    print("Sentry detected, Using " + SENTRY_DSN)
+    sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    integrations=[
+        FlaskIntegration(),
+        RqIntegration()
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # By default the SDK will try to use the SENTRY_RELEASE
+    # environment variable, or infer a git commit
+    # SHA as release, however you may want to set
+    # something more human-readable.
+    # release="myapp@1.0.0",
+    )
+
+
+
 
 app = Flask(__name__)
 rq_queue = Queue(connection=conn)
@@ -300,3 +329,7 @@ def detect():
             return 500
         finally:
             tempFile.close()
+
+@app.route('/debug-sentry')
+def trigger_error():
+    division_by_zero = 1 / 0
