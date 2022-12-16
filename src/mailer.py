@@ -1,7 +1,7 @@
 import smtplib
 import os
-# from email.mime.multipart import MIMEMultipart
-# from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from src import app
 from flask import render_template
 
@@ -13,13 +13,13 @@ def send_mail(recipient, subject, body):
     email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
 
     # Construct the email message
-    # msg = MIMEMultipart()
-    # msg['From'] = email_sender_address
-    # msg['To'] = recipient
-    # msg['Subject'] = subject
+    msg = MIMEMultipart()
+    msg['From'] = email_sender_address
+    msg['To'] = recipient
+    msg['Subject'] = subject
 
-    # attach the body to the email message
-    # msg.attach(MIMEText(body, 'html'))
+    # Attach the body to the email message
+    msg.attach(MIMEText(body, 'html'))
 
     # Connect to the Gmail SMTP server
     email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
@@ -41,8 +41,8 @@ def send_mail(recipient, subject, body):
 
 def send_success_email(job, connection, result, *args, **kwargs):
     email = job.meta.get('email')
+    subject = uploaded_filename + " has finished transcribing!"
     uploaded_filename = job.meta.get('uploaded_filename')
-    subject = uploaded_filename + " is finished transcribing!"
 
     disclaimer = os.environ.get('DISCLAIMER', '')
 
