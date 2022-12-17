@@ -229,6 +229,7 @@ body {
 }
 
 .email-input {
+  margin: 16px 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -276,7 +277,7 @@ body {
 }
 
 .button-upload {
-  margin: 16px 0;
+  margin: 0 0 16px 0;
   padding: 10px 12px;
   border-radius: 8px;
   border: none;

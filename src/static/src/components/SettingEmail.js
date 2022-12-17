@@ -31,11 +31,6 @@ const SettingsEmail = ({
         <${File} />
         <p>${fileStored.name}</p>
       </div>
-      <h1>Enter your email *</h1>
-      <p class="email-description">
-        The provided email will be used to send you the transcription results
-        when the process is complete.
-      </p>
       <div class="email-input">
         <input
           required
