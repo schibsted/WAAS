@@ -1,4 +1,4 @@
-import SettingsEmail from "./SettingEmail";
+import SettingsEmail from "./SettingEmail.js";
 import SettingsLanguage from "./SettingLanguage.js";
 
 const Settings = ({
