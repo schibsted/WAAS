@@ -184,6 +184,7 @@ body {
   background: rgba(255, 255, 255, 0.1);
   margin: auto 0;
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   padding: 24px;
   border-radius: 15px;
 }
