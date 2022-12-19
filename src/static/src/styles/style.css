@@ -91,10 +91,6 @@ body {
   color: #fff;
 }
 
-.upload-form p {
-  margin-bottom: 20px;
-}
-
 .upload-form p:last-of-type {
   margin-bottom: 0;
 }
