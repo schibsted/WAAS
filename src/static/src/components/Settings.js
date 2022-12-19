@@ -39,7 +39,7 @@ const Settings = ({
       const data = await response.json();
       const { queryParams } = data;
       const { languages, model } = queryParams;
-      t;
+
       const topLanguages = ["norwegian", "swedish", "english"];
       const otherLanguages = languages.options.filter(
         (language) => !topLanguages.includes(language)
