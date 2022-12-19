@@ -13,7 +13,20 @@ const Settings = ({
   const [settingTab, setSettingTab] = useState(0);
 
   const [languages, setLanguages] = useState([]);
-  const [selectedLanguage, setSelectedLanguage] = useState("detect-language");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage");
+    if (savedLanguage) {
+      setSelectedLanguage(savedLanguage);
+    } else {
+      setSelectedLanguage("detect-language");
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("selectedLanguage", selectedLanguage);
+  }, [selectedLanguage]);
 
   const [models, setModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState("large");
