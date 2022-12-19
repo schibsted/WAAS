@@ -18,15 +18,8 @@ const UploadForm = ({ onChange, accentColor }) => {
         </p>
         <p dangerouslySetInnerHTML=${{ __html: window.disclaimer }} />
       </legend>
-      <label for="file-upload" class="dropzone">
+      <label class="dropzone">
         <${UploadIcon} />
-        <input
-          id="file-upload"
-          name="file-dropzone-upload"
-          type="file"
-          accept="video/*,audio/*"
-          class="sr-only"
-        />
       </label>
 
       <label
@@ -35,6 +28,13 @@ const UploadForm = ({ onChange, accentColor }) => {
         style=${{ backgroundColor: accentColor }}
         class="file-upload-button"
       >
+        <input
+          id="file-upload"
+          name="file-dropzone-upload"
+          type="file"
+          accept="video/*,audio/*"
+          class="sr-only"
+        />
         <${PlusIcon} />
         Upload file
       </label>
