@@ -205,6 +205,7 @@ body {
 .file-info {
   display: flex;
   flex-direction: row;
+  align-items: center;
   border: 2px solid rgba(255, 255, 255, 0.17);
   padding: 2px 4px;
   border-radius: 4px;
