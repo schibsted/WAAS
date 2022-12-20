@@ -24,6 +24,7 @@ if SENTRY_DSN:
     print("Sentry detected, Using " + SENTRY_DSN)
     sentry_sdk.init(
     dsn=SENTRY_DSN,
+    debug=True,
     integrations=[
         FlaskIntegration(),
         RqIntegration()
