@@ -12,7 +12,7 @@ const Queue = ({
   const { useEffect } = preact;
 
   const queue_size = jobStatus?.queue_size || 0;
-  const position_in_queue = jobStatus?.position_in_queue || 1;
+  const position_in_queue = jobStatus?.position_in_queue + 1 || 1;
 
   useEffect(() => {
     if (uploadStatus === "queued" || uploadStatus === "transcribing") {
