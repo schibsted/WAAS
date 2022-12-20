@@ -13,7 +13,7 @@ services:
             - EMAIL_SENDER_ADDRESS
             - EMAIL_SENDER_PASSWORD
             - EMAIL_SENDER_HOST
-        command: flask --app src/main.py --debug run --host 0.0.0.0 --port 3000
+        command:  --host 0.0.0.0 --port 3000
     worker:
         build: .
         volumes:
