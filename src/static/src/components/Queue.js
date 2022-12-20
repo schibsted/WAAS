@@ -51,7 +51,7 @@ const Queue = ({
   const getTitle = () => {
     if (uploadStatus === "uploading") return "Uploading your file";
     if (uploadStatus === "queued")
-      return `You are currently #${position_in_queue} in the queue.`;
+      return `You are #${position_in_queue} in the queue.`;
     if (uploadStatus === "transcribing") return "Transcribing your file";
     if (uploadStatus === "transcribed") return "Your file is ready";
   };
@@ -72,7 +72,7 @@ const Queue = ({
     ${uploadStatus === "queued"
       ? html`
           <p>
-            There are currently ${queue_size} other ${" "}
+            There is a total of ${queue_size} other ${" "}
             ${pluralize(queue_size, "file", "files")} in the queue.
           </p>
         `
