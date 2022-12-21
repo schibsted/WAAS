@@ -23,7 +23,7 @@ def send_mail(recipient, subject, body):
     msg = EmailMessage()
     msg.set_content(body)
     msg['To'] = recipient
-    msg['From'] = "JoJo Transcribe <{email_sender_address}>"
+    msg['From'] = f'JoJo Transcribe <{email_sender_address}>'
     msg['Subject'] = subject
 
     # Send the email
