@@ -19,7 +19,7 @@ def send_mail(recipient, subject, body):
         smtp_server.login(email_sender_address, email_sender_password)
 
     # Construct the email message
-    message = f'Subject: {subject}\n\n{body}'
+    message = f'Subject: {subject}\n\n{body}'.encode('utf-8')
 
     # Send the email
     smtp_server.sendmail(email_sender_address, recipient, message)
