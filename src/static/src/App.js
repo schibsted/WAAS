@@ -33,8 +33,6 @@ const App = () => {
     switch (event.type) {
       case "dragleave":
       case "dragend":
-        if (event.relatedTarget) return;
-
         setIsDragging(false);
         break;
 
@@ -133,8 +131,9 @@ const App = () => {
         backgroundImage: shouldShowBackground
           ? `url(static/images/${image.name})`
           : "none",
+        backgroundBlendMode: uploadStatus === "pending" ? "multiply" : "normal",
       }}
-      class="app"
+      class=${["app", isDragging ? "isDragging" : ""].join(" ")}
       ondragstart=${(event) => handleDragEvent(event)}
       ondrag=${(event) => handleDragEvent(event)}
       ondragend=${(event) => handleDragEvent(event)}

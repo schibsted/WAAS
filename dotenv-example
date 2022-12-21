@@ -3,8 +3,10 @@ FLASK_APP=src/main
 REDIS_URL=redis://redis:6379
 BASE_URL=http://jojo.example.net
 EMAIL_SENDER_ADDRESS=noreply@example.no
-EMAIL_SENDER_PASSWORD=MyAuntDancesWithBallons
+EMAIL_SENDER_PASSWORD="MyAuntDancesWithBallon
 # If EMAIL_SERVER_PASSWORD is set, connect over TLS,
 # If empty, connect on port 25
 EMAIL_SENDER_HOST=smtp.examples.com
+SENTRY_DSN=
+ENVIRONMENT=dev
 

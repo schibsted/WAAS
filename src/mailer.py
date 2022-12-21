@@ -1,5 +1,6 @@
 import smtplib
 import os
+from email.message import EmailMessage
 
 
 def send_mail(recipient, subject, body):
@@ -19,10 +20,14 @@ def send_mail(recipient, subject, body):
         smtp_server.login(email_sender_address, email_sender_password)
 
     # Construct the email message
-    message = f'Subject: {subject}\n\n{body}'
+    msg = EmailMessage()
+    msg.set_content(body)
+    msg['To'] = recipient
+    msg['From'] = f'JoJo Transcribe <{email_sender_address}>'
+    msg['Subject'] = subject
 
     # Send the email
-    smtp_server.sendmail(email_sender_address, recipient, message)
+    smtp_server.send_message(msg)
 
     # Disconnect from the server
     smtp_server.quit()
@@ -36,7 +41,7 @@ def send_success_email(job, connection, result, *args, **kwargs):
     download_url = base_url + "/v1/download/" + job.id
 
     subject = uploaded_filename + " is finished transcribing!"
-    body = f'Your file is ready. Download it here: \n\n Text file with timecodes {download_url + "?output=timecode_txt"} \n Textfile without timecodes: {download_url + "?output=txt"} \n Captions file with timecodes(SRT) {download_url + "?output=srt"}'
+    body = f'Your file is ready. You can download the text output her: \n\nFile with timecodes {download_url + "?output=timecode_txt"} \nFile without timecodes: {download_url + "?output=txt"} \n\n\nCaptions file for use in software: \n\n SRT file {download_url + "?output=srt"} \n VTT file {download_url + "?output=vtt"}'
 
     send_mail(email, subject, body)
 

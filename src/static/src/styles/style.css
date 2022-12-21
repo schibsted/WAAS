@@ -14,6 +14,8 @@ h1,
 p,
 body {
   margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 body {
@@ -46,19 +48,24 @@ body {
 
 .image-credit {
   font-size: 1rem;
-  color: #ffffff;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
   writing-mode: vertical-rl;
-  position: absolute;
-  right: 0;
-  top: 32px;
+  transform: rotate(-180deg);
+  position: fixed;
+  right: 12px;
+  bottom: 20px;
   white-space: nowrap;
+}
+
+.isDragging * {
+  pointer-events: none;
 }
 
 .main {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  font-family: Inter;
   color: #fff;
   position: absolute;
   bottom: 32px;
@@ -72,6 +79,7 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   padding: 24px;
   max-width: 100%;
   height: 100%;
@@ -83,14 +91,9 @@ body {
   color: #fff;
 }
 
-.upload-form p {
-  margin-bottom: 20px;
-}
-
 .upload-form p:last-of-type {
   margin-bottom: 0;
 }
-
 
 .upload-form legend {
   display: flex;
@@ -120,7 +123,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
 }
 
 .dropzone span {
@@ -128,7 +130,6 @@ body {
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  font-family: Inter;
 }
 
 .file-upload-button {
@@ -142,7 +143,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Inter;
   font-weight: 500;
   font-size: 1rem;
   color: #fff;
@@ -155,7 +155,6 @@ body {
   justify-content: center;
   width: 100%;
   text-align: center;
-  font-family: Inter;
   color: #fff;
 }
 
@@ -173,11 +172,11 @@ body {
   position: relative;
   align-self: center;
   max-width: 350px;
-  font-family: Inter;
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
   margin: auto 0;
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   padding: 24px;
   border-radius: 15px;
 }
@@ -206,6 +205,7 @@ body {
 .file-info {
   display: flex;
   flex-direction: row;
+  align-items: center;
   border: 2px solid rgba(255, 255, 255, 0.17);
   padding: 2px 4px;
   border-radius: 4px;
@@ -223,6 +223,7 @@ body {
 }
 
 .email-input {
+  margin: 16px 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -245,6 +246,7 @@ body {
   border: none;
   background: rgba(255, 255, 255, 0.17);
   backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   color: #fff;
   font-weight: 500;
   font-size: 1rem;
@@ -261,6 +263,7 @@ body {
   border: none;
   background: rgba(255, 255, 255, 0.17);
   backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   color: #fff;
   font-weight: 500;
   font-size: 1rem;
@@ -270,12 +273,13 @@ body {
 }
 
 .button-upload {
-  margin: 16px 0;
+  margin: 0 0 16px 0;
   padding: 10px 12px;
   border-radius: 8px;
   border: none;
   background: rgba(255, 255, 255, 0.17);
   backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   color: #fff;
   font-weight: 500;
   font-size: 1rem;
@@ -296,7 +300,6 @@ body {
   align-items: center;
   width: 100%;
   text-align: center;
-  font-family: Inter;
   color: #fff;
 }
 
@@ -316,6 +319,7 @@ body {
   border: none;
   background: rgba(255, 255, 255, 0.17);
   backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   margin: 16px 0px;
   color: #fff;
   font-weight: 500;
@@ -332,7 +336,6 @@ body {
   width: 100%;
   height: 100%;
   text-align: center;
-  font-family: Inter;
   color: #fff;
   background-color: #dd0000;
 }
@@ -345,4 +348,93 @@ body {
 .no-script p {
   font-size: 1.5rem;
   font-weight: 400;
+}
+
+option {
+  color: black;
+}
+
+.position-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.spinner {
+  align-self: center;
+  width: 80px;
+  height: 80px;
+}
+
+.spinner div {
+  transform-origin: 40px 40px;
+  animation: spinner 1.2s linear infinite;
+}
+
+.spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 37px;
+  width: 6px;
+  height: 18px;
+  border-radius: 20%;
+  background: #fff;
+}
+.spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
