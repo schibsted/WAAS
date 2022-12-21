@@ -8,6 +8,7 @@ import urllib.parse
 from flask import Flask
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.rq import RqIntegration
+from sentry_sdk import set_user
 from flask import request
 from flask import render_template, Response
 import redis
@@ -19,6 +20,7 @@ from src.utils import generate_srt, generate_vtt, generate_text
 from src import mailer
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
+ENVIRONMENT = os.environ.get("ENVIRONMENT","dev")
 
 if SENTRY_DSN:
     print("Sentry detected, Using " + SENTRY_DSN)
@@ -28,6 +30,7 @@ if SENTRY_DSN:
             FlaskIntegration(),
             RqIntegration()
         ],
+        environment=ENVIRONMENT,
 
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
@@ -81,7 +84,7 @@ def is_invalid_params(req):
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template("index.html", disclaimer=DISCLAIMER, sentry_dsn=SENTRY_DSN)
+    return render_template("index.html", disclaimer=DISCLAIMER, sentry_dsn=SENTRY_DSN, environment=ENVIRONMENT)
 
 
 @app.route("/v1/transcribe", methods=['POST', 'OPTIONS'])
@@ -136,12 +139,14 @@ def transcribe():
             language = request.args.get("language")
 
             email = urllib.parse.unquote(request.args.get("email_callback"))
+            set_user({"email": email})
+
             uploaded_filename = urllib.parse.unquote(
                 request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
-                args=(filename, requestedModel, task, language),
+                args=(filename, requestedModel, task, language, email),
                 result_ttl=3600*24*7,
                 job_timeout=3600*4,
                 meta={
@@ -170,6 +175,7 @@ def jobs(job_id):
         job = Job.fetch(job_id, connection=conn)
     except NoSuchJobError:
         return "No such job",
+    set_user({"email": job.meta.get('email')})
 
     if (job.ended_at):
         delta = job.ended_at-job.enqueued_at
@@ -218,10 +224,10 @@ def download(job_id):
 
         try:
             job = Job.fetch(job_id, connection=conn)
-
+        
         except NoSuchJobError:
             return "No such job", 404
-
+        set_user({"email": job.meta.get('email')})
         if job.is_finished:
             if output == "txt":
                 return Response(
