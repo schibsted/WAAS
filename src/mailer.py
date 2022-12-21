@@ -1,5 +1,6 @@
 import smtplib
 import os
+from email.message import EmailMessage
 
 
 def send_mail(recipient, subject, body):
@@ -19,11 +20,14 @@ def send_mail(recipient, subject, body):
         smtp_server.login(email_sender_address, email_sender_password)
 
     # Construct the email message
-    message = f'From: JoJo Transcribe <{email_sender_address}>\nSubject: {subject}\n\n{body}'.encode(
-        'utf-8')
+    em = EmailMessage()
+    em.set_content(body)
+    em['To'] = recipient
+    em['From'] = "JoJo Transcribe <{email_sender_address}>"
+    em['Subject'] = subject
 
     # Send the email
-    smtp_server.sendmail(email_sender_address, recipient, message)
+    smtp_server.sendmail(email_sender_address, recipient, em)
 
     # Disconnect from the server
     smtp_server.quit()
