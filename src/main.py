@@ -8,6 +8,7 @@ import urllib.parse
 from flask import Flask
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.rq import RqIntegration
+from sentry_sdk import set_user
 from flask import request
 from flask import render_template, Response
 import redis
@@ -138,6 +139,8 @@ def transcribe():
             language = request.args.get("language")
 
             email = urllib.parse.unquote(request.args.get("email_callback"))
+            set_user({"email": email})
+
             uploaded_filename = urllib.parse.unquote(
                 request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
@@ -172,6 +175,7 @@ def jobs(job_id):
         job = Job.fetch(job_id, connection=conn)
     except NoSuchJobError:
         return "No such job",
+    set_user({"email": job.meta.get('email')})
 
     if (job.ended_at):
         delta = job.ended_at-job.enqueued_at
@@ -220,10 +224,10 @@ def download(job_id):
 
         try:
             job = Job.fetch(job_id, connection=conn)
-
+        
         except NoSuchJobError:
             return "No such job", 404
-
+        set_user({"email": job.meta.get('email')})
         if job.is_finished:
             if output == "txt":
                 return Response(
