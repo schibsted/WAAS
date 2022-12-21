@@ -19,7 +19,7 @@ from src.utils import generate_srt, generate_vtt, generate_text
 from src import mailer
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
-ENVIRONMENT = os.environ.get("ENVIROMENT") or "dev"
+ENVIRONMENT = os.environ.get("ENVIRONMENT","dev")
 
 if SENTRY_DSN:
     print("Sentry detected, Using " + SENTRY_DSN)
