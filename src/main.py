@@ -141,7 +141,7 @@ def transcribe():
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
-                args=(filename, requestedModel, task, language),
+                args=(filename, requestedModel, task, language,email),
                 result_ttl=3600*24*7,
                 job_timeout=3600*4,
                 meta={
