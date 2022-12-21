@@ -49,6 +49,7 @@
         dsn: "{{sentry_dsn}}",
         integrations: [new Sentry.BrowserTracing()],
         tracesSampleRate: 1.0,
+        environment: "{{environment}}"
       });
     </script>
     {% endif %}
