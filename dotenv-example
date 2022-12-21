@@ -8,4 +8,5 @@ EMAIL_SENDER_PASSWORD="MyAuntDancesWithBallon
 # If empty, connect on port 25
 EMAIL_SENDER_HOST=smtp.examples.com
 SENTRY_DSN=
+ENVIRONMENT=dev
 

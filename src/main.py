@@ -19,6 +19,7 @@ from src.utils import generate_srt, generate_vtt, generate_text
 from src import mailer
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
+ENVIRONMENT = os.environ.get("ENVIRONMENT","dev")
 
 if SENTRY_DSN:
     print("Sentry detected, Using " + SENTRY_DSN)
@@ -28,6 +29,7 @@ if SENTRY_DSN:
             FlaskIntegration(),
             RqIntegration()
         ],
+        environment=ENVIRONMENT,
 
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
@@ -81,7 +83,7 @@ def is_invalid_params(req):
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template("index.html", disclaimer=DISCLAIMER, sentry_dsn=SENTRY_DSN)
+    return render_template("index.html", disclaimer=DISCLAIMER, sentry_dsn=SENTRY_DSN, environment=ENVIRONMENT)
 
 
 @app.route("/v1/transcribe", methods=['POST', 'OPTIONS'])
