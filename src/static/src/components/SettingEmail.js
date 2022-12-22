@@ -45,7 +45,15 @@ const SettingsEmail = ({
       <button
         class="button-upload"
         disabled=${!email}
-        onclick=${() =>
+        onclick=${() => {
+          pulse((sdk) => {
+            sdk.track('Engagement', {
+              type: 'Engagement',
+              action: 'Click',
+              object: { id: 'transcribe-button' }
+            })
+          })
+          
           uploadHandler({
             file: fileStored,
             setJobId,
@@ -54,7 +62,8 @@ const SettingsEmail = ({
             selectedLanguage,
             selectedModel,
             setErrorMessage,
-          })}
+          })
+        }}
       >
         Lets go!
       </button>
