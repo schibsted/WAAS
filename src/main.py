@@ -20,7 +20,7 @@ from src.utils import generate_srt, generate_vtt, generate_text
 from src import mailer
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
-ENVIRONMENT = os.environ.get("ENVIRONMENT","dev")
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
 
 if SENTRY_DSN:
     print("Sentry detected, Using " + SENTRY_DSN)
@@ -224,17 +224,20 @@ def download(job_id):
 
         try:
             job = Job.fetch(job_id, connection=conn)
-        
+
         except NoSuchJobError:
             return "No such job", 404
         set_user({"email": job.meta.get('email')})
         if job.is_finished:
+            filename = job.meta.get("uploaded_filename").encode(
+                "latin-1", errors="ignore")
+
             if output == "txt":
                 return Response(
                     generate_text(job.result["segments"]),
                     mimetype="text/plain",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.txt"'
+                        'Content-disposition': f'attachment; filename="{filename}.txt"'
                     },
                     status=200
                 )
@@ -245,7 +248,7 @@ def download(job_id):
                     generate_vtt(job.result["segments"]),
                     mimetype="text/vtt",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.vtt"'
+                        'Content-disposition': f'attachment; filename="{filename}.vtt"'
                     },
                     status=200
                 )
@@ -254,7 +257,7 @@ def download(job_id):
                     generate_srt(job.result["segments"]),
                     mimetype="text/plain",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.srt"'
+                        'Content-disposition': f'attachment; filename="{filename}.srt"'
                     },
                     status=200
                 )
@@ -263,7 +266,7 @@ def download(job_id):
                     generate_srt(job.result["segments"]),
                     mimetype="text/plain",
                     headers={
-                        'Content-disposition': f'attachment; filename="{job.meta.get("uploaded_filename")}.txt"'
+                        'Content-disposition': f'attachment; filename="{filename}.txt"'
                     },
                     status=200
                 )
