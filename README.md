@@ -71,6 +71,10 @@ Get the status and metadata of the provided job.
 
 Get the available length of the queue as JSON object with the key `length`.
 
+### GET `/v1/stats`
+
+Get some statistics about your Jojo installation, like the total duration of files transcribed
+
 ## Contributing
 
 ### Installation
