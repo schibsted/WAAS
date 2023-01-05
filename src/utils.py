@@ -1,3 +1,28 @@
+import ffmpeg
+
+def get_total_time_transcribed(conn):
+    total_time_transcribed = conn.get("waas:total_time_transcribed")
+
+    if total_time_transcribed is None:
+        total_time_transcribed = 0
+
+    return float(total_time_transcribed)
+
+def set_total_time_transcribed(value, conn):
+    conn.set("waas:total_time_transcribed", value)
+
+def get_audio_duration(filename):
+    return float(ffmpeg.probe(filename)["format"]["duration"])
+
+def increment_total_time_transcribed(filename, conn):
+    audio_duration = get_audio_duration(filename)
+    total_time_transcribed = get_total_time_transcribed(conn)
+    new_total_time_transcribed = total_time_transcribed + audio_duration
+
+    set_total_time_transcribed(new_total_time_transcribed, conn=conn)
+
+    return new_total_time_transcribed
+
 def format_timestamp(seconds: float, always_include_hours: bool = False, decimal_marker: str = '.'):
     assert seconds >= 0, "non-negative timestamp expected"
     milliseconds = round(seconds * 1000.0)
