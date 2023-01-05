@@ -41,7 +41,7 @@ def send_success_email(job, connection, result, *args, **kwargs):
     download_url = base_url + "/v1/download/" + job.id
 
     subject = uploaded_filename + " is finished transcribing!"
-    body = f'Your file is ready. You can download the text output her: \n\nFile with timecodes {download_url + "?output=timecode_txt"} \nFile without timecodes: {download_url + "?output=txt"} \n\n\nCaptions file for use in software: \n\n SRT file {download_url + "?output=srt"} \n VTT file {download_url + "?output=vtt"}'
+    body = f'Your file is ready. You can download the text output her: \n\nFile with timecodes {download_url + "?output=timecode_txt"} \nFile without timecodes: {download_url + "?output=txt"} \n\n\nCaptions file for use in software: \n\n Jojo-document (mac-app) {download_url + "?output=jojo"} \n SRT file {download_url + "?output=srt"} \n VTT file {download_url + "?output=vtt"}'
 
     send_mail(email, subject, body)
 
