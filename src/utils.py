@@ -1,6 +1,6 @@
 import ffmpeg
 
-from src import database
+from src.database import database
 
 def get_total_time_transcribed():
     total_time_transcribed = database.get("waas:total_time_transcribed")

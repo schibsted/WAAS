@@ -1,3 +1,4 @@
+import os
 import redis
 
 database = redis.from_url(

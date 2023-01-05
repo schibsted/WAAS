@@ -15,7 +15,8 @@ from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
-from src import mailer, database
+from src import mailer
+from src.database import database
 from src.utils import (
     generate_srt, generate_vtt, generate_text,
     get_total_time_transcribed, increment_total_time_transcribed
