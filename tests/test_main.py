@@ -3,6 +3,8 @@ import whisper
 import json
 
 from src import app
+from src.main import redis_connection
+from src.utils import set_total_time_transcribed
 
 
 @pytest.fixture
@@ -124,3 +126,16 @@ def test_queue(client):
 
     response_data = json.loads(response.data)
     assert 'count' in response_data and response_data['count'] > 0
+
+
+def test_stats(client):
+    set_total_time_transcribed(60.4, conn=redis_connection)
+
+    response = client.get('/v1/stats')
+
+    assert response.status_code == 200
+
+    response_data = json.loads(response.data)
+    assert response.get_json() == {
+        "total_time_transcribed": 60.4
+    }

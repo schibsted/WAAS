@@ -19,6 +19,9 @@ const SettingsEmail = ({
       <form
         onsubmit=${(evt) => {
           evt.preventDefault();
+
+          localStorage.setItem("email", email);
+
           pulse((sdk) => {
             sdk.track("Engagement", {
               type: "Engagement",

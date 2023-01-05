@@ -31,7 +31,7 @@ const Settings = ({
   const [models, setModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState("large");
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(localStorage.getItem("email"));
 
   useEffect(() => {
     const fetchLanguages = async () => {
