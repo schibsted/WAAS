@@ -14,11 +14,16 @@ const SettingsEmail = ({
   setSelectedModel,
   models,
 }) => {
+  localStorage.getItem("email");
+
   return html`
     <main class="settings">
       <form
         onsubmit=${(evt) => {
           evt.preventDefault();
+
+          localStorage.setItem("email", email);
+
           pulse((sdk) => {
             sdk.track("Engagement", {
               type: "Engagement",
