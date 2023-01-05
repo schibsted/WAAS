@@ -14,8 +14,6 @@ const SettingsEmail = ({
   setSelectedModel,
   models,
 }) => {
-  localStorage.getItem("email");
-
   return html`
     <main class="settings">
       <form
