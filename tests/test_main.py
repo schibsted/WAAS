@@ -72,7 +72,7 @@ def test_download_options(client):
         "queryParams": {
             "output": {
                 "type": "enum",
-                "options": ["srt", "vtt", "json", "txt", "timecode_txt"],
+                "options": ["srt", "vtt", "json", "txt", "timecode_txt", "jojo"],
                 "optional": True,
                 "default": "srt",
             },
