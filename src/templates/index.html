@@ -32,7 +32,12 @@
       );
 
       pulse("init", "jojo");
-      pulse("trackPageView");
+      pulse('trackPageView', {
+         object: {
+            id: 'Front',
+            type: 'Page'
+          }
+       });
     </script>
     {% if sentry_dsn %}
     <!-- Sentry integration -->
