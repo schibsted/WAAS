@@ -19,7 +19,8 @@ from rq.exceptions import NoSuchJobError
 from src import mailer
 from src.utils import (
     generate_srt, generate_vtt, generate_text,
-    get_total_time_transcribed, increment_total_time_transcribed
+    get_total_time_transcribed, increment_total_time_transcribed,
+    generate_jojo_doc
 )
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
@@ -218,7 +219,7 @@ def download(job_id):
             "queryParams": {
                 "output": {
                     "type": "enum",
-                    "options": ["srt", "vtt", "json", "txt", "timecode_txt"],
+                    "options": ["srt", "vtt", "json", "txt", "timecode_txt", "jojo"],
                     "optional": True,
                     "default": DEFAULT_OUTPUT,
                 },
@@ -248,6 +249,9 @@ def download(job_id):
                 )
             if output == "json":
                 return job.result
+            if output == "jojo":
+                doc = generate_jojo_doc(filename, result)
+                return doc
             if output == "vtt":
                 return Response(
                     generate_vtt(job.result["segments"]),

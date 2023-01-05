@@ -1,3 +1,5 @@
+from uuid import uuid4
+from math import floor
 import ffmpeg
 
 def get_total_time_transcribed(conn):
@@ -67,3 +69,26 @@ def generate_text(result):
         text.append(f"{segment['text'].strip().replace('-->', '->')}")
 
     return "\n".join(text)
+
+def get_time_as_hundreds(sec):
+    return int(floor(sec * 10))
+
+def generate_jojo_doc(filename, result):
+    output = {
+        "docVersion": "1.0",
+        "id": uuid4(),
+        "audiofile": {
+            "id": uuid4(),
+            "url": filename
+        },
+        "segments": []
+    }
+    for _, segment in enumerate(result, start=1):
+        output['segments'].append({
+            "id": uuid4(),
+            "timeStart": get_time_as_hundreds(segment['start']),
+            "timeEnd": get_time_as_hundreds(segment['end']),
+            "text": f"{segment['text'].strip().replace('-->', '->')}"
+        })
+
+    return output

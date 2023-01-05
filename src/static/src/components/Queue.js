@@ -115,6 +115,13 @@ const Queue = ({
             Download as text file without timecodes
           </a>
           <a
+            href=${`/v1/download/${jobId}?output=jojo`}
+            class="button"
+            download=${`${jobId}.jojo`}
+          >
+            Download as Jojo-document (mac-app)
+          </a>
+          <a
             href=${`/v1/download/${jobId}?output=srt`}
             class="button"
             download=${`${jobId}.srt`}
