@@ -1,25 +1,27 @@
 import ffmpeg
 
-def get_total_time_transcribed(conn):
-    total_time_transcribed = conn.get("waas:total_time_transcribed")
+from src import database
+
+def get_total_time_transcribed():
+    total_time_transcribed = database.get("waas:total_time_transcribed")
 
     if total_time_transcribed is None:
         total_time_transcribed = 0
 
     return float(total_time_transcribed)
 
-def set_total_time_transcribed(value, conn):
-    conn.set("waas:total_time_transcribed", value)
+def set_total_time_transcribed(value):
+    database.set("waas:total_time_transcribed", value)
 
 def get_audio_duration(filename):
     return float(ffmpeg.probe(filename)["format"]["duration"])
 
-def increment_total_time_transcribed(filename, conn):
+def increment_total_time_transcribed(filename):
     audio_duration = get_audio_duration(filename)
-    total_time_transcribed = get_total_time_transcribed(conn)
+    total_time_transcribed = get_total_time_transcribed()
     new_total_time_transcribed = total_time_transcribed + audio_duration
 
-    set_total_time_transcribed(new_total_time_transcribed, conn=conn)
+    set_total_time_transcribed(new_total_time_transcribed)
 
     return new_total_time_transcribed
 
