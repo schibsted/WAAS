@@ -16,8 +16,11 @@ from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
-from src.utils import generate_srt, generate_vtt, generate_text
 from src import mailer
+from src.utils import (
+    generate_srt, generate_vtt, generate_text,
+    get_total_time_transcribed, increment_total_time_transcribed
+)
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
@@ -47,8 +50,8 @@ if SENTRY_DSN:
 
 app = Flask(__name__)
 redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
-conn = redis.from_url(redis_url)
-rq_queue = Queue(connection=conn)
+redis_connection = redis.from_url(redis_url)
+rq_queue = Queue(connection=redis_connection)
 
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
@@ -144,6 +147,8 @@ def transcribe():
             uploaded_filename = urllib.parse.unquote(
                 request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
+            increment_total_time_transcribed(filename, conn=redis_connection)
+
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
                 args=(filename, requestedModel, task, language, email),
@@ -172,7 +177,7 @@ def transcribe():
 @app.route('/v1/jobs/<job_id>', methods=['GET'])
 def jobs(job_id):
     try:
-        job = Job.fetch(job_id, connection=conn)
+        job = Job.fetch(job_id, connection=redis_connection)
     except NoSuchJobError:
         return "No such job",
     set_user({"email": job.meta.get('email')})
@@ -223,7 +228,7 @@ def download(job_id):
         output = request.args.get("output", DEFAULT_OUTPUT)
 
         try:
-            job = Job.fetch(job_id, connection=conn)
+            job = Job.fetch(job_id, connection=redis_connection)
 
         except NoSuchJobError:
             return "No such job", 404
@@ -288,6 +293,11 @@ def queue():
         "count": len(rq_queue.jobs)
     }
 
+@app.route('/v1/stats', methods=['GET'])
+def stats():
+    return {
+        "total_time_transcribed": get_total_time_transcribed(conn=redis_connection)
+    }
 
 @app.route("/v1/detect", methods=['POST', 'OPTIONS'])
 def detect():
