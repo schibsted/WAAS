@@ -1,6 +1,7 @@
 import DragAndDrop from "./components/DragAndDrop.js";
 import Error from "./components/Error.js";
 import Header from "./components/Header.js";
+import Stats from "./components/Stats.js";
 import Settings from "./components/Settings.js";
 import Queue from "./components/Queue.js";
 import UploadForm from "./components/UploadForm.js";
@@ -112,6 +113,7 @@ const App = () => {
 
     return html`
       <${Header} imageAuthor=${image.author} imageOrigin=${image.origin} />
+      <${Stats} />
       <main class="main">
         <${UploadForm}
           onChange=${(file) => {
