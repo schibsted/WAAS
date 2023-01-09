@@ -16,11 +16,10 @@ from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
-from src import mailer
+from src import callbacks
 from src.utils import (
     generate_srt, generate_vtt, generate_text,
-    get_total_time_transcribed, increment_total_time_transcribed,
-    generate_jojo_doc
+    get_total_time_transcribed, generate_jojo_doc
 )
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
@@ -148,8 +147,6 @@ def transcribe():
             uploaded_filename = urllib.parse.unquote(
                 request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
-            increment_total_time_transcribed(filename, conn=redis_connection)
-
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
                 args=(filename, requestedModel, task, language, email),
@@ -159,8 +156,8 @@ def transcribe():
                     'email': email,
                     'uploaded_filename': uploaded_filename
                 },
-                on_success=mailer.send_success_email,
-                on_failure=mailer.send_failure_email
+                on_success=callbacks.success,
+                on_failure=callbacks.failure
             )
 
             # Return the job id to the client with a 201 status code
