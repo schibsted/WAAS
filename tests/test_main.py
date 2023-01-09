@@ -3,7 +3,6 @@ import whisper
 import json
 
 from src import app
-from src.main import redis_connection
 from src.utils import set_total_time_transcribed
 
 
@@ -129,7 +128,7 @@ def test_queue(client):
 
 
 def test_stats(client):
-    set_total_time_transcribed(60.4, conn=redis_connection)
+    set_total_time_transcribed(60.4)
 
     response = client.get('/v1/stats')
 
