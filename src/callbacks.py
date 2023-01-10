@@ -3,6 +3,7 @@ import os
 from src import mailer
 from src.utils import increment_total_time_transcribed
 
+
 def success(job, connection, result, *args, **kwargs):
     email = job.meta.get("email")
     filename = job.meta.get("uploaded_filename")
@@ -14,8 +15,8 @@ def success(job, connection, result, *args, **kwargs):
 
     mailer.send_success_email(email, filename=filename, url=url)
 
+
 def failure(job, connection, type, value, traceback):
     email = job.meta.get("email")
 
     mailer.send_failure_email(email)
-

@@ -160,7 +160,6 @@ def transcribe():
                 on_failure=callbacks.failure
             )
 
-            # Return the job id to the client with a 201 status code
             return {
                 "job_id": job.get_id()
             }, 201
@@ -294,11 +293,13 @@ def queue():
         "count": len(rq_queue.jobs)
     }
 
+
 @app.route('/v1/stats', methods=['GET'])
 def stats():
     return {
         "total_time_transcribed": get_total_time_transcribed(conn=redis_connection)
     }
+
 
 @app.route("/v1/detect", methods=['POST', 'OPTIONS'])
 def detect():
