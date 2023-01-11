@@ -1,6 +1,5 @@
 from uuid import uuid4
 from math import floor
-import ffmpeg
 
 def get_total_time_transcribed(conn):
     total_time_transcribed = conn.get("waas:total_time_transcribed")
@@ -13,13 +12,9 @@ def get_total_time_transcribed(conn):
 def set_total_time_transcribed(value, conn):
     conn.set("waas:total_time_transcribed", value)
 
-def get_audio_duration(filename):
-    return float(ffmpeg.probe(filename)["format"]["duration"])
-
-def increment_total_time_transcribed(filename, conn):
-    audio_duration = get_audio_duration(filename)
+def increment_total_time_transcribed(audio_duration, conn):
     total_time_transcribed = get_total_time_transcribed(conn)
-    new_total_time_transcribed = total_time_transcribed + audio_duration
+    new_total_time_transcribed = total_time_transcribed + float(audio_duration)
 
     set_total_time_transcribed(new_total_time_transcribed, conn=conn)
 
