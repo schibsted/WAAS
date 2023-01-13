@@ -1,5 +1,6 @@
 from uuid import uuid4
 from math import floor
+from json import dumps
 
 def get_total_time_transcribed(conn):
     total_time_transcribed = conn.get("waas:total_time_transcribed")
@@ -68,22 +69,24 @@ def generate_text(result):
 def get_time_as_hundreds(sec):
     return int(floor(sec * 10))
 
+def get_uuid():
+    return str(uuid4())
+
 def generate_jojo_doc(filename, result):
     output = {
         "docVersion": "1.0",
-        "id": uuid4(),
+        "id": get_uuid(),
         "audiofile": {
-            "id": uuid4(),
+            "id": get_uuid(),
             "url": filename
         },
         "segments": []
     }
     for _, segment in enumerate(result, start=1):
         output['segments'].append({
-            "id": uuid4(),
+            "id": get_uuid(),
             "timeStart": get_time_as_hundreds(segment['start']),
             "timeEnd": get_time_as_hundreds(segment['end']),
             "text": f"{segment['text'].strip().replace('-->', '->')}"
         })
-
-    return output
+    return dumps(output)

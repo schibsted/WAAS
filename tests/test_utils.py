@@ -1,5 +1,6 @@
 import pytest
 from src.utils import generate_jojo_doc, get_time_as_hundreds
+import json
 
 def test_get_time_as_hundreds():
     hundred = get_time_as_hundreds(111.09)
@@ -127,7 +128,7 @@ def test_generate_jojo_doc():
             ]
         }
     ]
-    output = generate_jojo_doc(filename, result)
+    output = json.loads(generate_jojo_doc(filename, result))
     assert 'audiofile' in output
     assert 'segments' in output
     assert 'id' in output
