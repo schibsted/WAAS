@@ -246,8 +246,14 @@ def download(job_id):
             if output == "json":
                 return job.result
             if output == "jojo":
-                doc = generate_jojo_doc(filename, job.result["segments"])
-                return doc
+                return Response(
+                    generate_jojo_doc(filename, job.result["segments"]),
+                    mimetype="application/json",
+                    headers={
+                        'Content-disposition': f'attachment; filename="{filename}.jojo"'
+                    },
+                    status=200
+                )
             if output == "vtt":
                 return Response(
                     generate_vtt(job.result["segments"]),
