@@ -19,7 +19,8 @@ from rq.exceptions import NoSuchJobError
 from src import callbacks
 from src.utils import (
     generate_srt, generate_vtt, generate_text,
-    get_total_time_transcribed, generate_jojo_doc
+    get_total_time_transcribed, generate_jojo_doc,
+    sanitize_input
 )
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
@@ -231,8 +232,7 @@ def download(job_id):
             return "No such job", 404
         set_user({"email": job.meta.get('email')})
         if job.is_finished:
-            filename = job.meta.get("uploaded_filename").encode(
-                "latin-1", errors="ignore")
+            filename = sanitize_input(job.meta.get("uploaded_filename"))
 
             if output == "txt":
                 return Response(
