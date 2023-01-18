@@ -7,7 +7,7 @@ def test_get_time_as_hundreds():
     assert hundred == 1110
 
 def test_generate_jojo_doc():
-    filename = "test"
+    filename = "test_with_norwegian_chars_ÆøÅæØå"
     result = [
         {
             "avg_logprob": -0.23971951974404826,
