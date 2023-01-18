@@ -232,7 +232,7 @@ def download(job_id):
         set_user({"email": job.meta.get('email')})
         if job.is_finished:
             filename = job.meta.get("uploaded_filename").encode(
-                "latin-1", errors="ignore").decode('utf-8')
+                "latin-1", errors="ignore")
 
             if output == "txt":
                 return Response(
