@@ -1,5 +1,5 @@
 import pytest
-from src.utils import generate_jojo_doc, get_time_as_hundreds
+from src.utils import generate_jojo_doc, get_time_as_hundreds, sanitize_input
 import json
 
 def test_get_time_as_hundreds():
@@ -7,7 +7,7 @@ def test_get_time_as_hundreds():
     assert hundred == 1110
 
 def test_generate_jojo_doc():
-    filename = "test"
+    filename = "test_with_norwegian_chars_ÆøÅæØå"
     result = [
         {
             "avg_logprob": -0.23971951974404826,
@@ -129,8 +129,20 @@ def test_generate_jojo_doc():
         }
     ]
     output = json.loads(generate_jojo_doc(filename, result))
-    assert 'audiofile' in output
-    assert 'segments' in output
-    assert 'id' in output
-    assert 'docVersion' in output
-    assert len(output['segments']) == 4, "Should be 4 segments in output"
+    assert "audiofile" in output
+    assert "segments" in output
+    assert "id" in output
+    assert "docVersion" in output
+    assert len(output["segments"]) == 4, "Should be 4 segments in output"
+
+
+def test_sanitize_input():
+    filenames = {
+        "øæå": "øæå",
+        "ÆÅØ": "ÆÅØ",
+        "öäë": "öäë",
+        "@!": "@!",
+    }
+
+    for fn in filenames:
+        assert fn == sanitize_input(filenames[fn])
