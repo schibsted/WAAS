@@ -141,8 +141,12 @@ def test_sanitize_input():
         "øæå": "øæå",
         "ÆÅØ": "ÆÅØ",
         "öäë": "öäë",
-        "@!": "@!",
+        "@!": "__",
+        "filename with space": "filename_with_space",
+        "filename%20with%20encode": "filename_20with_20encode",
+        "filename with date in (2023-01-20)": "filename_with_date_in__2023_01_20_",
+        "FiLeNaMe WiTh CaPsLoCk": "FiLeNaMe_WiTh_CaPsLoCk",
     }
 
     for fn in filenames:
-        assert fn == sanitize_input(filenames[fn])
+        assert filenames[fn] == sanitize_input(fn)
