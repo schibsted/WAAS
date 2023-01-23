@@ -3,6 +3,7 @@ from math import floor
 from json import dumps
 from re import sub
 from unidecode import unidecode
+from urllib.parse import quote_plus
 
 def sanitize_input(text):
     return sub("[^A-Za-z0-9A+]", "_", unidecode(str(text.encode("latin-1", errors="ignore").decode("latin-1"))))
@@ -83,7 +84,7 @@ def generate_jojo_doc(filename, result):
         "id": get_uuid(),
         "audiofile": {
             "id": get_uuid(),
-            "url": "file://web/" + filename
+            "url": "file://web/" + quote_plus(filename)
         },
         "segments": []
     }
