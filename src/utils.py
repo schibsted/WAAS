@@ -2,9 +2,10 @@ from uuid import uuid4
 from math import floor
 from json import dumps
 from re import sub
+from unidecode import unidecode
 
 def sanitize_input(text):
-    return sub("[^\w+]", "_", str(text.encode("latin-1", errors="ignore").decode("latin-1")))
+    return sub("[^A-Za-z0-9A+]", "_", unidecode(str(text.encode("latin-1", errors="ignore").decode("latin-1"))))
 
 def get_total_time_transcribed(conn):
     total_time_transcribed = conn.get("waas:total_time_transcribed")
@@ -82,7 +83,7 @@ def generate_jojo_doc(filename, result):
         "id": get_uuid(),
         "audiofile": {
             "id": get_uuid(),
-            "url": "file://" + filename
+            "url": "file://web/" + filename
         },
         "segments": []
     }
