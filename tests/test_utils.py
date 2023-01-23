@@ -142,6 +142,7 @@ def test_sanitize_input():
         "ÆÅØ": "AEAO",
         "öäë": "oae",
         "@!": "__",
+        "test med blåbærsyltetøy og 🎉 og fest 🇳🇴": "test_med_blabaersyltetoy_og__og_fest_",
         "filename with space": "filename_with_space",
         "filename%20with%20encode": "filename_20with_20encode",
         "filename with date in (2023-01-20)": "filename_with_date_in__2023_01_20_",
