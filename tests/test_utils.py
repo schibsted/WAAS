@@ -138,10 +138,11 @@ def test_generate_jojo_doc():
 
 def test_sanitize_input():
     filenames = {
-        "øæå": "øæå",
-        "ÆÅØ": "ÆÅØ",
-        "öäë": "öäë",
+        "øæå": "oaea",
+        "ÆÅØ": "AEAO",
+        "öäë": "oae",
         "@!": "__",
+        "test med blåbærsyltetøy og 🎉 og fest 🇳🇴": "test_med_blabaersyltetoy_og__og_fest_",
         "filename with space": "filename_with_space",
         "filename%20with%20encode": "filename_20with_20encode",
         "filename with date in (2023-01-20)": "filename_with_date_in__2023_01_20_",
