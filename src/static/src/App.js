@@ -52,7 +52,7 @@ const App = () => {
         const file = files[0];
 
         if (!allowedFileTypes.some((type) => file.type.includes(type)))
-          return setErrorMessage("Please upload a valid file");
+          return setErrorMessage("Please upload a valid audio or video file");
 
         setFileStored(file);
         setUploadStatus("pending");
@@ -117,6 +117,8 @@ const App = () => {
       <main class="main">
         <${UploadForm}
           onChange=${(file) => {
+            if (!allowedFileTypes.some((type) => file.type.includes(type)))
+              return setErrorMessage("Please upload a valid audio or video file");
             setFileStored(file);
             setUploadStatus("pending");
           }}

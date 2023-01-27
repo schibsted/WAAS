@@ -32,7 +32,6 @@ const UploadForm = ({ onChange, accentColor }) => {
           id="file-upload"
           name="file-dropzone-upload"
           type="file"
-          accept="video/*,audio/*"
           class="sr-only"
         />
         <${PlusIcon} />

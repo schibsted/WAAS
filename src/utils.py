@@ -1,6 +1,12 @@
 from uuid import uuid4
 from math import floor
-import ffmpeg
+from json import dumps
+from re import sub
+from unidecode import unidecode
+from urllib.parse import quote_plus
+
+def sanitize_input(text):
+    return sub("[^A-Za-z0-9+]", "_", unidecode(str(text.encode("latin-1", errors="ignore").decode("latin-1"))))
 
 def get_total_time_transcribed(conn):
     total_time_transcribed = conn.get("waas:total_time_transcribed")
@@ -13,13 +19,9 @@ def get_total_time_transcribed(conn):
 def set_total_time_transcribed(value, conn):
     conn.set("waas:total_time_transcribed", value)
 
-def get_audio_duration(filename):
-    return float(ffmpeg.probe(filename)["format"]["duration"])
-
-def increment_total_time_transcribed(filename, conn):
-    audio_duration = get_audio_duration(filename)
+def increment_total_time_transcribed(audio_duration, conn):
     total_time_transcribed = get_total_time_transcribed(conn)
-    new_total_time_transcribed = total_time_transcribed + audio_duration
+    new_total_time_transcribed = total_time_transcribed + float(audio_duration)
 
     set_total_time_transcribed(new_total_time_transcribed, conn=conn)
 
@@ -73,22 +75,24 @@ def generate_text(result):
 def get_time_as_hundreds(sec):
     return int(floor(sec * 10))
 
+def get_uuid():
+    return str(uuid4())
+
 def generate_jojo_doc(filename, result):
     output = {
         "docVersion": "1.0",
-        "id": uuid4(),
+        "id": get_uuid(),
         "audiofile": {
-            "id": uuid4(),
-            "url": filename
+            "id": get_uuid(),
+            "url": "file://web/" + quote_plus(filename)
         },
         "segments": []
     }
     for _, segment in enumerate(result, start=1):
         output['segments'].append({
-            "id": uuid4(),
+            "id": get_uuid(),
             "timeStart": get_time_as_hundreds(segment['start']),
             "timeEnd": get_time_as_hundreds(segment['end']),
             "text": f"{segment['text'].strip().replace('-->', '->')}"
         })
-
-    return output
+    return dumps(output)

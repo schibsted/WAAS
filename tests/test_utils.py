@@ -1,12 +1,13 @@
 import pytest
-from src.utils import generate_jojo_doc, get_time_as_hundreds
+from src.utils import generate_jojo_doc, get_time_as_hundreds, sanitize_input
+import json
 
 def test_get_time_as_hundreds():
     hundred = get_time_as_hundreds(111.09)
     assert hundred == 1110
 
 def test_generate_jojo_doc():
-    filename = "test"
+    filename = "test_with_norwegian_chars_ÆøÅæØå"
     result = [
         {
             "avg_logprob": -0.23971951974404826,
@@ -127,9 +128,26 @@ def test_generate_jojo_doc():
             ]
         }
     ]
-    output = generate_jojo_doc(filename, result)
-    assert 'audiofile' in output
-    assert 'segments' in output
-    assert 'id' in output
-    assert 'docVersion' in output
-    assert len(output['segments']) == 4, "Should be 4 segments in output"
+    output = json.loads(generate_jojo_doc(filename, result))
+    assert "audiofile" in output
+    assert "segments" in output
+    assert "id" in output
+    assert "docVersion" in output
+    assert len(output["segments"]) == 4, "Should be 4 segments in output"
+
+
+def test_sanitize_input():
+    filenames = {
+        "øæå": "oaea",
+        "ÆÅØ": "AEAO",
+        "öäë": "oae",
+        "@!": "__",
+        "test med blåbærsyltetøy og 🎉 og fest 🇳🇴": "test_med_blabaersyltetoy_og__og_fest_",
+        "filename with space": "filename_with_space",
+        "filename%20with%20encode": "filename_20with_20encode",
+        "filename with date in (2023-01-20)": "filename_with_date_in__2023_01_20_",
+        "FiLeNaMe WiTh CaPsLoCk": "FiLeNaMe_WiTh_CaPsLoCk",
+    }
+
+    for fn in filenames:
+        assert filenames[fn] == sanitize_input(fn)
