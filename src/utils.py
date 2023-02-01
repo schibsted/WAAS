@@ -73,7 +73,7 @@ def generate_text(result):
     return "\n".join(text)
 
 def get_time_as_hundreds(sec):
-    return int(floor(sec * 10))
+    return int(floor(sec * 100))
 
 def get_uuid():
     return str(uuid4())
