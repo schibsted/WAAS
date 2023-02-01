@@ -14,7 +14,7 @@ The response will be a JSON object with `job_id` that can be used to check the s
 
 Query parameters:
 
-- REQUIRED: `email_callback`: string
+- REQUIRED: `email_callback`: string or `email_callback`: string
 - OPTIONAL: `language`: string (default: automatic detection)
 - OPTIONAL: `model`: string (default: `tiny`)
 - OPTIONAL: `task`: string (default: `transcribe`)
@@ -116,12 +116,21 @@ Then you are inside the api-containe and can do stuff
 
 To upload a file called audunspodssounds.mp3 in norwegian from your download directory
 
+With email callback:
+
 ```sh
 curl --location --request POST 'localhost:3000/v1/transcribe?output=vtt&email_callback=test@localhost&language=norwegian&model=large' \
   --header 'Content-Type: audio/mpeg' \
   --data-binary '@/Users/<user>/Downloads/audunspodssounds.mp3'
 ```
 
+With webhook callback:
+
+```sh
+curl --location --request POST 'localhost:3000/v1/transcribe?output=vtt&language=norwegian&model=large&webhook_callback_url=https://myniceserver.something/mywebhookid' \
+  --header 'Content-Type: audio/mpeg' \
+  --data-binary '@/Users/<user>/Downloads/audunspodssounds.mp3'
+```
 ### Running tests
 
 ```bash

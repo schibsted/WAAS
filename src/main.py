@@ -65,6 +65,8 @@ def is_invalid_params(req):
     requestedModel = req.args.get("model", DEFAULT_MODEL)
     language = req.args.get("language")
     task = req.args.get("task", DEFAULT_TASK)
+    email_callback = req.args.get("email_callback")
+    webhook_callback_url = req.args.get("webhook_callback_url")
 
     # Check if model is available
     if requestedModel not in whisper.available_models():
@@ -82,6 +84,10 @@ def is_invalid_params(req):
     # Check if the body contains binary data
     if not req.data or not isinstance(req.data, bytes):
         return "No file uploaded", 400
+    
+    # Check if email_callback or webhook_callback_url is set
+    if email_callback is None and webhook_callback_url is None:
+        return "No email_callback or webhook_callback_url set", 400
 
     return False
 
@@ -115,7 +121,11 @@ def transcribe():
                 },
                 "email_callback": {
                     "type": "string",
-                    "optional": False,
+                    "optional": True,
+                },
+                 "webhook_callback_url": {
+                    "type": "string",
+                    "optional": True,
                 },
                 "filename": {
                     "type": "string",
@@ -142,19 +152,30 @@ def transcribe():
             task = request.args.get("task", DEFAULT_TASK)
             language = request.args.get("language")
 
-            email = urllib.parse.unquote(request.args.get("email_callback"))
-            set_user({"email": email})
+            quoted_email = request.args.get("email_callback")
+            if quoted_email:
+                email = urllib.parse.unquote(quoted_email)
+                set_user({"email": email})
+            else:
+                email = None
+
+            quoted_webhook_url = request.args.get("webhook_callback_url")
+            if quoted_webhook_url:
+                webhook_url = urllib.parse.unquote(quoted_webhook_url)
+            else:
+                webhook_url = None
 
             uploaded_filename = urllib.parse.unquote(
                 request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
-                args=(filename, requestedModel, task, language, email),
+                args=(filename, requestedModel, task, language, email, webhook_url),
                 result_ttl=3600*24*7,
                 job_timeout=3600*4,
                 meta={
                     'email': email,
+                    'webhook_url': webhook_url,
                     'uploaded_filename': uploaded_filename
                 },
                 on_success=callbacks.success,
