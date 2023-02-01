@@ -4,7 +4,7 @@ import json
 
 def test_get_time_as_hundreds():
     hundred = get_time_as_hundreds(111.09)
-    assert hundred == 1110
+    assert hundred == 11109
 
 def test_generate_jojo_doc():
     filename = "test_with_norwegian_chars_ÆøÅæØå"
