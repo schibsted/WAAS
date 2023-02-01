@@ -117,7 +117,7 @@ Then you are inside the api-containe and can do stuff
 To upload a file called audunspodssounds.mp3 in norwegian from your download directory
 
 ```sh
-curl --location --request POST 'localhost:5000/v1/transcribe?output=vtt' \
+curl --location --request POST 'localhost:3000/v1/transcribe?output=vtt&email_callback=test@localhost&language=norwegian&model=large' \
   --header 'Content-Type: audio/mpeg' \
   --data-binary '@/Users/<user>/Downloads/audunspodssounds.mp3'
 ```
