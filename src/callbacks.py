@@ -7,7 +7,6 @@ from src.webhook_dispatcher import post_to_webhook
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
 
 def success(job, connection, result, *args, **kwargs):
-    print(job.meta)
     email = job.meta.get("email")
     filename = job.meta.get("uploaded_filename")
     webhook_url = job.meta.get("webhook_url")
