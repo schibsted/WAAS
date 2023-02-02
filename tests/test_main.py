@@ -109,7 +109,7 @@ def test_detect_language(client):
     with open('tests/test.mp3', 'rb') as f:
         data = f.read()
 
-    response = client.post('/v1/detect?model=tiny',
+    response = client.post('/v1/detect?model=tiny&email_callback=example@example.com&languages=english',
                            data=data, content_type='audio/mp3')
 
     assert response.status_code == 200
