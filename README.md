@@ -71,6 +71,33 @@ Get the status and metadata of the provided job.
 
 Get the available length of the queue as JSON object with the key `length`.
 
+### Webhook response
+
+If using `webhook_callback_url` in the request parameters you will get a `POST` to the webhook url of your choice. The post payload will be a json with this content
+
+On success:
+
+```
+{
+  "source": "waas", 
+  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "success": true, 
+  "url": "https://example.com/v1/download/09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "filename": "untitled-transcription"
+}
+```
+
+On failure:
+
+```
+{
+  "source": "waas", 
+  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "success": false
+}
+```
+
+
 ## Contributing
 
 ### Installation

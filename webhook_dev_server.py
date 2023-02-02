@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# Run this to get a simple web server listening on port 8080
+# To test webhook you need to route it via ngrok or similar to get an url which the docker container can reach
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class S(BaseHTTPRequestHandler):

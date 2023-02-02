@@ -55,8 +55,12 @@ def test_transcribe_options(client):
             },
             "email_callback": {
                 "type": "string",
-                "optional": False,
+                "optional": True,
             },
+             "webhook_callback_url": {
+                    "type": "string",
+                    "optional": True,
+                },
             "filename": {
                 "type": "string",
                 "optional": True,
