@@ -100,6 +100,14 @@ On failure:
 
 ## Contributing
 
+## Requirements
+
+Required amount of VRAM depends on the model used. The smallest model is `tiny` which requires about 1GB of VRAM.
+
+You can see the [full list of models here](https://github.com/openai/whisper#available-models-and-languages) with information about the required VRAM.
+
+The codebase is expected to be compatible with Python 3.8-3.10. This would be the same as the [OpenAI Whisper](https://github.com/openai/whisper#setup) requirements.
+
 ### Installation
 
 ```sh
