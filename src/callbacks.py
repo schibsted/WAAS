@@ -29,8 +29,8 @@ def success(job, connection, result, *args, **kwargs):
         print(f'Sending webhook to {webhook_url} with success message')
         try:
             post_to_webhook(webhook_url, job.id, filename, url, success=True)
-        except:
-            print("Unable to post to webhook in successful job")
+        except Exception as e :
+            print(f"Unable to post to webhook in successful job: {e}")
             if (ENVIRONMENT != 'dev'):
                 raise Exception("Unable to post to webhook in successful job")
 
