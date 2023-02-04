@@ -179,3 +179,8 @@ $ pytest
 ```sh
 $ /Applications/Python\ 3.7/Install\ Certificates.command
 ```
+### How to run tests outside the docker container?
+
+Make sure you have fired up the Redis using docker-compose and then use: 
+
+`ENVIRONMENT=test BASE_URL=http://localhost REDIS_URL=redis://localhost:6379 pytest -v `
