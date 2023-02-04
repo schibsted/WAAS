@@ -14,7 +14,7 @@ The response will be a JSON object with `job_id` that can be used to check the s
 
 Query parameters:
 
-- REQUIRED: `email_callback`: string or `email_callback`: string
+- REQUIRED: `email_callback`: string or `webhook_callback_url`: string
 - OPTIONAL: `language`: string (default: automatic detection)
 - OPTIONAL: `model`: string (default: `tiny`)
 - OPTIONAL: `task`: string (default: `transcribe`)
