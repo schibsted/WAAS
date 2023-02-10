@@ -454,3 +454,21 @@ option {
     opacity: 0;
   }
 }
+
+.editor {
+    width: 100%;
+    background-color: #fff;
+    color: #000;
+}
+
+#transcription td {
+    border-left: 3px solid #fff;
+    outline: none;
+}
+
+#transcription td:hover {
+    border-left: 3px solid #EEE;
+}
+#transcription td.selected {
+    border-left: 3px solid #808080;
+}

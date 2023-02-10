@@ -3,6 +3,7 @@ import Error from "./components/Error.js";
 import Header from "./components/Header.js";
 import Stats from "./components/Stats.js";
 import Settings from "./components/Settings.js";
+import Editor from "./components/Editor.js";
 import Queue from "./components/Queue.js";
 import UploadForm from "./components/UploadForm.js";
 import { allowedFileTypes, images } from "./utils/constants.js";
@@ -55,7 +56,7 @@ const App = () => {
           return setErrorMessage("Please upload a valid audio or video file");
 
         setFileStored(file);
-        setUploadStatus("pending");
+        setUploadStatus("edit");
         break;
 
       default:
@@ -77,6 +78,16 @@ const App = () => {
 
     if (isDragging) {
       return html`<${DragAndDrop} />`;
+    }
+
+    if (uploadStatus === "edit") {
+      return html`<${Editor}
+        fileStored=${fileStored}
+        setUploadStatus=${setUploadStatus}
+        setErrorMessage=${setErrorMessage}
+        setJobId=${setJobId}
+        onCancel=${onBack}
+      />`;
     }
 
     if (uploadStatus === "pending") {
