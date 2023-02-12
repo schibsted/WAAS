@@ -456,19 +456,28 @@ option {
 }
 
 .editor {
-    width: 100%;
-    background-color: #fff;
-    color: #000;
+  width: 100%;
+  background-color: #fff;
+  color: #000;
 }
 
-#transcription td {
-    border-left: 3px solid #fff;
-    outline: none;
+#transcription tr td {
+  outline: none;
 }
 
-#transcription td:hover {
-    border-left: 3px solid #EEE;
+#transcription tr td:first-child {
+  border-left: 3px solid #fff;
+  max-width: 30px;
 }
-#transcription td.selected {
-    border-left: 3px solid #808080;
+
+#transcription tr:hover td:first-child {
+  border-left: 3px solid #eee;
+}
+
+#transcription tr.selected td:first-child {
+  border-left: 3px solid blue;
+}
+
+svg.play-icon:hover  {
+    fill: #808080;
 }
