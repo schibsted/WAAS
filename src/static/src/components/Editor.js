@@ -48,8 +48,6 @@ const Editor = ({
 
   return html`<div>
     <main class="editor">
-      <h1>Editor</h1>
-      <br />
       <div class="file-info">
         <svg
           xmlns="http://www.w3.org/2000/svg"
