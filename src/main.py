@@ -16,12 +16,14 @@ from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
+
 from src import callbacks
 from src.utils import (
     generate_srt, generate_vtt, generate_text,
     get_total_time_transcribed, generate_jojo_doc,
     sanitize_input
 )
+from src.services.webhook_service import WebhookService
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
@@ -53,6 +55,8 @@ app = Flask(__name__)
 redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
 redis_connection = redis.from_url(redis_url)
 rq_queue = Queue(connection=redis_connection)
+allowed_webhooks_file = os.getenv('ALLOWED_WEBHOOKS_FILE', 'allowed_webhooks.json')
+webhook_store = WebhookService(allowed_webhooks_file)
 
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
@@ -66,7 +70,7 @@ def is_invalid_params(req):
     language = req.args.get("language")
     task = req.args.get("task", DEFAULT_TASK)
     email_callback = req.args.get("email_callback")
-    webhook_callback_url = req.args.get("webhook_callback_url")
+    webhook_id = req.args.get("webhook_id")
 
     # Check if model is available
     if requestedModel not in whisper.available_models():
@@ -86,7 +90,7 @@ def is_invalid_params(req):
         return "No file uploaded", 400
     
     # Check if email_callback or webhook_callback_url is set
-    if email_callback is None and webhook_callback_url is None:
+    if email_callback is None and webhook_id is None:
         return "No email_callback or webhook_callback_url set", 400
 
     return False
@@ -123,7 +127,7 @@ def transcribe():
                     "type": "string",
                     "optional": True,
                 },
-                 "webhook_callback_url": {
+                 "webhook_id": {
                     "type": "string",
                     "optional": True,
                 },
@@ -159,23 +163,28 @@ def transcribe():
             else:
                 email = None
 
-            quoted_webhook_url = request.args.get("webhook_callback_url")
-            if quoted_webhook_url:
-                webhook_url = urllib.parse.unquote(quoted_webhook_url)
+            quoted_webhook_id = request.args.get("webhook_id")
+            if quoted_webhook_id:
+                webhook_id = urllib.parse.unquote(quoted_webhook_id)
+                is_valid_webhook = webhook_store.is_valid_webhook(webhook_id)
+                if is_valid_webhook == False:
+                    return {
+                        "error": "Invalid webhook id"
+                    }, 405
             else:
-                webhook_url = None
+                webhook_id = None
 
             uploaded_filename = urllib.parse.unquote(
                 request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
-                args=(filename, requestedModel, task, language, email, webhook_url),
+                args=(filename, requestedModel, task, language, email, webhook_id),
                 result_ttl=3600*24*7,
                 job_timeout=3600*4,
                 meta={
                     'email': email,
-                    'webhook_url': webhook_url,
+                    'webhook_id': webhook_id,
                     'uploaded_filename': uploaded_filename
                 },
                 on_success=callbacks.success,
@@ -188,7 +197,7 @@ def transcribe():
 
         except Exception as e:
             logging.exception(e)
-            return 500
+            return "Server error", 500
         finally:
             tempFile.close()
 

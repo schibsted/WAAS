@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-allowed_webooks.json
 # C extensions
 *.so
 Pipfile
@@ -139,3 +138,4 @@ testfiles
 
 #Uploads
 upload-shared-tmp
+allowed_webhooks.json

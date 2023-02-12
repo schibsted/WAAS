@@ -2,14 +2,16 @@ import os
 
 from src import mailer
 from src.utils import increment_total_time_transcribed
-from src.webhook_dispatcher import post_to_webhook
+from src.services.webhook_service import WebhookService
 
+allowed_webhooks_file = os.getenv('ALLOWED_WEBHOOKS_FILE', 'allowed_webhooks.json')
+webhook_store = WebhookService(allowed_webhooks_file)
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
 
 def success(job, connection, result, *args, **kwargs):
     email = job.meta.get("email")
     filename = job.meta.get("uploaded_filename")
-    webhook_url = job.meta.get("webhook_url")
+    webhook_id = job.meta.get("webhook_id")
 
     url = os.environ.get("BASE_URL") + "/v1/download/" + job.id
 
@@ -25,18 +27,12 @@ def success(job, connection, result, *args, **kwargs):
             if (ENVIRONMENT != 'dev'):
                 raise Exception("Unable to send email in successful job")
 
-    if webhook_url:
-        print(f'Sending webhook to {webhook_url} with success message')
-        try:
-            post_to_webhook(webhook_url, job.id, filename, url, success=True)
-        except Exception as e :
-            print(f"Unable to post to webhook in successful job: {e}")
-            if (ENVIRONMENT != 'dev'):
-                raise Exception("Unable to post to webhook in successful job")
+    if webhook_id:
+        webhook_store.post_to_webhook(webhook_id, job.id, filename, url, success=True)           
 
 def failure(job, connection, type, value, traceback):
     email = job.meta.get("email")
-    webhook_url = job.meta.get("webhook_url")
+    webhook_id = job.meta.get("webhook_id")
     filename = job.meta.get("uploaded_filename")
 
     if email:
@@ -47,11 +43,5 @@ def failure(job, connection, type, value, traceback):
             if (ENVIRONMENT != 'dev'):
                 raise Exception("Unable to send email in failed job")
     
-    if webhook_url:
-        print(f'Sending webhook to {webhook_url} with failure message')
-        try:
-            post_to_webhook(webhook_url, job.id, filename, None, success=False)
-        except Exception as e:
-            print("Unable to post to webhook in failed job")
-            if (ENVIRONMENT != 'dev'):
-                raise Exception("Unable to post to webhook in failed job" + e.message)
+    if webhook_id:
+        webhook_store.post_to_webhook(webhook_id, job.id, filename, None, success=False)       

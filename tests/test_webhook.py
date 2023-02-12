@@ -3,22 +3,24 @@ import requests_mock
 import pytest
 from src.callbacks import success, failure
 from src.webhook_dispatcher import post_to_webhook
+from src.services.webhook_service import WebhookService
 import redis
 import os
 
 def match_success_payload(request):
     data = request.json()
-    return data['success'] == True
+    return data['success'] == True and 'X-WAAS-Signature' in request.headers
 
 def match_failure_payload(request):
     data = request.json()
-    return data['success'] == False
+    return data['success'] == False and 'X-WAAS-Signature' in request.headers
 
 # Mocking environment variables for testing
 @pytest.fixture
 def mock_env(monkeypatch):
     monkeypatch.setenv("BASE_URL", "https://test")
     monkeypatch.setenv("ENVIRONMENT", "test")
+    monkeypatch.setenv("ALLOWED_WEBHOOKS_FILE", "tests/fixtures/allowed_webhooks.json")
 
 @pytest.fixture
 def redis_conn(mock_env):
@@ -37,7 +39,8 @@ def job():
   return Job('1234-abcd',{
           "email": None,
           "uploaded_filename": "test.wav",
-          "webhook_url": 'https://myniceserver.com/mywebhook'
+          "external_ref": '1234-abcd',
+          "webhook_id": "77c500b2-0e0f-4785-afc7-f94ed529c897"
       })
 
 @pytest.fixture
@@ -50,11 +53,34 @@ def result():
         ]
     }
 
+def test_setup_webhook_store(mock_env):
+    file_path = os.getenv('ALLOWED_WEBHOOKS_FILE')
+    webhook_store = WebhookService(file_path)
+    assert webhook_store is not None
+
+def test_get_webhook_by_id(mock_env):
+    file_path = os.getenv('ALLOWED_WEBHOOKS_FILE')
+    webhook_store = WebhookService(file_path)
+    webhook = webhook_store.get_webhook_by_id('77c500b2-0e0f-4785-afc7-f94ed529c897')
+    assert webhook['url'] == "https://myniceserver.com/mywebhook"
+
+def test_not_valid_webhook_id(mock_env):
+    file_path = os.getenv('ALLOWED_WEBHOOKS_FILE')
+    webhook_store = WebhookService(file_path)
+    webhook = webhook_store.is_valid_webhook('not-valid-id')
+    assert webhook is False
+
 def test_success_callback_with_webhook(requests_mock, job, result, mock_env, redis_conn):
     requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_success_payload, text='resp')
     success(job, redis_conn, result)
     assert True
 
+def test_success_callback_with_invalid_webhook(requests_mock, job, result, mock_env, redis_conn):
+    requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_success_payload, text='resp')
+    job.meta['webhook_id'] = 'not-valid-id'
+    with pytest.raises(Exception):
+        success(job, redis_conn, result)
+    
 def test_failure_callback_with_webhook(requests_mock, job, result, mock_env, redis_conn):
     requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_failure_payload, text='resp')
     
@@ -62,14 +88,11 @@ def test_failure_callback_with_webhook(requests_mock, job, result, mock_env, red
     failure(job, redis_conn, result, transcribe_test_error, None)
     assert True
 
-def test_http_error_from_webhook_destination(requests_mock, job, result, mock_env):
-    requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', status_code=500)
-    with pytest.raises( requests.exceptions.HTTPError, match=r'.*500 Server Error.*'):
-        post_to_webhook(job.meta['webhook_url'], job.id, filename=job.meta['uploaded_filename'], url=None, success=True)
-      
 def test_timeout_from_webhook_destination(requests_mock, job, result, mock_env):
     requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', exc=requests.exceptions.ConnectTimeout)
+    file_path = os.getenv('ALLOWED_WEBHOOKS_FILE')
+    webhook_store = WebhookService(file_path)
     with pytest.raises( requests.exceptions.Timeout):
-        post_to_webhook(job.meta['webhook_url'], job.id, filename=job.meta['uploaded_filename'], url=None, success=True)
+        webhook_store.post_to_webhook(job.meta['webhook_id'], job.id, job.meta['uploaded_filename'], url=None, success=True)
       
       

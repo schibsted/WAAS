@@ -129,6 +129,20 @@ export EMAIL_SENDER_HOST=smtp.example.com
 export DISCLAIMER='This is a <a href="example.com">disclaimer</a>'
 ```
 
+Add a json file named `allowed_webhooks.json` to the root folder of the project. This file is ignored by git.
+The content should be a list of valid webhooks, urls and tokens like this: 
+
+```
+[
+  {
+    "id": "77c500b2-0e0f-4785-afc7-f94ed529c897",
+    "url": "https://myniceserver.com/mywebhook",
+    "token": "frKPI6p5LxxpJa8tCvVr=u5NvU66EJCQdybPuEmzKNeyCDul2-zrOx05?LwIhL5N"
+  }
+]
+```
+And set the env variable `ALLOWED_WEBHOOKS_FILE=allowed_webhooks.json`
+
 Then run the following command
 
 ```sh

@@ -14,6 +14,7 @@ services:
             - EMAIL_SENDER_PASSWORD
             - EMAIL_SENDER_HOST
             - DISCLAIMER
+            - ALLOWED_WEBHOOKS_FILE
         command: gunicorn -w 2 -b 0.0.0.0:3000 --log-file=- 'src.main:app'
     worker:
         build: .
@@ -26,6 +27,7 @@ services:
             - EMAIL_SENDER_ADDRESS
             - EMAIL_SENDER_PASSWORD
             - EMAIL_SENDER_HOST
+            - ALLOWED_WEBHOOKS_FILE
         command: rq worker --url redis://redis:6379 -c worker-settings
 
     redis:
