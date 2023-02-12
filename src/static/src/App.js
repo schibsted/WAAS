@@ -13,6 +13,7 @@ const App = () => {
   const [image, setImage] = useState({});
   const [isDragging, setIsDragging] = useState(false);
   const [fileStored, setFileStored] = useState(null);
+  const [jojoDoc, setJojoDoc] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [uploadStatus, setUploadStatus] = useState(null);
   const [jobId, setJobId] = useState(null);
@@ -52,6 +53,18 @@ const App = () => {
 
         const file = files[0];
 
+        if (file.name.endsWith(".jojo")) {
+          const reader = new FileReader();
+          reader.addEventListener("load", (event) => {
+            const doc = JSON.parse(event.target.result);
+            setJojoDoc(doc);
+            setUploadStatus("edit");
+          });
+
+          reader.readAsText(file);
+          return;
+        }
+
         if (!allowedFileTypes.some((type) => file.type.includes(type)))
           return setErrorMessage("Please upload a valid audio or video file");
 
@@ -83,6 +96,7 @@ const App = () => {
     if (uploadStatus === "edit") {
       return html`<${Editor}
         fileStored=${fileStored}
+        jojoDoc=${jojoDoc}
         setUploadStatus=${setUploadStatus}
         setErrorMessage=${setErrorMessage}
         setJobId=${setJobId}
@@ -129,7 +143,9 @@ const App = () => {
         <${UploadForm}
           onChange=${(file) => {
             if (!allowedFileTypes.some((type) => file.type.includes(type)))
-              return setErrorMessage("Please upload a valid audio or video file");
+              return setErrorMessage(
+                "Please upload a valid audio or video file"
+              );
             setFileStored(file);
             setUploadStatus("pending");
           }}

@@ -1,8 +1,42 @@
 import Table from "./Table.js";
 import AudioPlayer from "./AudioPlayer.js";
+import { PlusIcon, UploadIcon } from "./icons/index.js";
+
+const UploadForm = ({ onChange, accentColor }) => {
+  return html`
+    <form
+      class="upload-file"
+      onchange=${(event) => {
+        const file = event.target.files[0];
+        onChange(file);
+      }}
+    >
+      <label class="dropzone">
+        <${UploadIcon} />
+      </label>
+
+      <label
+        for="file-upload"
+        id="file-upload-button"
+        style=${{ backgroundColor: accentColor }}
+        class="file-upload-button"
+      >
+        <input
+          id="file-upload"
+          name="file-dropzone-upload"
+          type="file"
+          class="sr-only"
+        />
+        <${PlusIcon} />
+        Choose audio file
+      </label>
+    </form>
+  `;
+};
 
 const Editor = ({
   fileStored,
+  jojoDoc,
   setUploadStatus,
   setErrorMessage,
   setJobId,
@@ -10,6 +44,7 @@ const Editor = ({
 }) => {
   const { useState } = preact;
   const [cursor, setCursor] = useState();
+  const [audio, setAudio] = useState();
 
   return html`<div>
     <main class="editor">
@@ -30,15 +65,19 @@ const Editor = ({
             d="M12.75 4.75h-5a2 2 0 0 0-2 2v10.5c0 1.1.9 2 2 2h8.5a2 2 0 0 0 2-2v-7m-5.5-5.5v3.5c0 1.1.9 2 2 2h3.5m-5.5-5.5 5.5 5.5"
           ></path>
         </svg>
-        <p>${fileStored.name}</p>
+        <p>${audio ? audio.name : "No audio file."}</p>
       </div>
       <br />
-      ${AudioPlayer({ cursor, fileStored })}
-      <br />
-      <br />
-      <button onclick=${() => setUploadStatus("pending")}>Videre</button>
+      <${audio && AudioPlayer} cursor=${cursor} audio=${audio} />
+      <${!audio && UploadForm}
+        onChange=${(file) => {
+          setAudio(file);
+        }}
+      />
     </main>
-    <div class="table-container">${Table({ setCursor })}</div>
+    <div class="table-container">
+      <${Table} jojoDoc=${jojoDoc} setCursor=${setCursor} />
+    </div>
   </div>`;
 };
 

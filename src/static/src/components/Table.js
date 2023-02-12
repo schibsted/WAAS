@@ -1,19 +1,3 @@
-const randomWord = () => {
-  const words =
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
-      .replace(/[\.,\']/g, "")
-      .split(" ");
-  return words[Math.floor(Math.random() * words.length - 1)];
-};
-
-const randomSentence = (numberOfWords = 3) => {
-  let words = [];
-  for (let i = 0; i < numberOfWords; i++) {
-    words.push(randomWord());
-  }
-  return words.join(" ");
-};
-
 const toTimeString = (totalSeconds) => {
   const totalMs = totalSeconds * 1000;
   const result = new Date(totalMs).toISOString().slice(11, 19);
@@ -21,10 +5,10 @@ const toTimeString = (totalSeconds) => {
   return result;
 };
 
-const Table = ({ setCursor }) => {
+const Table = ({ jojoDoc, setCursor }) => {
   const { useState, useEffect } = preact;
-  const [editElement, setEditElement] = useState(null);
-  const [text, setText] = useState([]);
+  const [editElement, setEditElement] = useState();
+  const text = jojoDoc.segments;
 
   useEffect(() => {
     let el = editElement;
@@ -68,23 +52,6 @@ const Table = ({ setCursor }) => {
     transcriptionTable.addEventListener("click", clickListener);
     transcriptionTable.addEventListener("focus", focusListener, true);
 
-    let interval = 1;
-    setInterval(() => {
-      setText((old) =>
-        [].concat(old, [
-          {
-            text: randomSentence(5),
-            timeStart: 2.5 * interval++,
-            timeEnd: 2.5 * interval + 2.5,
-            id:
-              Math.random().toString(16).substr(2) +
-              "-546B-47BB-8900-" +
-              Math.random().toString(16).substr(2),
-          },
-        ])
-      );
-    }, 200);
-
     return () => {
       transcriptionTable.removeEventListener("click", clickListener);
       transcriptionTable.removeEventListener("focus", focusListener);
@@ -93,7 +60,11 @@ const Table = ({ setCursor }) => {
 
   const rows = text.map(
     (t) =>
-      html`<tr key="${t.id}" data-cursor="${t.timeStart}" data-id="${t.id}">
+      html`<tr
+        key="${t.id}"
+        data-cursor="${t.timeStart / 100}"
+        data-id="${t.id}"
+      >
         <td>
           <svg
             class="play-icon"
@@ -129,12 +100,11 @@ const Table = ({ setCursor }) => {
             </g>
           </svg>
         </td>
-        <td>${toTimeString(t.timeStart)}</td>
+        <td>${toTimeString(t.timeStart / 100)}</td>
         <td contenteditable="true" spellcheck="true">${t.text}</td>
       </tr>`
   );
 
-  // console.log("render Table");
   return html`
     <table id="transcription" cellpadding="10" cellspacing="5">
       <th>

@@ -1,5 +1,6 @@
-const AudioPlayer = ({ fileStored, cursor }) => {
+const AudioPlayer = ({ audio, cursor }) => {
   const { useEffect } = preact;
+
   useEffect(() => {
     if (!cursor) return;
     const audioElement = document.getElementById("audio-editor");
@@ -15,8 +16,8 @@ const AudioPlayer = ({ fileStored, cursor }) => {
       audioElement.controls = true;
     });
 
-    reader.readAsDataURL(fileStored);
-  }, [fileStored]);
+    reader.readAsDataURL(audio);
+  }, [audio]);
 
   return html`<audio id="audio-editor"></audio>`;
 };

@@ -489,6 +489,7 @@ svg.play-icon:hover {
 
 .editor {
   margin: 10px;
+  width: 300px;
 }
 
 @media (min-width: 850px) {
