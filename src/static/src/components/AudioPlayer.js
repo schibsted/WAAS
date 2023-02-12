@@ -1,5 +1,5 @@
 const AudioPlayer = ({ fileStored, cursor }) => {
-  const { useState, useEffect } = preact;
+  const { useEffect } = preact;
   useEffect(() => {
     if (!cursor) return;
     const audioElement = document.getElementById("audio-editor");

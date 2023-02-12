@@ -83,11 +83,11 @@ const Table = ({ setCursor }) => {
           },
         ])
       );
-    }, 2500);
+    }, 200);
 
     return () => {
-      transcriptionTable.removeEventListener(clickListener);
-      transcriptionTable.removeEventListener(focusListener);
+      transcriptionTable.removeEventListener("click", clickListener);
+      transcriptionTable.removeEventListener("focus", focusListener);
     };
   }, []);
 

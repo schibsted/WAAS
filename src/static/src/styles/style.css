@@ -50,6 +50,7 @@ body {
   background-position: center;
   display: flex;
   flex-flow: column;
+  max-height: 100vh;
 }
 
 .header {
@@ -184,7 +185,8 @@ body {
   font-weight: 400;
 }
 
-.settings {
+.settings,
+.editor {
   position: relative;
   align-self: center;
   max-width: 350px;
@@ -288,7 +290,8 @@ body {
   text-transform: capitalize;
 }
 
-.button-upload {
+.button-upload,
+.editor button {
   margin: 0 0 16px 0;
   padding: 10px 12px;
   border-radius: 8px;
@@ -455,12 +458,6 @@ option {
   }
 }
 
-.editor {
-  width: 100%;
-  background-color: #fff;
-  color: #000;
-}
-
 #transcription tr td {
   outline: none;
 }
@@ -478,6 +475,26 @@ option {
   border-left: 3px solid blue;
 }
 
-svg.play-icon:hover  {
-    fill: #808080;
+svg.play-icon:hover {
+  fill: #808080;
+}
+
+.table-container {
+  overflow-y: scroll;
+  max-height: 100vh;
+  background-color: #fff;
+  display: inline-block;
+  border-radius: 15px;
+}
+
+.editor {
+  margin: 10px;
+}
+
+@media (min-width: 850px) {
+  .editor {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+  }
 }
