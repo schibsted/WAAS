@@ -133,7 +133,7 @@ const Editor = ({
         <p>${audio ? audio.name : "No audio file."}</p>
       </div>
       <br />
-      <${AudioOrUpload} audio={audio} cursor={cursor} setAudio={setAudio} />
+      <${AudioOrUpload} audio=${audio} cursor=${cursor} setAudio=${setAudio} />
       <br />
       <div id="save">
         <button onclick=${() => download("jojo")}>Save (.jojo)</button>
