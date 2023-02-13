@@ -35,7 +35,7 @@ const UploadForm = ({ onChange, accentColor }) => {
   `;
 };
 
-const AudioOrUpload = ({ audio, cursor }) => {
+const AudioOrUpload = ({ audio, cursor, setAudio }) => {
   if (audio) {
     return html`<${AudioPlayer} cursor=${cursor} audio=${audio} /><br />`;
   }
@@ -133,7 +133,7 @@ const Editor = ({
         <p>${audio ? audio.name : "No audio file."}</p>
       </div>
       <br />
-      <${AudioOrUpload} audio={audio} cursor={cursor} />
+      <${AudioOrUpload} audio={audio} cursor={cursor} setAudio={setAudio} />
       <br />
       <div id="save">
         <button onclick=${() => download("jojo")}>Save (.jojo)</button>
