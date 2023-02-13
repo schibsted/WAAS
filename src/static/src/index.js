@@ -1,6 +1,6 @@
-import * as preact from "https://cdn.skypack.dev/preact";
-import * as hooks from "https://cdn.skypack.dev/preact/hooks";
-import { html } from "https://cdn.skypack.dev/htm/preact";
+import * as preact from "preact";
+import * as hooks from "preact/hooks";
+import { html } from "preact/htm";
 import App from "./App.js";
 
 window.html = html;
