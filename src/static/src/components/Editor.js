@@ -1,6 +1,7 @@
 import Table from "./Table.js";
 import AudioPlayer from "./AudioPlayer.js";
 import { PlusIcon, UploadIcon } from "./icons/index.js";
+import toTimeString from "../utils/toTimeString.js";
 
 const UploadForm = ({ onChange, accentColor }) => {
   return html`
@@ -46,6 +47,72 @@ const Editor = ({
   const [cursor, setCursor] = useState();
   const [audio, setAudio] = useState();
 
+  const download = async (type) => {
+    const a = document.createElement("a");
+    a.download = (audio ? audio.name : "Transcription") + "." + type;
+    const data = async () => {
+      switch (type) {
+        case "jojo":
+          return JSON.stringify(jojoDoc);
+          break;
+
+        case "srt":
+          return jojoDoc.segments
+            .map((segment, index) => {
+              return [
+                index + 1,
+                toTimeString(segment.timeStart / 100) +
+                  ",000 --> " +
+                  toTimeString(segment.timeEnd / 100) +
+                  ",000",
+                segment.text.replace("-->", ""),
+              ].join("\n");
+            })
+            .join("\n\n");
+          break;
+
+        case "txt":
+          return jojoDoc.segments
+            .map(
+              (segment, index) =>
+                `${toTimeString(segment.timeStart / 100)} | ${segment.text}`
+            )
+            .join("\n");
+          break;
+
+        case "csv":
+          return [
+            "Time;Transcription",
+            ...jojoDoc.segments.map(
+              (segment, index) =>
+                `${toTimeString(
+                  segment.timeStart / 100
+                )};${segment.text.replace(";", "")}`
+            ),
+          ].join("\n");
+          break;
+
+        default:
+          break;
+      }
+    };
+    a.href =
+      "data:application/octet-stream;charset=utf-8;base64," +
+      btoa(await data());
+    a.click();
+  };
+
+  const AudioOrUpload = () => {
+    if (audio) {
+      return html`<${AudioPlayer} cursor=${cursor} audio=${audio} /><br />`;
+    }
+    return html`<${UploadForm}
+      onChange=${(file) => {
+        setAudio(file);
+      }}
+    />`;
+  };
+
   return html`<div>
     <main class="editor">
       <div class="file-info">
@@ -66,12 +133,16 @@ const Editor = ({
         <p>${audio ? audio.name : "No audio file."}</p>
       </div>
       <br />
-      <${audio && AudioPlayer} cursor=${cursor} audio=${audio} />
-      <${!audio && UploadForm}
-        onChange=${(file) => {
-          setAudio(file);
-        }}
-      />
+      <${AudioOrUpload} />
+      <br />
+      <div id="save">
+        <button onclick=${() => download("jojo")}>Save (.jojo)</button>
+        <div>
+          <button onclick=${() => download("srt")}>.srt</button>
+          <button onclick=${() => download("txt")}>.txt</button>
+          <button onclick=${() => download("csv")}>.csv</button>
+        </div>
+      </div>
     </main>
     <div class="table-container">
       <${Table} jojoDoc=${jojoDoc} setCursor=${setCursor} />

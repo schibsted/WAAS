@@ -1,9 +1,4 @@
-const toTimeString = (totalSeconds) => {
-  const totalMs = totalSeconds * 1000;
-  const result = new Date(totalMs).toISOString().slice(11, 19);
-
-  return result;
-};
+import toTimeString from "../utils/toTimeString.js";
 
 const Table = ({ jojoDoc, setCursor }) => {
   const { useState, useEffect } = preact;

@@ -493,6 +493,30 @@ svg.play-icon:hover {
   text-align: center;
 }
 
+#save div {
+  display: none;
+}
+
+#save:hover div {
+  display: block;
+}
+
+#save > button:after {
+  content: "";
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(255, 255, 255, 0.5);
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#save:hover > button:after {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgba(255, 255, 255, 0.5);
+  border-top: 0;
+}
+
 @media (min-width: 850px) {
   .editor {
     position: fixed;
