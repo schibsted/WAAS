@@ -108,7 +108,7 @@ Then run the following command
 docker-compose --env-file .envrc up
 ```
 
-This will start three docker containes.
+This will start three docker containers.
 
 - redis
 - api running flask fra src
@@ -116,9 +116,9 @@ This will start three docker containes.
 
 ### Running full setup using devcontainers
 
-Install remote-development extensions (containes)
-And then in vscode do `Devcontaines: open folder in container`
-Then you are inside the api-containe and can do stuff
+Install remote-development extensions (containers)
+And then in vscode do `Devcontainers: open folder in container`
+Then you are inside the api-container and can do stuff
 
 ### curl
 
