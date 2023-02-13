@@ -1,8 +1,10 @@
 # WaaS - Whisper as a Service
 
-Backend flask application for the Speech To Text service.
+GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
 
-This service is powered by [OpenAI Whisper](https://github.com/openai/whisper)
+<div align="center">
+  <img width="1532" alt="gui" src="https://user-images.githubusercontent.com/195266/218544194-60d097f9-87a0-4a26-8f5d-dc09ba2788d6.png">
+</div>
 
 ## API Documentation
 
