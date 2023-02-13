@@ -35,6 +35,17 @@ const UploadForm = ({ onChange, accentColor }) => {
   `;
 };
 
+const AudioOrUpload = ({ audio, cursor }) => {
+  if (audio) {
+    return html`<${AudioPlayer} cursor=${cursor} audio=${audio} /><br />`;
+  }
+  return html`<${UploadForm}
+    onChange=${(file) => {
+      setAudio(file);
+    }}
+  />`;
+};
+
 const Editor = ({
   fileStored,
   jojoDoc,
@@ -102,17 +113,6 @@ const Editor = ({
     a.click();
   };
 
-  const AudioOrUpload = () => {
-    if (audio) {
-      return html`<${AudioPlayer} cursor=${cursor} audio=${audio} /><br />`;
-    }
-    return html`<${UploadForm}
-      onChange=${(file) => {
-        setAudio(file);
-      }}
-    />`;
-  };
-
   return html`<div>
     <main class="editor">
       <div class="file-info">
@@ -133,7 +133,7 @@ const Editor = ({
         <p>${audio ? audio.name : "No audio file."}</p>
       </div>
       <br />
-      <${AudioOrUpload} />
+      <${AudioOrUpload} audio={audio} cursor={cursor} />
       <br />
       <div id="save">
         <button onclick=${() => download("jojo")}>Save (.jojo)</button>
