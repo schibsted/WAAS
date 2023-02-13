@@ -64,7 +64,6 @@ const Table = ({ jojoDoc, setCursor }) => {
           <svg
             class="play-icon"
             fill="#000000"
-            height="100%"
             width="100%"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
