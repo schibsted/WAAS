@@ -44,6 +44,7 @@ const SettingsEmail = ({
         <button
           class="button-cancel"
           aria-label="cancel"
+          type="button"
           onclick=${() => onCancel()}
         >
           <${Close} />
