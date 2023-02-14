@@ -17,6 +17,15 @@ const AudioPlayer = ({ audio, cursor }) => {
     });
 
     reader.readAsDataURL(audio);
+    window.pulse("track", "engagementEvent", {
+      type: "Engagement",
+      action: "Click",
+      object: {
+        type: "UIElement",
+        "@id": `sdrn:jojo:page:editor:element:audioplayer`,
+        name: "File uploaded",
+      },
+    });
   }, [audio]);
 
   return html`<audio id="audio-editor"></audio>`;

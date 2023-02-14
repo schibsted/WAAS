@@ -1,7 +1,8 @@
 import Table from "./Table.js";
 import AudioPlayer from "./AudioPlayer.js";
-import { PlusIcon, UploadIcon } from "./icons/index.js";
+import { PlusIcon } from "./icons/index.js";
 import toTimeString from "../utils/toTimeString.js";
+import { allowedFileTypes } from "../utils/constants.js";
 
 const UploadForm = ({ onChange, accentColor }) => {
   return html`
@@ -37,7 +38,11 @@ const AudioOrUpload = ({ audio, cursor, setAudio }) => {
   }
   return html`<${UploadForm}
     onChange=${(file) => {
-      setAudio(file);
+      if (allowedFileTypes.some((type) => file.type.includes(type))) {
+        setAudio(file);
+        return;
+      }
+      alert("Please choose a valid audio or video file");
     }}
   />`;
 };
@@ -50,9 +55,19 @@ const Editor = ({
   setJobId,
   onCancel,
 }) => {
-  const { useState } = preact;
+  const { useState, useEffect } = preact;
   const [cursor, setCursor] = useState();
   const [audio, setAudio] = useState();
+
+  useEffect(() => {
+    window.pulse("trackPageView", {
+      object: {
+        id: "editor",
+        type: "Page",
+        name: "Editor",
+      },
+    });
+  }, []);
 
   const download = async (type) => {
     const a = document.createElement("a");

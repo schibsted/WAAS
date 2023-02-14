@@ -477,6 +477,7 @@ option {
 
 svg.play-icon:hover {
   fill: #808080;
+  cursor: pointer;
 }
 
 .table-container {
