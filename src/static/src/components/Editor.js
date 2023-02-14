@@ -12,10 +12,6 @@ const UploadForm = ({ onChange, accentColor }) => {
         onChange(file);
       }}
     >
-      <label class="dropzone">
-        <${UploadIcon} />
-      </label>
-
       <label
         for="file-upload"
         id="file-upload-button"

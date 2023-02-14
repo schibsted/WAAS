@@ -27,6 +27,26 @@ const App = () => {
     setImage(images[nextIndex]);
   }, [images]);
 
+  const handleFile = (file) => {
+    if (file.name.endsWith(".jojo")) {
+      const reader = new FileReader();
+      reader.addEventListener("load", (event) => {
+        const doc = JSON.parse(event.target.result);
+        setJojoDoc(doc);
+        setUploadStatus("edit");
+      });
+
+      reader.readAsText(file);
+      return;
+    }
+
+    if (!allowedFileTypes.some((type) => file.type.includes(type)))
+      return setErrorMessage("Please upload a Jojo or audio/video file");
+
+    setFileStored(file);
+    setUploadStatus("pending");
+  };
+
   const handleDragEvent = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -53,23 +73,8 @@ const App = () => {
 
         const file = files[0];
 
-        if (file.name.endsWith(".jojo")) {
-          const reader = new FileReader();
-          reader.addEventListener("load", (event) => {
-            const doc = JSON.parse(event.target.result);
-            setJojoDoc(doc);
-            setUploadStatus("edit");
-          });
+        handleFile(file);
 
-          reader.readAsText(file);
-          return;
-        }
-
-        if (!allowedFileTypes.some((type) => file.type.includes(type)))
-          return setErrorMessage("Please upload a valid audio or video file");
-
-        setFileStored(file);
-        setUploadStatus("edit");
         break;
 
       default:
@@ -142,12 +147,7 @@ const App = () => {
       <main class="main">
         <${UploadForm}
           onChange=${(file) => {
-            if (!allowedFileTypes.some((type) => file.type.includes(type)))
-              return setErrorMessage(
-                "Please upload a valid audio or video file"
-              );
-            setFileStored(file);
-            setUploadStatus("pending");
+            handleFile(file);
           }}
           accentColor=${image.accentColor}
         />
