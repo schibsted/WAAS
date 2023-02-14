@@ -3,7 +3,7 @@
 GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
 
 <div align="center">
-  <img width="1532" alt="gui" src="https://user-images.githubusercontent.com/195266/218544194-60d097f9-87a0-4a26-8f5d-dc09ba2788d6.png">
+  <img src="https://user-images.githubusercontent.com/195266/218677028-632f0a49-c089-486a-ad7f-418c07214876.png" />
 </div>
 
 ## API Documentation
