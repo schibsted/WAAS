@@ -1,8 +1,35 @@
 # WaaS - Whisper as a Service
 
-Backend flask application for the Speech To Text service.
+GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
 
-This service is powered by [OpenAI Whisper](https://github.com/openai/whisper)
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/195266/218677028-632f0a49-c089-486a-ad7f-418c07214876.png" />
+</div>
+
+<p align="center">
+  <a href="https://github.com/schibsted/WAAS/graphs/contributors">
+      <img src="https://img.shields.io/github/contributors/schibsted/WAAS?style=for-the-badge"/>
+  </a>
+  <a href="https://github.com/schibsted/WAAS/stargazers">
+      <img src="https://img.shields.io/github/stars/schibsted/WAAS?style=for-the-badge"/>
+  </a>
+  <a href="https://github.com/schibsted/WAAS/network/members">
+      <img src="https://img.shields.io/github/forks/schibsted/WAAS?style=for-the-badge"/>
+  </a>
+  <a href="https://github.com/schibsted/WAAS/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/schibsted/WAAS?style=for-the-badge" alt="WAAS is released under the Apache-2.0 license" />
+  </a>
+  <a href="https://github.com/schibsted/WAAS/issues?q=is:issue+sort:updated-desc+is:open">
+    <img src="https://img.shields.io/github/issues-raw/schibsted/WAAS?style=for-the-badge" />
+  </a>
+  <a href="https://github.com/schibsted/WAAS/issues?q=is:issue+sort:updated-desc+is:closed">
+    <img src="https://img.shields.io/github/issues-closed-raw/schibsted/WAAS?style=for-the-badge" />
+  </a>
+</p>
+
+## This project started out by VG
+
+<img src="https://imbo.vgc.no/s/rUWUC9P" />
 
 ## API Documentation
 
@@ -135,6 +162,12 @@ curl --location --request POST 'localhost:5000/v1/transcribe?output=vtt' \
 ```bash
 $ pytest
 ```
+
+## 🥳 Contributing
+
+<a href="https://github.com/schibsted/WAAS/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=schibsted/WAAS" />
+</a>
 
 ## FAQ
 
