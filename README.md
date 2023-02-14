@@ -29,7 +29,7 @@ GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
 
 ## This project started out by VG
 
-<img src="https://imbo.vgc.no/s/VV2S7Nn" />
+<img src="https://imbo.vgc.no/s/rUWUC9P" />
 
 ## API Documentation
 
