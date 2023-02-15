@@ -11,10 +11,10 @@ def send_mail(recipient: str, subject: str, body: str) -> None:
     if email_sender_address is None:
         print("No email sender address set, set EMAIL_SENDER_ADDRESS to mail")
         return
-    
+
     # Connect to the Gmail SMTP server
     email_sender_host = os.environ.get('EMAIL_SENDER_HOST')
-    
+
     if email_sender_host is None:
         print("No email sender host set, set EMAIL_SENDER_HOST to mail")
         return

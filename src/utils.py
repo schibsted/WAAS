@@ -1,16 +1,16 @@
 from json import dumps
 from math import floor
 from re import sub
+from typing import Any
 from urllib.parse import quote_plus
 from uuid import uuid4
 
 from unidecode import unidecode
 
-from typing import Any
-
 
 def sanitize_input(text: str) -> str:
     return sub("[^A-Za-z0-9+]", "_", unidecode(str(text.encode("latin-1", errors="ignore").decode("latin-1"))))
+
 
 def get_total_time_transcribed(conn: Any) -> float:
     total_time_transcribed = conn.get("waas:total_time_transcribed")
@@ -20,8 +20,10 @@ def get_total_time_transcribed(conn: Any) -> float:
 
     return float(total_time_transcribed)
 
+
 def set_total_time_transcribed(value: float, conn: Any) -> None:
     conn.set("waas:total_time_transcribed", value)
+
 
 def increment_total_time_transcribed(audio_duration: int, conn: Any) -> float:
     total_time_transcribed = get_total_time_transcribed(conn)
@@ -30,6 +32,7 @@ def increment_total_time_transcribed(audio_duration: int, conn: Any) -> float:
     set_total_time_transcribed(new_total_time_transcribed, conn=conn)
 
     return new_total_time_transcribed
+
 
 def format_timestamp(seconds: float, always_include_hours: bool = False, decimal_marker: str = '.') -> str:
     assert seconds >= 0, "non-negative timestamp expected"
@@ -76,11 +79,14 @@ def generate_text(result: Any) -> str:
 
     return "\n".join(text)
 
+
 def get_time_as_hundreds(sec: float) -> float:
     return int(floor(sec * 100))
 
+
 def get_uuid() -> str:
     return str(uuid4())
+
 
 def generate_jojo_doc(filename: str, result: Any) -> str:
     output = {
