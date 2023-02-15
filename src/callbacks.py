@@ -2,13 +2,23 @@ import os
 
 from src import mailer
 from src.utils import increment_total_time_transcribed
+from rq.job import Job
+from typing import Any
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
 
-def success(job, connection, result, *args, **kwargs):
+def success(job: Job, connection: Any, result: Any, *args, **kwargs):
     email = job.meta.get("email")
+    if email is None: 
+        print("Missing email address, not sending email")
+        return
+        
     filename = job.meta.get("uploaded_filename")
-    url = os.environ.get("BASE_URL") + "/v1/download/" + job.id
+    if filename is None: 
+        print("Missing filename, not sending email")
+        return
+    
+    url = (os.environ.get("BASE_URL") or '') + "/v1/download/" + job.id
 
     duration = result['segments'][-1]['end']
 
@@ -21,8 +31,11 @@ def success(job, connection, result, *args, **kwargs):
         if (ENVIRONMENT != 'dev'):
             raise Exception("Unable to send email in successful job")
 
-def failure(job, connection, type, value, traceback):
+def failure(job: Job, connection, type, value, traceback):
     email = job.meta.get("email")
+    if email is None: 
+        print("Missing email address, not sending email")
+        return
 
     try:
         mailer.send_failure_email(email)
