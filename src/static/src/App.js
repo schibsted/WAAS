@@ -99,14 +99,7 @@ const App = () => {
     }
 
     if (uploadStatus === "edit") {
-      return html`<${Editor}
-        fileStored=${fileStored}
-        jojoDoc=${jojoDoc}
-        setUploadStatus=${setUploadStatus}
-        setErrorMessage=${setErrorMessage}
-        setJobId=${setJobId}
-        onCancel=${onBack}
-      />`;
+      return html`<${Editor} jojoDoc=${jojoDoc} />`;
     }
 
     if (uploadStatus === "pending") {

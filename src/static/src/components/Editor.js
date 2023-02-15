@@ -47,14 +47,7 @@ const AudioOrUpload = ({ audio, cursor, setAudio }) => {
   />`;
 };
 
-const Editor = ({
-  fileStored,
-  jojoDoc,
-  setUploadStatus,
-  setErrorMessage,
-  setJobId,
-  onCancel,
-}) => {
+const Editor = ({ jojoDoc }) => {
   const { useState, useEffect } = preact;
   const [cursor, setCursor] = useState();
   const [audio, setAudio] = useState();
@@ -156,7 +149,7 @@ const Editor = ({
       </div>
     </main>
     <div class="table-container">
-      <${Table} jojoDoc=${jojoDoc} setCursor=${setCursor} />
+      <${Table} jojoDoc=${jojoDoc} setCursor=${setCursor} audio=${audio} />
     </div>
   </div>`;
 };
