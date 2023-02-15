@@ -1,27 +1,25 @@
+import logging
 import os
+import tempfile
+import urllib.parse
+from datetime import datetime
+from typing import Any, Tuple, Union
+
+import redis
 import sentry_sdk
 import whisper
-import logging
-import tempfile
-from datetime import datetime
-import urllib.parse
-from flask import Flask
+from flask import Flask, Request, Response, render_template, request
+from rq import Queue
+from rq.exceptions import NoSuchJobError
+from rq.job import Job
+from sentry_sdk import set_user
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.rq import RqIntegration
-from sentry_sdk import set_user
-from flask import request
-from flask import render_template, Response
-import redis
-from rq import Queue
-from rq.job import Job
-from rq.exceptions import NoSuchJobError
 
 from src import callbacks
-from src.utils import (
-    generate_srt, generate_vtt, generate_text,
-    get_total_time_transcribed, generate_jojo_doc,
-    sanitize_input
-)
+from src.utils import (generate_jojo_doc, generate_srt, generate_text,
+                       generate_vtt, get_total_time_transcribed,
+                       sanitize_input)
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
@@ -61,7 +59,7 @@ DEFAULT_UPLOADED_FILENAME = "untitled-transcription"
 DISCLAIMER = os.environ.get("DISCLAIMER", "")
 
 
-def is_invalid_params(req):
+def is_invalid_params(req: Request) -> Union[bool, Tuple[str, int]]:
     requestedModel = req.args.get("model", DEFAULT_MODEL)
     language = req.args.get("language")
     task = req.args.get("task", DEFAULT_TASK)
@@ -87,12 +85,12 @@ def is_invalid_params(req):
 
 
 @app.route("/", methods=['GET'])
-def index():
+def index() -> str:
     return render_template("index.html", disclaimer=DISCLAIMER, sentry_dsn=SENTRY_DSN, environment=ENVIRONMENT)
 
 
 @app.route("/v1/transcribe", methods=['POST', 'OPTIONS'])
-def transcribe():
+def transcribe() -> Any:
     if request.method == 'OPTIONS':
         return {
             "queryParams": {
@@ -142,7 +140,11 @@ def transcribe():
             task = request.args.get("task", DEFAULT_TASK)
             language = request.args.get("language")
 
-            email = urllib.parse.unquote(request.args.get("email_callback"))
+            email_callback = request.args.get("email_callback")
+            if email_callback is None:
+                raise Exception("Missing email_callback param")
+
+            email = urllib.parse.unquote(email_callback)
             set_user({"email": email})
 
             uploaded_filename = urllib.parse.unquote(
@@ -173,17 +175,22 @@ def transcribe():
 
 
 @app.route('/v1/jobs/<job_id>', methods=['GET'])
-def jobs(job_id):
+def jobs(job_id: str) -> Any:
     try:
         job = Job.fetch(job_id, connection=redis_connection)
     except NoSuchJobError:
         return "No such job",
     set_user({"email": job.meta.get('email')})
 
-    if (job.ended_at):
-        delta = job.ended_at-job.enqueued_at
+    delta = datetime.now() - datetime.now()
+
+    if job.ended_at:
+        if job.enqueued_at:
+            delta = job.ended_at - job.enqueued_at
+
     else:
-        delta = datetime.now()-job.enqueued_at
+        if job.enqueued_at:
+            delta = datetime.now() - job.enqueued_at
 
     if job.id in rq_queue.job_ids:
         position_in_queue = rq_queue.job_ids.index(job.id)
@@ -210,7 +217,7 @@ def jobs(job_id):
 
 
 @app.route('/v1/download/<job_id>', methods=['GET', 'OPTIONS'])
-def download(job_id):
+def download(job_id: str) -> Any:
     if request.method == 'OPTIONS':
         return {
             "queryParams": {
@@ -232,7 +239,7 @@ def download(job_id):
             return "No such job", 404
         set_user({"email": job.meta.get('email')})
         if job.is_finished:
-            filename = sanitize_input(job.meta.get("uploaded_filename"))
+            filename = sanitize_input(job.meta.get("uploaded_filename") or '')
 
             if output == "txt":
                 return Response(
@@ -294,21 +301,21 @@ def download(job_id):
 
 
 @app.route('/v1/queue', methods=['GET'])
-def queue():
+def queue() -> dict:
     return {
         "count": len(rq_queue.jobs)
     }
 
 
 @app.route('/v1/stats', methods=['GET'])
-def stats():
+def stats() -> dict:
     return {
         "total_time_transcribed": get_total_time_transcribed(conn=redis_connection)
     }
 
 
 @app.route("/v1/detect", methods=['POST', 'OPTIONS'])
-def detect():
+def detect() -> Any:
     if request.method == 'OPTIONS':
         return {
             "queryParams": {
@@ -359,5 +366,6 @@ def detect():
 
 
 @app.route('/debug-sentry')
-def trigger_error():
+def trigger_error() -> Any:
     division_by_zero = 1 / 0
+    return "Impossible"
