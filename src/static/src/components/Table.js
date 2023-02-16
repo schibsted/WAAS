@@ -1,7 +1,7 @@
 import toTimeString from "../utils/toTimeString.js";
 import { PlayIcon } from "./icons/index.js";
 
-const Table = ({ jojoDoc, setCursor }) => {
+const Table = ({ jojoDoc, hasAudio = false, setCursor }) => {
   const { useState, useEffect } = preact;
   const [editElement, setEditElement] = useState();
   const text = jojoDoc.segments;
@@ -61,9 +61,10 @@ const Table = ({ jojoDoc, setCursor }) => {
         data-cursor="${t.timeStart / 100}"
         data-id="${t.id}"
       >
-        <td>
+        ${hasAudio &&
+        html`<td class="play-button-cell">
           <${PlayIcon} />
-        </td>
+        </td>`}
         <td>${toTimeString(t.timeStart / 100)}</td>
         <td contenteditable="true" spellcheck="true">${t.text}</td>
       </tr>`
@@ -71,11 +72,14 @@ const Table = ({ jojoDoc, setCursor }) => {
 
   return html`
     <table id="transcription" cellpadding="10" cellspacing="5">
-      <th>
-        <b>Play</b>
-      </th>
-      <th><b>Time</b></th>
-      <th align="left"><b>Transcription</b></th>
+      <tr>
+        ${hasAudio &&
+        html`<th>
+          <b>Play</b>
+        </th>`}
+        <th><b>Time</b></th>
+        <th align="left"><b>Transcription</b></th>
+      </tr>
       ${rows}
     </table>
   `;

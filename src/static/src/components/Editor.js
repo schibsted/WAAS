@@ -149,7 +149,7 @@ const Editor = ({ jojoDoc }) => {
       </div>
     </main>
     <div class="table-container">
-      <${Table} jojoDoc=${jojoDoc} setCursor=${setCursor} audio=${audio} />
+      <${Table} hasAudio=${audio} jojoDoc=${jojoDoc} setCursor=${setCursor} audio=${audio} />
     </div>
   </div>`;
 };

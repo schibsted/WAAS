@@ -462,9 +462,12 @@ option {
   outline: none;
 }
 
+.play-button-cell {
+  max-width: 30px;
+}
+
 #transcription tr td:first-child {
   border-left: 3px solid #fff;
-  max-width: 30px;
 }
 
 #transcription tr:hover td:first-child {
