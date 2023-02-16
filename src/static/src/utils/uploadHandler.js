@@ -16,7 +16,7 @@ const uploadHandler = async ({
 
     apiUrl.searchParams.set("model", selectedModel || "large");
     apiUrl.searchParams.set("email_callback", urlFormattedEmail || "");
-    
+
     if (file.name){
       apiUrl.searchParams.set("filename", urlFormattedFileName);
     }
