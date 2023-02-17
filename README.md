@@ -33,6 +33,10 @@ GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
 Jojo is a GUI for upload and transcribe a audio or video file. After the transcription is done you get an email with download links. 
 You can directly download a Jojo-file, SRT, or text from the email. Then you can upload a Jojo file to the frontend to come into an editor (see video).
 
+### Editor
+
+The editor works 100% local in your browser. Here can you listen to segments and fix transcriptions errors. 
+
 ## This project started out by VG
 
 <img src="https://imbo.vgc.no/s/rUWUC9P" />
