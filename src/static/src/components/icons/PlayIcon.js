@@ -13,7 +13,6 @@ const PlayIcon = () => {
     >
       <g>
         <circle
-          class="play"
           fill="#fff"
           cx="50%"
           cy="50%"
@@ -21,6 +20,7 @@ const PlayIcon = () => {
           stroke="black"
           stroke-width="2"
         ></circle>
+        <rect class="stop" width="35%" height="35%" stroke="black" stroke-width="2" fill="#fff" x="33%" y="33%"></rect>
         <path
           class="play"
           stroke-width="2"

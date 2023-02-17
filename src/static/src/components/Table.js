@@ -35,7 +35,19 @@ const Table = ({ jojoDoc, hasAudio = false, setCursor }) => {
       const tr = el.closest("tr");
       const playBtn = el.closest("svg");
       if (playBtn && playBtn.nodeName === "svg") {
-        setCursor(parseFloat(tr.dataset.cursor) || 0);
+        if (playBtn.classList.contains("playing")) {
+          setCursor({
+            cursor: 0,
+            length: 0,
+          });
+          playBtn.classList.toggle("playing");
+        } else {
+          playBtn.classList.toggle("playing");
+          setCursor({
+            cursor: parseFloat(tr.dataset.cursor) || 0,
+            length: parseFloat(tr.dataset.length) || 0,
+          });
+        }
       }
     };
 
@@ -59,6 +71,7 @@ const Table = ({ jojoDoc, hasAudio = false, setCursor }) => {
       html`<tr
         key="${t.id}"
         data-cursor="${t.timeStart / 100}"
+        data-length="${(t.timeEnd - t.timeStart) / 100}"
         data-id="${t.id}"
       >
         ${hasAudio &&

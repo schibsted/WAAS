@@ -478,7 +478,19 @@ option {
   border-left: 3px solid blue;
 }
 
-svg.play-icon:hover {
+.play-icon .stop {
+    display: none;
+}
+
+.play-icon.playing .stop {
+    display: block;
+}
+
+.play-icon.playing .play {
+    display: none;
+}
+
+.play-icon:hover {
   fill: #808080;
   cursor: pointer;
 }

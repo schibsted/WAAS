@@ -49,7 +49,7 @@ const AudioOrUpload = ({ audio, cursor, setAudio }) => {
 
 const Editor = ({ jojoDoc }) => {
   const { useState, useEffect } = preact;
-  const [cursor, setCursor] = useState();
+  const [cursor, setCursor] = useState({ cursor: 0.0, length: 0.0 });
   const [audio, setAudio] = useState();
 
   useEffect(() => {
@@ -149,7 +149,12 @@ const Editor = ({ jojoDoc }) => {
       </div>
     </main>
     <div class="table-container">
-      <${Table} hasAudio=${audio} jojoDoc=${jojoDoc} setCursor=${setCursor} audio=${audio} />
+      <${Table}
+        hasAudio=${audio}
+        jojoDoc=${jojoDoc}
+        setCursor=${setCursor}
+        audio=${audio}
+      />
     </div>
   </div>`;
 };
