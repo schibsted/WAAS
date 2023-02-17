@@ -4,8 +4,9 @@ GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/195266/218677028-632f0a49-c089-486a-ad7f-418c07214876.png" />
+  <video src="https://user-images.githubusercontent.com/544388/219612413-5e84183c-4ce0-4033-ae18-4e5dca740909.mov">No video support</video>
 </div>
-
+<br/>
 <p align="center">
   <a href="https://github.com/schibsted/WAAS/graphs/contributors">
       <img src="https://img.shields.io/github/contributors/schibsted/WAAS?style=for-the-badge"/>
@@ -26,6 +27,11 @@ GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
     <img src="https://img.shields.io/github/issues-closed-raw/schibsted/WAAS?style=for-the-badge" />
   </a>
 </p>
+
+## What is Jojo?
+
+Jojo is a GUI for upload and transcribe a audio or video file. After the transcription is done you get an email with download links. 
+You can directly download a Jojo-file, SRT, or text from the email. Then you can upload a Jojo file to the frontend to come into an editor (see video).
 
 ## This project started out by VG
 
