@@ -1,8 +1,9 @@
 import requests
 import requests_mock
 import pytest
-from src.callbacks import success, failure
-from src.services.webhook_service import WebhookService
+from importlib import reload
+from src import callbacks
+from src.services.webhook_service import WebhookService, InvalidWebhookIdException
 import redis
 import os
 
@@ -20,6 +21,7 @@ def mock_env(monkeypatch):
     monkeypatch.setenv("BASE_URL", "https://test")
     monkeypatch.setenv("ENVIRONMENT", "test")
     monkeypatch.setenv("ALLOWED_WEBHOOKS_FILE", "tests/fixtures/allowed_webhooks.json")
+    reload(callbacks)
 
 @pytest.fixture
 def redis_conn(mock_env):
@@ -71,20 +73,20 @@ def test_not_valid_webhook_id(mock_env):
 
 def test_success_callback_with_webhook(requests_mock, job, result, mock_env, redis_conn):
     requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_success_payload, text='resp')
-    success(job, redis_conn, result)
+    callbacks.success(job, redis_conn, result)
     assert True
 
 def test_success_callback_with_invalid_webhook(requests_mock, job, result, mock_env, redis_conn):
     requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_success_payload, text='resp')
     job.meta['webhook_id'] = 'not-valid-id'
-    with pytest.raises(Exception):
-        success(job, redis_conn, result)
+    with pytest.raises(InvalidWebhookIdException):
+        callbacks.success(job, redis_conn, result)
     
 def test_failure_callback_with_webhook(requests_mock, job, result, mock_env, redis_conn):
     requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_failure_payload, text='resp')
     
     transcribe_test_error = Exception('test')
-    failure(job, redis_conn, result, transcribe_test_error, None)
+    callbacks.failure(job, redis_conn, result, transcribe_test_error, None)
     assert True
 
 def test_timeout_from_webhook_destination(requests_mock, job, result, mock_env):

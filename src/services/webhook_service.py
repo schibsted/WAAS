@@ -1,12 +1,20 @@
 
-import json
-import requests
 import hashlib
+import json
+import os
+
+import requests
+
 # Create a class with functions for getting a webhook url, token and id from a json file containing an array with webhook objects
+
+class InvalidWebhookIdException(Exception):
+    pass
 
 class WebhookService:
 
     def __init__(self, webhook_file):
+        if not os.path.exists(webhook_file):
+            raise FileNotFoundError("Allowed webhooks file not found")
         self.webhook_file = webhook_file
 
     def get_webhook_by_id(self, webhook_id):
@@ -51,7 +59,7 @@ class WebhookService:
                 raise
             return True
         else:
-            raise Exception("Webhook not found")
+            raise InvalidWebhookIdException(f"Webhook with id {webhook_id} not found")
 
     def get_webhooks(self):
         try:
@@ -59,10 +67,8 @@ class WebhookService:
                 webhooks = json.load(json_file)
                 return webhooks
         except FileNotFoundError:
-            print('Allowed webhooks file not found')
+            print(f'Allowed webhooks file not found. ALLOWED_WEBHOOKS_FILE environment variable is {self.webhook_file}')
             raise FileNotFoundError("Webhook file not found")
-        except json.decoder.JSONDecodeError:
-            raise json.decoder.JSONDecodeError("Webhook file is not valid JSON")
         
 
     def is_valid_webhook(self, webhook_id):

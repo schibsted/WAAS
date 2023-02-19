@@ -1,17 +1,15 @@
 import json
+import os
 
 import pytest
 import whisper
+
+os.environ['ALLOWED_WEBHOOKS_FILE'] = "tests/fixtures/allowed_webhooks.json"
 
 from src import app
 from src.main import redis_connection
 from src.utils import set_total_time_transcribed
 
-
-
-@pytest.fixture
-def mock_env(monkeypatch):
-    monkeypatch.setenv("ALLOWED_WEBHOOKS_FILE", "tests/fixtures/allowed_webhooks.json")
 
 @pytest.fixture
 def client():
@@ -110,7 +108,7 @@ def test_transcribe_enqueue(client):
     response_data = json.loads(response.data)
     assert 'job_id' in response_data and bool(response_data['job_id'])
 
-def test_transcribe_with_valid_webhook(client, mock_env):
+def test_transcribe_with_valid_webhook(client):
     with open('tests/test.mp3', 'rb') as f:
         data = f.read()
 
@@ -123,7 +121,7 @@ def test_transcribe_with_valid_webhook(client, mock_env):
     assert 'job_id' in response_data and bool(response_data['job_id'])
 
 
-def test_transcribe_with_non_valid_webhook(client, mock_env):
+def test_transcribe_with_non_valid_webhook(client):
     with open('tests/test.mp3', 'rb') as f:
         data = f.read()
 

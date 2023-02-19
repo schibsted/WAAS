@@ -53,7 +53,7 @@ app = Flask(__name__)
 redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
 redis_connection = redis.from_url(redis_url)
 rq_queue = Queue(connection=redis_connection)
-allowed_webhooks_file = os.getenv('ALLOWED_WEBHOOKS_FILE', 'allowed_webhooks.json')
+allowed_webhooks_file = os.environ.get("ALLOWED_WEBHOOKS_FILE", None)
 webhook_store = WebhookService(allowed_webhooks_file)
 
 DEFAULT_MODEL = "tiny"
@@ -157,7 +157,7 @@ def transcribe() -> Any:
             quoted_email = request.args.get("email_callback")
             quoted_webhook_id = request.args.get("webhook_id")
             
-            if quoted_email is None or quoted_email is None:
+            if quoted_email is None and quoted_webhook_id is None:
                 raise Exception("Missing email_callback or/and webhook_id param")
             
             if quoted_email:
@@ -169,6 +169,7 @@ def transcribe() -> Any:
             
             if quoted_webhook_id:
                 webhook_id = urllib.parse.unquote(quoted_webhook_id)
+                # This is not ideal to initiate class here, but it is difficult to test it with mock env otherwise
                 is_valid_webhook = webhook_store.is_valid_webhook(webhook_id)
                 if is_valid_webhook == False:
                     return {

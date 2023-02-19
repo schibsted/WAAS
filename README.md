@@ -178,6 +178,9 @@ The content should be a list of valid webhooks, urls and tokens like this:
   }
 ]
 ```
+
+For testing you could use the https://webhook.site service (as long as you do not post/transcribe private data)
+
 And set the env variable `ALLOWED_WEBHOOKS_FILE=allowed_webhooks.json`
 
 Then run the following command

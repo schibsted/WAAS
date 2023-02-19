@@ -7,8 +7,9 @@ from src import mailer
 from src.utils import increment_total_time_transcribed
 from src.services.webhook_service import WebhookService
 
-allowed_webhooks_file = os.getenv('ALLOWED_WEBHOOKS_FILE', 'allowed_webhooks.json')
+allowed_webhooks_file = os.environ.get('ALLOWED_WEBHOOKS_FILE', 'allowed_webhooks.json')
 webhook_store = WebhookService(allowed_webhooks_file)
+
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
 
 class JobCallbackException(Exception):
@@ -17,10 +18,7 @@ class JobCallbackException(Exception):
 def success(job: Job, connection: Any, result: Any, *args, **kwargs):
     email = job.meta.get("email")
     webhook_id = job.meta.get("webhook_id")
-    if email is None:
-        print("Missing email address, not sending email")
-        return
-
+    
     filename = job.meta.get("uploaded_filename")
     if filename is None:
         raise JobCallbackException('Missing filename in job meta')
@@ -49,10 +47,6 @@ def failure(job: Job, connection, type, value, traceback):
     filename = job.meta.get("uploaded_filename")
     if filename is None:
         raise JobCallbackException('Missing filename in job meta')
-    
-    if email is None:
-        print("Missing email address, not sending email")
-        return
 
     if email:
         try:
@@ -61,6 +55,6 @@ def failure(job: Job, connection, type, value, traceback):
             print("Unable to send email in failed job")
             if (ENVIRONMENT != 'dev'):
                 raise JobCallbackException("Unable to send email in failed job")
-    
+
     if webhook_id:
         webhook_store.post_to_webhook(webhook_id, job.id, filename, None, success=False)       
