@@ -10,6 +10,18 @@
     <link rel="icon" href="static/favicon.ico" type="image/x-icon" />
     <title>JoJo</title>
 
+    <script type="importmap">
+      {
+        "imports": {
+          "preact": "./static/libs/preact.module.js",
+          "preact/hooks": "./static/libs/hooks.module.js",
+          "htm": "./static/libs/htm/index.mjs",
+          "preact/htm": "./static/libs/htm/integrations/preact/index.mjs"
+        }
+      }
+    </script>
+    <!-- hello -->
+
     <!-- Pulse tracking -->
     <script type="application/javascript">
       (function (w, d, n, t, s, a, b) {
@@ -28,7 +40,7 @@
         document,
         "pulse",
         "script",
-        "//sdk.pulse.schibsted.com/pulse.min.js"
+        "https://sdk.pulse.schibsted.com/pulse.min.js"
       );
 
       pulse("init", "jojo");
@@ -77,6 +89,24 @@
         </p>
       </div>
     </noscript>
-    <script type="module" src="static/src/index.js"></script>
+    <script>
+      import("preact")
+        .then(() => {
+          const s = document.createElement("script");
+          s.src = "static/src/index.js";
+          s.type = "module";
+          document.body.append(s);
+        })
+        .catch(() => {
+          // We'll get here if we're in a browser that doesn't support import maps,
+          // because import "vue" will fail (with no evaluation performed). In that case
+          // the <script type=module> was also a no-op (mostly).
+
+          const s = document.createElement("script");
+          s.src = "static/src/index_polyfill.js";
+          s.type = "module";
+          document.body.append(s);
+        });
+    </script>
   </body>
 </html>

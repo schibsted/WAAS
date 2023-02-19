@@ -5,5 +5,6 @@ import Check from "./Check.js";
 import Update from "./Update.js";
 import Close from "./Close.js";
 import File from "./File.js";
+import PlayIcon from "./PlayIcon.js";
 
-export { JojoLogo, Check, UploadIcon, PlusIcon, Update, Close, File };
+export { JojoLogo, Check, UploadIcon, PlusIcon, Update, Close, File, PlayIcon };

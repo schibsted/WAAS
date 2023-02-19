@@ -50,6 +50,7 @@ body {
   background-position: center;
   display: flex;
   flex-flow: column;
+  max-height: 100vh;
 }
 
 .header {
@@ -184,7 +185,8 @@ body {
   font-weight: 400;
 }
 
-.settings {
+.settings,
+.editor {
   position: relative;
   align-self: center;
   max-width: 350px;
@@ -288,7 +290,8 @@ body {
   text-transform: capitalize;
 }
 
-.button-upload {
+.button-upload,
+.editor button {
   margin: 0 0 16px 0;
   padding: 10px 12px;
   border-radius: 8px;
@@ -452,5 +455,77 @@ option {
   }
   100% {
     opacity: 0;
+  }
+}
+
+#transcription tr td {
+  outline: none;
+}
+
+.play-button-cell {
+  max-width: 30px;
+}
+
+#transcription tr td:first-child {
+  border-left: 3px solid #fff;
+}
+
+#transcription tr:hover td:first-child {
+  border-left: 3px solid #eee;
+}
+
+#transcription tr.selected td:first-child {
+  border-left: 3px solid blue;
+}
+
+svg.play-icon:hover {
+  fill: #808080;
+  cursor: pointer;
+}
+
+.table-container {
+  overflow-y: scroll;
+  max-height: 100vh;
+  background-color: #fff;
+  display: inline-block;
+  border-radius: 15px;
+}
+
+.editor {
+  margin: 10px;
+  width: auto;
+  text-align: center;
+}
+
+#save div {
+  display: none;
+}
+
+#save:hover div {
+  display: block;
+}
+
+#save > button:after {
+  content: "";
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(255, 255, 255, 0.5);
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#save:hover > button:after {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgba(255, 255, 255, 0.5);
+  border-top: 0;
+}
+
+@media (min-width: 850px) {
+  .editor {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 300px;
   }
 }

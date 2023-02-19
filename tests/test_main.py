@@ -1,6 +1,7 @@
+import json
+
 import pytest
 import whisper
-import json
 
 from src import app
 from src.main import redis_connection

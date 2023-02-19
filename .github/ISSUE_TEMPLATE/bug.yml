@@ -1,0 +1,39 @@
+name: Bug Report
+description: Create a bug report for WAAS
+labels: ['bug']
+body:
+  - type: textarea
+    attributes:
+      label: Provide environment information
+      description: Please provide the python version, browser version and other relevant information about your environment.
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Which area(s) of the code does the issue occur in?
+      multiple: true
+      options:
+        - 'Website'
+        - 'Worker'
+        - 'Api'
+        - 'Mailer'
+        - 'Webhook'
+        - 'Other'
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: Describe how we can reproduce the bug/issue.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
