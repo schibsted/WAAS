@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Config file for webhooks
+allowed_webhooks.json
+!tests/fixtures/allowed_webhooks.json
+
 # C extensions
 *.so
 Pipfile
@@ -138,4 +142,4 @@ testfiles
 
 #Uploads
 upload-shared-tmp
-allowed_webhooks.json
+

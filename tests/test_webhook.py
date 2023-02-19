@@ -2,7 +2,6 @@ import requests
 import requests_mock
 import pytest
 from src.callbacks import success, failure
-from src.webhook_dispatcher import post_to_webhook
 from src.services.webhook_service import WebhookService
 import redis
 import os
