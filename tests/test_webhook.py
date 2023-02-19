@@ -6,6 +6,8 @@ from src import callbacks
 from src.services.webhook_service import WebhookService, InvalidWebhookIdException
 import redis
 import os
+import hashlib
+import json
 
 def match_success_payload(request):
     data = request.json()
@@ -14,6 +16,17 @@ def match_success_payload(request):
 def match_failure_payload(request):
     data = request.json()
     return data['success'] == False and 'X-WAAS-Signature' in request.headers
+
+def match_webhook_header_signature(request):
+    data = request.json()
+    header_signature = request.headers['X-WAAS-Signature']
+    payload_signature = hashlib.sha256("frKPI6p5LxxpJa8tCvVr=u5NvU66EJCQdybPuEmzKNeyCDul2-zrOx05?LwIhL5N".encode('utf-8'))
+    payload_signature.update(json.dumps(data).encode('utf-8'))
+    payload_signature = payload_signature.hexdigest()
+    if payload_signature != header_signature:
+        raise Exception("Signature mismatch")
+    return True
+
 
 # Mocking environment variables for testing
 @pytest.fixture
@@ -73,6 +86,11 @@ def test_not_valid_webhook_id(mock_env):
 
 def test_success_callback_with_webhook(requests_mock, job, result, mock_env, redis_conn):
     requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_success_payload, text='resp')
+    callbacks.success(job, redis_conn, result)
+    assert True
+
+def test_webhook_hash(requests_mock, job, result, mock_env, redis_conn):
+    requests_mock.register_uri('POST', 'https://myniceserver.com/mywebhook', additional_matcher=match_webhook_header_signature, text='resp')
     callbacks.success(job, redis_conn, result)
     assert True
 
