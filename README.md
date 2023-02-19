@@ -51,7 +51,7 @@ The response will be a JSON object with `job_id` that can be used to check the s
 
 Query parameters:
 
-- REQUIRED: `email_callback`: string or `webhook_callback_url`: string
+- REQUIRED: `email_callback`: string or `webhook_id`: string
 - OPTIONAL: `language`: string (default: automatic detection)
 - OPTIONAL: `model`: string (default: `tiny`)
 - OPTIONAL: `task`: string (default: `transcribe`)
@@ -110,7 +110,7 @@ Get the available length of the queue as JSON object with the key `length`.
 
 ### Webhook response
 
-If using `webhook_callback_url` in the request parameters you will get a `POST` to the webhook url of your choice. The post payload will be a json with this content
+If using `webhook_id` in the request parameters you will get a `POST` to the webhook url of your choice. The post payload will be a json with this content
 
 On success:
 
