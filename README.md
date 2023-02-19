@@ -110,7 +110,12 @@ Get the available length of the queue as JSON object with the key `length`.
 
 ### Webhook response
 
-If using `webhook_id` in the request parameters you will get a `POST` to the webhook url of your choice. The post payload will be a json with this content
+If using `webhook_id` in the request parameters you will get a `POST` to the webhook url of your choice. 
+
+The request will contain a `X-WAAS-Signature` header with a hash that can be used to verify the content. 
+Check `tests/test_webhook.py` for an example on how to verify this signature using Python on the receiving end.
+
+The post payload will be a json with this content
 
 On success:
 
@@ -167,7 +172,7 @@ export DISCLAIMER='This is a <a href="example.com">disclaimer</a>'
 ```
 
 Add a json file named `allowed_webhooks.json` to the root folder of the project. This file is ignored by git.
-The content should be a list of valid webhooks, urls and tokens like this: 
+The content should be a list of valid webhooks, urls and your generated tokens like this: 
 
 ```
 [
