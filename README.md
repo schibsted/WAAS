@@ -151,6 +151,39 @@ This will start three docker containers.
 - api running flask fra src
 - worker running rq from src
 
+### Using NVIDIA CUDA with docker-compose
+
+If you have a NVIDIA GPU and want to use it with docker-compose,
+you need to install [nvidia-docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+
+To enable CUDA support, you need to edit the `docker-compose.yml` file to use the `nvidia` runtime:
+
+```yaml
+build:
+    context: .
+    # use Dockerfile.gpu when using a NVIDIA GPU
+    dockerfile: Dockerfile.gpu
+```
+
+You also have to uncomment the device reservation in the `docker-compose.yml` file:
+
+```yaml
+deploy:
+    resources:
+        reservations:
+            devices:
+                - driver: nvidia
+                  capabilities: [gpu]
+```
+
+Then run the following command as usual:
+
+```sh
+docker-compose --env-file .envrc up
+```
+
+The worker will now use the GPU acceleration.
+
 ### Running full setup using devcontainers
 
 Install remote-development extensions (containers)
