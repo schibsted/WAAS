@@ -68,6 +68,11 @@ const Editor = ({ jojoDoc }) => {
     const data = async () => {
       switch (type) {
         case "jojo":
+          if (audio) {
+            jojoDoc.audiofile.url = "file:///web/" + audio.name;
+          } else {
+            jojoDoc.audiofile = { id: "472F9DBB-C9CC-4A10-9DE7-979F521EEECE" };
+          }
           return JSON.stringify(jojoDoc);
           break;
 
@@ -111,9 +116,8 @@ const Editor = ({ jojoDoc }) => {
           break;
       }
     };
-    a.href =
-      "data:application/octet-stream;charset=utf-8;base64," +
-      btoa(await data());
+    const blob = new Blob([await data()], { type: "octet/stream" });
+    a.href = window.URL.createObjectURL(blob);
     a.click();
   };
 
@@ -149,7 +153,12 @@ const Editor = ({ jojoDoc }) => {
       </div>
     </main>
     <div class="table-container">
-      <${Table} hasAudio=${audio} jojoDoc=${jojoDoc} setCursor=${setCursor} audio=${audio} />
+      <${Table}
+        hasAudio=${audio}
+        jojoDoc=${jojoDoc}
+        setCursor=${setCursor}
+        audio=${audio}
+      />
     </div>
   </div>`;
 };
