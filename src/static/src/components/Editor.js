@@ -147,6 +147,10 @@ const Editor = ({ jojoDoc }) => {
           <button onclick=${() => download("csv")}>.csv</button>
         </div>
       </div>
+      <p>
+        <b>Did you know?</b><br /><br />
+        <i>Holding down control-key will play the selected segment</i>
+      </p>
     </main>
     <div class="table-container">
       <${Table} hasAudio=${audio} jojoDoc=${jojoDoc} setCursor=${setCursor} audio=${audio} />

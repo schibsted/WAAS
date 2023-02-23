@@ -10,7 +10,7 @@ const Table = ({ jojoDoc, hasAudio = false, setCursor }) => {
     let el = editElement;
     if (!el) return () => {};
 
-    const id = el.dataset.id;
+    const { id, cursor } = el.dataset;
     const listener = () => {
       const inputedText = el.querySelector("[contenteditable]").innerText;
       const textRef = text.find((t) => t.id == id);
@@ -19,12 +19,28 @@ const Table = ({ jojoDoc, hasAudio = false, setCursor }) => {
       }
     };
 
+    const keyDownListener = (event) => {
+      if (event.keyCode === 17 && hasAudio) {
+        setCursor(cursor);
+      }
+    };
+
+    const keyUpListener = (event) => {
+      if (event.keyCode === 17 && hasAudio) {
+        setCursor(0);
+      }
+    };
+
     el.classList.toggle("selected");
     el.addEventListener("focusout", listener, false);
+    el.addEventListener("keydown", keyDownListener, false);
+    el.addEventListener("keyup", keyUpListener, false);
 
     return () => {
       el.classList.remove("selected");
       el.removeEventListener("focusout", listener);
+      el.removeEventListener("keydown", keyDownListener);
+      el.removeEventListener("keyup", keyUpListener);
     };
   }, [editElement]);
 

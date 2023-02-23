@@ -2,10 +2,13 @@ const AudioPlayer = ({ audio, cursor }) => {
   const { useEffect } = preact;
 
   useEffect(() => {
-    if (!cursor) return;
     const audioElement = document.getElementById("audio-editor");
-    audioElement.currentTime = cursor;
-    audioElement.play();
+    if (!cursor) {
+      audioElement.pause();
+    } else {
+      audioElement.currentTime = cursor;
+      audioElement.play();
+    }
   }, [cursor]);
 
   useEffect(() => {
