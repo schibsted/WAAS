@@ -1,7 +1,10 @@
 version: "3.9"
 services:
     api:
-        build: .
+        build:
+            context: .
+            # use Dockerfile.gpu when using a NVIDIA GPU
+            dockerfile: Dockerfile
         ports:
             - "3000:3000"
         volumes:
@@ -17,7 +20,10 @@ services:
             - ALLOWED_WEBHOOKS_FILE
         command: gunicorn -w 2 -b 0.0.0.0:3000 --log-file=- 'src.main:app'
     worker:
-        build: .
+        build:
+            context: .
+            # use Dockerfile.gpu when using a NVIDIA GPU
+            dockerfile: Dockerfile
         volumes:
             - .:/workspace
         depends_on:
@@ -29,6 +35,13 @@ services:
             - EMAIL_SENDER_HOST
             - ALLOWED_WEBHOOKS_FILE
         command: rq worker --url redis://redis:6379 -c worker-settings
+        # Uncomment the following lines when using a NVIDIA GPU
+        # deploy:
+        #     resources:
+        #         reservations:
+        #             devices:
+        #                 - driver: nvidia
+        #                   capabilities: [gpu]
 
     redis:
         image: redis
