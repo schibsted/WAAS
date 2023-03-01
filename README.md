@@ -51,7 +51,7 @@ The response will be a JSON object with `job_id` that can be used to check the s
 
 Query parameters:
 
-- REQUIRED: `email_callback`: string
+- REQUIRED: `email_callback`: string or `webhook_id`: string
 - OPTIONAL: `language`: string (default: automatic detection)
 - OPTIONAL: `model`: string (default: `tiny`)
 - OPTIONAL: `task`: string (default: `transcribe`)
@@ -108,6 +108,38 @@ Get the status and metadata of the provided job.
 
 Get the available length of the queue as JSON object with the key `length`.
 
+### Webhook response
+
+If using `webhook_id` in the request parameters you will get a `POST` to the webhook url of your choice. 
+
+The request will contain a `X-WAAS-Signature` header with a hash that can be used to verify the content. 
+Check `tests/test_webhook.py` for an example on how to verify this signature using Python on the receiving end.
+
+The post payload will be a json with this content
+
+On success:
+
+```
+{
+  "source": "waas", 
+  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "success": true, 
+  "url": "https://example.com/v1/download/09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "filename": "untitled-transcription"
+}
+```
+
+On failure:
+
+```
+{
+  "source": "waas", 
+  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "success": false
+}
+```
+
+
 ## Contributing
 
 ## Requirements
@@ -138,6 +170,23 @@ export EMAIL_SENDER_HOST=smtp.example.com
 
 export DISCLAIMER='This is a <a href="example.com">disclaimer</a>'
 ```
+
+Add a json file named `allowed_webhooks.json` to the root folder of the project. This file is ignored by git.
+The content should be a list of valid webhooks, urls and your generated tokens like this: 
+
+```
+[
+  {
+    "id": "77c500b2-0e0f-4785-afc7-f94ed529c897",
+    "url": "https://myniceserver.com/mywebhook",
+    "token": "frKPI6p5LxxpJa8tCvVr=u5NvU66EJCQdybPuEmzKNeyCDul2-zrOx05?LwIhL5N"
+  }
+]
+```
+
+For testing you could use the https://webhook.site service (as long as you do not post/transcribe private data)
+
+And set the env variable `ALLOWED_WEBHOOKS_FILE=allowed_webhooks.json`
 
 Then run the following command
 
@@ -194,12 +243,21 @@ Then you are inside the api-container and can do stuff
 
 To upload a file called audunspodssounds.mp3 in norwegian from your download directory
 
+With email callback:
+
 ```sh
-curl --location --request POST 'localhost:5000/v1/transcribe?output=vtt' \
+curl --location --request POST 'localhost:3000/v1/transcribe?output=vtt&email_callback=test@localhost&language=norwegian&model=large' \
   --header 'Content-Type: audio/mpeg' \
   --data-binary '@/Users/<user>/Downloads/audunspodssounds.mp3'
 ```
 
+With webhook callback:
+
+```sh
+curl --location --request POST 'localhost:3000/v1/transcribe?output=vtt&language=norwegian&model=large&webhook_callback_url=https://myniceserver.something/mywebhookid' \
+  --header 'Content-Type: audio/mpeg' \
+  --data-binary '@/Users/<user>/Downloads/audunspodssounds.mp3'
+```
 ### Running tests
 
 ```bash
@@ -219,3 +277,8 @@ $ pytest
 ```sh
 $ /Applications/Python\ 3.7/Install\ Certificates.command
 ```
+### How to run tests outside the docker container?
+
+Make sure you have fired up the Redis using docker-compose and then use: 
+
+`ENVIRONMENT=test BASE_URL=http://localhost REDIS_URL=redis://localhost:6379 pytest -v `
