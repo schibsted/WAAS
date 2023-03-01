@@ -35,7 +35,7 @@ You can directly download a Jojo-file, SRT, or text from the email. Then you can
 
 ### Editor
 
-The editor works 100% local in your browser. Here can you listen to segments and fix transcriptions errors. 
+The editor works 100% local in your browser. Here can you listen to segments and fix transcriptions errors. After you are done just save the Jojo-file to your desktop. An easy way to play the selected segment is by holding down the Control-key on the keyboard.
 
 ## This project started out by VG
 
