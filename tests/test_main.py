@@ -1,7 +1,10 @@
 import json
+import os
 
 import pytest
 import whisper
+
+os.environ['ALLOWED_WEBHOOKS_FILE'] = "tests/fixtures/allowed_webhooks.json"
 
 from src import app
 from src.main import redis_connection
@@ -56,8 +59,12 @@ def test_transcribe_options(client):
             },
             "email_callback": {
                 "type": "string",
-                "optional": False,
+                "optional": True,
             },
+             "webhook_id": {
+                "type": "string",
+                "optional": True,
+                },
             "filename": {
                 "type": "string",
                 "optional": True,
@@ -101,12 +108,36 @@ def test_transcribe_enqueue(client):
     response_data = json.loads(response.data)
     assert 'job_id' in response_data and bool(response_data['job_id'])
 
+def test_transcribe_with_valid_webhook(client):
+    with open('tests/test.mp3', 'rb') as f:
+        data = f.read()
+
+    response = client.post(
+        '/v1/transcribe?model=tiny&task=transcribe&languages=english&webhook_id=77c500b2-0e0f-4785-afc7-f94ed529c897',  data=data, content_type='audio/mp3')
+
+    assert response.status_code == 201
+
+    response_data = json.loads(response.data)
+    assert 'job_id' in response_data and bool(response_data['job_id'])
+
+
+def test_transcribe_with_non_valid_webhook(client):
+    with open('tests/test.mp3', 'rb') as f:
+        data = f.read()
+
+    response = client.post(
+        '/v1/transcribe?model=tiny&task=transcribe&languages=english&webhook_id=abcde123',  data=data, content_type='audio/mp3')
+
+    assert response.status_code == 405
+    response_data = json.loads(response.data)
+    assert 'error' in response_data
+    
 
 def test_detect_language(client):
     with open('tests/test.mp3', 'rb') as f:
         data = f.read()
 
-    response = client.post('/v1/detect?model=tiny',
+    response = client.post('/v1/detect?model=tiny&email_callback=example@example.com&languages=english',
                            data=data, content_type='audio/mp3')
 
     assert response.status_code == 200
@@ -127,7 +158,6 @@ def test_queue(client):
 
     response_data = json.loads(response.data)
     assert 'count' in response_data and response_data['count'] > 0
-
 
 def test_stats(client):
     set_total_time_transcribed(60.4, conn=redis_connection)

@@ -16,10 +16,12 @@ from sentry_sdk import set_user
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.rq import RqIntegration
 
+
 from src import callbacks
 from src.utils import (generate_jojo_doc, generate_srt, generate_text,
                        generate_vtt, get_total_time_transcribed,
                        sanitize_input)
+from src.services.webhook_service import WebhookService
 
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
@@ -51,6 +53,8 @@ app = Flask(__name__)
 redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
 redis_connection = redis.from_url(redis_url)
 rq_queue = Queue(connection=redis_connection)
+allowed_webhooks_file = os.environ.get("ALLOWED_WEBHOOKS_FILE", None)
+webhook_store = WebhookService(allowed_webhooks_file)
 
 DEFAULT_MODEL = "tiny"
 DEFAULT_TASK = "transcribe"
@@ -63,6 +67,8 @@ def is_invalid_params(req: Request) -> Union[bool, Tuple[str, int]]:
     requestedModel = req.args.get("model", DEFAULT_MODEL)
     language = req.args.get("language")
     task = req.args.get("task", DEFAULT_TASK)
+    email_callback = req.args.get("email_callback")
+    webhook_id = req.args.get("webhook_id")
 
     # Check if model is available
     if requestedModel not in whisper.available_models():
@@ -80,6 +86,10 @@ def is_invalid_params(req: Request) -> Union[bool, Tuple[str, int]]:
     # Check if the body contains binary data
     if not req.data or not isinstance(req.data, bytes):
         return "No file uploaded", 400
+    
+    # Check if email_callback or webhook_callback_url is set
+    if email_callback is None and webhook_id is None:
+        return "No email_callback or webhook_callback_url set", 400
 
     return False
 
@@ -113,7 +123,11 @@ def transcribe() -> Any:
                 },
                 "email_callback": {
                     "type": "string",
-                    "optional": False,
+                    "optional": True,
+                },
+                 "webhook_id": {
+                    "type": "string",
+                    "optional": True,
                 },
                 "filename": {
                     "type": "string",
@@ -140,23 +154,41 @@ def transcribe() -> Any:
             task = request.args.get("task", DEFAULT_TASK)
             language = request.args.get("language")
 
-            email_callback = request.args.get("email_callback")
-            if email_callback is None:
-                raise Exception("Missing email_callback param")
+            quoted_email = request.args.get("email_callback")
+            quoted_webhook_id = request.args.get("webhook_id")
+            
+            if quoted_email is None and quoted_webhook_id is None:
+                raise Exception("Missing email_callback or/and webhook_id param")
+            
+            if quoted_email:
+                email = urllib.parse.unquote(quoted_email)
+                set_user({"email": email})
+            else:
+                email = None
 
-            email = urllib.parse.unquote(email_callback)
-            set_user({"email": email})
+            
+            if quoted_webhook_id:
+                webhook_id = urllib.parse.unquote(quoted_webhook_id)
+                # This is not ideal to initiate class here, but it is difficult to test it with mock env otherwise
+                is_valid_webhook = webhook_store.is_valid_webhook(webhook_id)
+                if is_valid_webhook == False:
+                    return {
+                        "error": "Invalid webhook id"
+                    }, 405
+            else:
+                webhook_id = None
 
             uploaded_filename = urllib.parse.unquote(
                 request.args.get("filename", DEFAULT_UPLOADED_FILENAME))
 
             job = rq_queue.enqueue(
                 'transcriber.transcribe',
-                args=(filename, requestedModel, task, language, email),
+                args=(filename, requestedModel, task, language, email, webhook_id),
                 result_ttl=3600*24*7,
                 job_timeout=3600*4,
                 meta={
                     'email': email,
+                    'webhook_id': webhook_id,
                     'uploaded_filename': uploaded_filename
                 },
                 on_success=callbacks.success,
@@ -169,7 +201,7 @@ def transcribe() -> Any:
 
         except Exception as e:
             logging.exception(e)
-            return 500
+            return "Server error", 500
         finally:
             tempFile.close()
 
