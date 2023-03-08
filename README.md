@@ -30,7 +30,7 @@ GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)
 
 ## What is Jojo?
 
-Jojo is a GUI for upload and transcribe a audio or video file. After the transcription is done you get an email with download links. 
+Jojo is a GUI for upload and transcribe a audio or video file. After the transcription is done you get an email with download links.
 You can directly download a Jojo-file, SRT, or text from the email. Then you can upload a Jojo file to the frontend to come into an editor (see video).
 
 ### Editor
@@ -110,9 +110,9 @@ Get the available length of the queue as JSON object with the key `length`.
 
 ### Webhook response
 
-If using `webhook_id` in the request parameters you will get a `POST` to the webhook url of your choice. 
+If using `webhook_id` in the request parameters you will get a `POST` to the webhook url of your choice.
 
-The request will contain a `X-WAAS-Signature` header with a hash that can be used to verify the content. 
+The request will contain a `X-WAAS-Signature` header with a hash that can be used to verify the content.
 Check `tests/test_webhook.py` for an example on how to verify this signature using Python on the receiving end.
 
 The post payload will be a json with this content
@@ -121,10 +121,10 @@ On success:
 
 ```
 {
-  "source": "waas", 
-  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372", 
-  "success": true, 
-  "url": "https://example.com/v1/download/09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "source": "waas",
+  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372",
+  "success": true,
+  "url": "https://example.com/v1/download/09d2832d-cf3e-4719-aea7-1319000ef372",
   "filename": "untitled-transcription"
 }
 ```
@@ -133,12 +133,11 @@ On failure:
 
 ```
 {
-  "source": "waas", 
-  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372", 
+  "source": "waas",
+  "job_id": "09d2832d-cf3e-4719-aea7-1319000ef372",
   "success": false
 }
 ```
-
 
 ## Contributing
 
@@ -169,10 +168,12 @@ export EMAIL_SENDER_PASSWORD=example
 export EMAIL_SENDER_HOST=smtp.example.com
 
 export DISCLAIMER='This is a <a href="example.com">disclaimer</a>'
+
+export ALLOWED_WEBHOOKS_FILE='allowed_webhooks.json'
 ```
 
 Add a json file named `allowed_webhooks.json` to the root folder of the project. This file is ignored by git.
-The content should be a list of valid webhooks, urls and your generated tokens like this: 
+The content should be a list of valid webhooks, urls and your generated tokens like this:
 
 ```
 [
@@ -209,20 +210,20 @@ To enable CUDA support, you need to edit the `docker-compose.yml` file to use th
 
 ```yaml
 build:
-    context: .
-    # use Dockerfile.gpu when using a NVIDIA GPU
-    dockerfile: Dockerfile.gpu
+  context: .
+  # use Dockerfile.gpu when using a NVIDIA GPU
+  dockerfile: Dockerfile.gpu
 ```
 
 You also have to uncomment the device reservation in the `docker-compose.yml` file:
 
 ```yaml
 deploy:
-    resources:
-        reservations:
-            devices:
-                - driver: nvidia
-                  capabilities: [gpu]
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          capabilities: [gpu]
 ```
 
 Then run the following command as usual:
@@ -258,6 +259,7 @@ curl --location --request POST 'localhost:3000/v1/transcribe?output=vtt&language
   --header 'Content-Type: audio/mpeg' \
   --data-binary '@/Users/<user>/Downloads/audunspodssounds.mp3'
 ```
+
 ### Running tests
 
 ```bash
@@ -277,8 +279,9 @@ $ pytest
 ```sh
 $ /Applications/Python\ 3.7/Install\ Certificates.command
 ```
+
 ### How to run tests outside the docker container?
 
-Make sure you have fired up the Redis using docker-compose and then use: 
+Make sure you have fired up the Redis using docker-compose and then use:
 
 `ENVIRONMENT=test BASE_URL=http://localhost REDIS_URL=redis://localhost:6379 pytest -v `
