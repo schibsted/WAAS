@@ -1,4 +1,4 @@
-Flask==2.2.5
+Flask==2.3.3
 openai-whisper==20230918
 pytest==7.4.2
 redis==5.0.0
