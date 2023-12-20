@@ -1,6 +1,6 @@
 name: Feature Request
 description: Create a feature request for WAAS
-labels: ['enhancement']
+labels: ["type/feature"]
 body:
   - type: textarea
     attributes:

@@ -1,6 +1,6 @@
 name: Bug Report
 description: Create a bug report for WAAS
-labels: ['bug']
+labels: ["type/bug"]
 body:
   - type: textarea
     attributes:
@@ -13,12 +13,12 @@ body:
       label: Which area(s) of the code does the issue occur in?
       multiple: true
       options:
-        - 'Website'
-        - 'Worker'
-        - 'Api'
-        - 'Mailer'
-        - 'Webhook'
-        - 'Other'
+        - "Website"
+        - "Worker"
+        - "Api"
+        - "Mailer"
+        - "Webhook"
+        - "Other"
   - type: textarea
     attributes:
       label: To Reproduce
