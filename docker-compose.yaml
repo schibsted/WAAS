@@ -2,7 +2,7 @@ version: "3.9"
 services:
     api:
         build:
-            context: .
+            context: ./backend
             # use Dockerfile.gpu when using a NVIDIA GPU
             dockerfile: Dockerfile
         ports:
@@ -18,9 +18,20 @@ services:
             - EMAIL_SENDER_HOST
             - ALLOWED_WEBHOOKS_FILE
         command: gunicorn -w 2 -b 0.0.0.0:3000 --log-file=- 'src.main:app'
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "4321:4321"
+        volumes:
+            - .:/workspace
+        depends_on:
+            - api
+        command: node ./dist/server/entry.mjs
     worker:
         build:
-            context: .
+            context: ./backend
             # use Dockerfile.gpu when using a NVIDIA GPU
             dockerfile: Dockerfile
         volumes:

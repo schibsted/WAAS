@@ -7,11 +7,12 @@ on:
     branches: ["main"]
 
 jobs:
-  test:
+  backend:
     # Linux runner
     runs-on: ubuntu-latest
     # Container image that the job will run in
     container: python:3.10
+    working-directory: ./backend
 
     # Service containers
     services:
