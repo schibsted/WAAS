@@ -167,8 +167,6 @@ export EMAIL_SENDER_ADDRESS=example@example.com
 export EMAIL_SENDER_PASSWORD=example
 export EMAIL_SENDER_HOST=smtp.example.com
 
-export DISCLAIMER='This is a <a href="example.com">disclaimer</a>'
-
 export ALLOWED_WEBHOOKS_FILE='allowed_webhooks.json'
 ```
 
