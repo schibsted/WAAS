@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "group:monorepos",
+    "group:recommended",
+    "replacements:all",
+    "workarounds:all"
+  ],
+  "labels": ["type/dependencies"],
+  "vulnerabilityAlerts": {
+    "labels": ["type/dependencies", "area/security", "priority/critical"]
+  },
+  "rollbackPrs": true,
+  "prHourlyLimit": 10,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "configMigration": true,
+  "timezone": "Europe/Oslo"
+}
