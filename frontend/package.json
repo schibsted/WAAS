@@ -13,6 +13,7 @@
     "@astrojs/check": "^0.3.3",
     "@astrojs/node": "^7.0.2",
     "astro": "^4.0.7",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "zod": "^3.22.4"
   }
 }

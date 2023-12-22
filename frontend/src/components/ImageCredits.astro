@@ -1,0 +1,19 @@
+---
+const { imageAuthor, imageOrigin } = Astro.props;
+---
+
+<p class="image-credit">Image: {imageAuthor}/{imageOrigin}</p>
+
+<style>
+  .image-credit {
+    font-size: 1rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    writing-mode: vertical-rl;
+    transform: rotate(-180deg);
+    position: fixed;
+    right: 12px;
+    bottom: 20px;
+    white-space: nowrap;
+  }
+</style>
