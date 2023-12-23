@@ -6,7 +6,7 @@ import Upload from "../components/Upload.astro";
 import ImageCredits from "../components/ImageCredits.astro";
 import { images } from "../components/BackgroundImages/credits";
 
-const image = images[Math.floor(Math.random() * images.length)];
+const image = images[Math.floor(Math.random() * images.length)]!;
 ---
 
 <Layout title="JoJo Transcribe" backgroundImage={image}>
@@ -16,7 +16,7 @@ const image = images[Math.floor(Math.random() * images.length)];
   <main>
     <Stats />
 
-    <Upload />
+    <Upload accentColor={image.accentColor} />
   </main>
 
   <footer>

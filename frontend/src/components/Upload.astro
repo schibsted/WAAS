@@ -1,3 +1,11 @@
+---
+interface Props {
+  accentColor: string;
+}
+
+const { accentColor } = Astro.props;
+---
+
 <form class="upload-form">
   <legend>
     <h1>Let us transcribe</h1>
@@ -8,15 +16,19 @@
     </p>
 
     <p>
-      If you need to transcribe something extremely sensetive, you should run
-      the local <a
-        href="https://apps.apple.com/us/app/jojo-transcribe/id1659864300"
+      If you need to transcribe something very sensetive, you should run the
+      local <a href="https://apps.apple.com/us/app/jojo-transcribe/id1659864300"
         >MacOS app.</a
       >
     </p>
   </legend>
 
-  <label for="file-upload" id="file-upload-button" class="file-upload-button">
+  <label
+    for="file-upload"
+    id="file-upload-button"
+    style={`background-color: ${accentColor}`}
+    class="file-upload-button"
+  >
     <input
       id="file-upload"
       name="file-dropzone-upload"

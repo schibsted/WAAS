@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { images } from "../../components/BackgroundImages/credits";
 
-const image = images[Math.floor(Math.random() * images.length)];
+const image = images[Math.floor(Math.random() * images.length)]!;
 
 const { jobId } = Astro.params;
 ---
