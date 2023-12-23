@@ -33,7 +33,7 @@ def match_webhook_header_signature(request):
 def mock_env(monkeypatch):
     monkeypatch.setenv("BASE_URL", "https://test")
     monkeypatch.setenv("ENVIRONMENT", "test")
-    monkeypatch.setenv("ALLOWED_WEBHOOKS_FILE", "backend/tests/fixtures/allowed_webhooks.json")
+    monkeypatch.setenv("ALLOWED_WEBHOOKS_FILE", "tests/fixtures/allowed_webhooks.json")
     reload(callbacks)
 
 @pytest.fixture
