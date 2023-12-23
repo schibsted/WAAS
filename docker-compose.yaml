@@ -2,7 +2,7 @@ version: "3.9"
 services:
     api:
         build:
-            context: .
+            context: ./backend
             # use Dockerfile.gpu when using a NVIDIA GPU
             dockerfile: Dockerfile
         ports:
@@ -11,23 +11,35 @@ services:
             - .:/workspace
         depends_on:
             - redis
+        working_dir: /workspace/backend
         environment:
             - BASE_URL
             - EMAIL_SENDER_ADDRESS
             - EMAIL_SENDER_PASSWORD
             - EMAIL_SENDER_HOST
-            - DISCLAIMER
             - ALLOWED_WEBHOOKS_FILE
-        command: gunicorn -w 2 -b 0.0.0.0:3000 --log-file=- 'src.main:app'
+        command: flask --app src/main --debug run --host 0.0.0.0 --port 3000
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "4321:4321"
+        volumes:
+            - .:/workspace
+        depends_on:
+            - api
+        command: node ./dist/server/entry.mjs
     worker:
         build:
-            context: .
+            context: ./backend
             # use Dockerfile.gpu when using a NVIDIA GPU
             dockerfile: Dockerfile
         volumes:
             - .:/workspace
         depends_on:
             - redis
+        working_dir: /workspace/backend
         environment:
             - BASE_URL
             - EMAIL_SENDER_ADDRESS

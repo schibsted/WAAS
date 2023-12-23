@@ -1,0 +1,37 @@
+---
+import z from "zod";
+
+const response = await fetch("http://api:3000/v1/stats");
+const data = await response.json();
+
+const transcriptionTimeMultiplier = 4;
+
+const schema = z.object({
+  total_time_transcribed: z.number(),
+});
+
+const { total_time_transcribed } = schema.parse(data);
+
+const hours = Math.round(
+  (total_time_transcribed / 3600) * transcriptionTimeMultiplier
+);
+---
+
+<aside class="stats">
+  <p>
+    {hours} hours saved so you can do something else
+  </p>
+</aside>
+
+<style>
+  .stats {
+    max-width: 450px;
+    margin: auto;
+    color: #fff;
+    text-align: center;
+    hyphens: auto;
+    word-break: break-word;
+    font-weight: bold;
+    font-size: 2.5rem;
+  }
+</style>

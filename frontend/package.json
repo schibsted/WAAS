@@ -1,0 +1,19 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.3.3",
+    "@astrojs/node": "^7.0.2",
+    "astro": "^4.0.7",
+    "typescript": "^5.3.3",
+    "zod": "^3.22.4"
+  }
+}

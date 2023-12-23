@@ -1,0 +1,15 @@
+# Core WAAS team will be pinged if there is no specific owner
+*                       @jgorset @johannes-andersen @3ddyBoi @auduny
+
+
+# Backend/Python developers
+/backend/               @jgorset @johannes-andersen
+
+# Frontend developers
+/frontend/              @johannes-andersen @3ddyBoi @auduny
+
+# Ops 
+Dockerfile              @auduny @johannes-andersen
+Dockerfile.gpu          @auduny @johannes-andersen
+docker-compose.yaml     @auduny @johannes-andersen
+/.devcontainer/         @auduny @johannes-andersen
