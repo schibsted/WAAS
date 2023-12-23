@@ -4,7 +4,7 @@ import os
 import pytest
 import whisper
 
-os.environ['ALLOWED_WEBHOOKS_FILE'] = "tests/fixtures/allowed_webhooks.json"
+os.environ['ALLOWED_WEBHOOKS_FILE'] = "backend/tests/fixtures/allowed_webhooks.json"
 
 from src import app
 from src.main import redis_connection
