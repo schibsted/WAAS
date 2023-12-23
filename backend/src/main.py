@@ -85,9 +85,9 @@ def is_invalid_params(req: Request) -> Union[bool, Tuple[str, int]]:
     if not req.data or not isinstance(req.data, bytes):
         return "No file uploaded", 400
     
-    # Check if email_callback or webhook_callback_url is set
+    # Check if email_callback or webhook_id is set
     if email_callback is None and webhook_id is None:
-        return "No email_callback or webhook_callback_url set", 400
+        return "No email_callback or webhook_id set", 400
 
     return False
 
