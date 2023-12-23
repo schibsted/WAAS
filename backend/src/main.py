@@ -131,7 +131,7 @@ def transcribe() -> Any:
         }
     else:
         tempFile = tempfile.NamedTemporaryFile(
-            dir='./upload-shared-tmp', delete=False)
+            dir='./backend/upload-shared-tmp', delete=False)
 
         # Get the file from the request body and save it to a temporary file
         file = request.data
