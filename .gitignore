@@ -237,4 +237,4 @@ upload-shared-tmp
 
 # Config file for webhooks
 allowed_webhooks.json
-!tests/fixtures/allowed_webhooks.json
+!backend/tests/fixtures/allowed_webhooks.json
