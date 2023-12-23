@@ -6,12 +6,14 @@ import grobelska from "./grobelska.jpg";
 import horvath from "./topuzoglu.jpg";
 import jehly from "./jehly.jpg";
 
-export const images: Array<{
+export interface Image {
   image: any;
   author: string;
   origin: string;
   accentColor: string;
-}> = [
+}
+
+export const images: Array<Image> = [
   {
     image: boliviainteligente,
     author: "BoliviaInteligente",

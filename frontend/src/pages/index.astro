@@ -1,33 +1,45 @@
 ---
-import { getImage } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import Logo from "../components/Logo.astro";
 import Stats from "../components/Stats.astro";
-
-import { images } from "../components/BackgroundImages/credits";
+import Upload from "../components/Upload.astro";
 import ImageCredits from "../components/ImageCredits.astro";
+import { images } from "../components/BackgroundImages/credits";
 
-const image = images[Math.floor(Math.random() * images.length)]
-
-const optimizedBackground = await getImage({src: image?.image})
+const image = images[Math.floor(Math.random() * images.length)];
 ---
 
-<Layout title="JoJo Transcribe">
-  <main style={`background-image: url(${optimizedBackground.src});`}>
+<Layout title="JoJo Transcribe" backgroundImage={image}>
+  <header>
     <Logo />
-
+  </header>
+  <main>
     <Stats />
 
-	<ImageCredits imageAuthor={image?.author} imageOrigin={image?.origin} />
+    <Upload />
   </main>
+
+  <footer>
+    <ImageCredits imageAuthor={image?.author} imageOrigin={image?.origin} />
+  </footer>
 </Layout>
 
 <style>
+  header {
+    position: absolute;
+  }
+
   main {
-    height: 100vh;
-    height: 100dvh;
-	padding: 32px;
-	background-size: cover;
-    background-position: center;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+  }
+
+  footer {
+    position: absolute;
+    bottom: 32px;
+    right: 12px;
   }
 </style>

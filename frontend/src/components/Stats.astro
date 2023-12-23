@@ -17,18 +17,20 @@ const hours = Math.round(
 );
 ---
 
-<p class="stats">
-  {hours} hours saved so you can<br />
-   do something else
-</p>
+<aside class="stats">
+  <p>
+    {hours} hours saved so you can do something else
+  </p>
+</aside>
 
 <style>
   .stats {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    max-width: 450px;
+    margin: auto;
     color: #fff;
+    text-align: center;
+    hyphens: auto;
+    word-break: break-word;
     font-weight: bold;
     font-size: 2.5rem;
   }
