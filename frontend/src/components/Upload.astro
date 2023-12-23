@@ -29,12 +29,7 @@ const { accentColor } = Astro.props;
     style={`background-color: ${accentColor}`}
     class="file-upload-button"
   >
-    <input
-      id="file-upload"
-      name="file-dropzone-upload"
-      class="sr-only"
-      type="file"
-    />
+    <input required id="file-upload" name="file-upload" class="sr-only" type="file" />
     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" fill="none">
       <path
         stroke="#fff"
@@ -47,6 +42,31 @@ const { accentColor } = Astro.props;
      Upload file
   </label>
 </form>
+
+<script>
+  const allowedFileTypes = ["video/", "audio/", "application/ogg"];
+  const fileInput = document.getElementById("file-upload") as HTMLInputElement;
+
+  fileInput.addEventListener("change", (event: any) => {
+    const file = event.target?.files[0];
+
+    if (!file) {
+      fileInput.setCustomValidity("Please upload a file.");
+      fileInput.reportValidity();
+      return;
+    }
+
+    if (!allowedFileTypes.some((type) => file.type.includes(type))) {
+      fileInput.setCustomValidity(`Please upload a audio/video file. The file you uploaded is of type ${file.type}.`);
+      fileInput.reportValidity();
+      return;
+    }
+
+    fileInput.setCustomValidity("");
+    // TODO: Start the upload process
+    console.log("File accepted:", file.name);
+  });
+</script>
 
 <style>
   .upload-form {
