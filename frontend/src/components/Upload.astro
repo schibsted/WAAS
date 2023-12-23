@@ -17,7 +17,21 @@
   </legend>
 
   <label for="file-upload" id="file-upload-button" class="file-upload-button">
-    <input id="file-upload" name="file-dropzone-upload" type="file" />
+    <input
+      id="file-upload"
+      name="file-dropzone-upload"
+      class="sr-only"
+      type="file"
+    />
+    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" fill="none">
+      <path
+        stroke="#fff"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        d="M17.75 19.25H7.25a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2h10.5a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2ZM12.5 8.75v6.5M15.75 12h-6.5"
+      ></path>
+    </svg>
      Upload file
   </label>
 </form>
@@ -25,7 +39,6 @@
 <style>
   .upload-form {
     align-self: flex-start;
-    margin-top: auto;
     display: flex;
     flex-direction: column;
     color: #fff;
@@ -36,5 +49,50 @@
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     padding: 24px;
+  }
+
+  .upload-form legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .upload-form h1 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 24px;
+  }
+
+  .upload-form a {
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .file-upload-button {
+    width: 100%;
+    height: 40px;
+    background: inherit;
+    border-radius: 8px;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1rem;
+    color: #fff;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
   }
 </style>
