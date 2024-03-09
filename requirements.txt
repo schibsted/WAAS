@@ -1,6 +1,6 @@
 Flask==3.0.0
 openai-whisper==20231117
-pytest==7.4.3
+pytest==8.1.1
 redis==5.0.1
 rq==1.15.1
 python-dotenv==1.0.0
