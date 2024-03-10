@@ -5,8 +5,43 @@ import Stats from "../components/Stats.astro";
 import Upload from "../components/Upload.astro";
 import ImageCredits from "../components/ImageCredits.astro";
 import { images } from "../components/BackgroundImages/credits";
+import UploadModal from "../components/Modal/UploadModal";
 
 const image = images[Math.floor(Math.random() * images.length)]!;
+
+const fetchOptions = async () => {
+  try {
+    const response = await fetch(`${import.meta.env.API_URL}/v1/transcribe`, {
+      method: "OPTIONS",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    const {queryParams} = data;
+    const {languages, model} = queryParams;
+  
+    const topLanguages = ["norwegian", "swedish", "english"];
+    const otherLanguages = languages.options.filter(
+      (lang: string) => !topLanguages.includes(lang)
+    );
+  
+    return {
+      languages: [...topLanguages, ...otherLanguages.sort()],
+      model,
+    }
+
+  } catch (error) {
+    console.error("Error fetching options", error);
+    return {
+      languages: ["norwegian", "swedish", "english"],
+      model: "default",
+    };
+  }
+};
+
+const {languages, model} = await fetchOptions();
 ---
 
 <Layout title="JoJo Transcribe" backgroundImage={image}>
@@ -15,7 +50,7 @@ const image = images[Math.floor(Math.random() * images.length)]!;
   </header>
   <main>
     <Stats />
-
+    <UploadModal languages={languages} model={model} client:load />
     <Upload accentColor={image.accentColor} />
   </main>
 
