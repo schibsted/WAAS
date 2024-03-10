@@ -44,6 +44,7 @@ const { accentColor } = Astro.props;
 </form>
 
 <script>
+  import { setFiles } from "../stores/FileStore";
   const allowedFileTypes = ["video/", "audio/", "application/ogg"];
   const fileInput = document.getElementById("file-upload") as HTMLInputElement;
 
@@ -55,7 +56,9 @@ const { accentColor } = Astro.props;
       return;
     }
 
-    const invalidFiles = Array.from(files).filter(
+    const fileArray = Array.from(files);
+
+    const invalidFiles = fileArray.filter(
       (file) => !allowedFileTypes.some((type) => file.type.includes(type))
     );
 
@@ -67,8 +70,8 @@ const { accentColor } = Astro.props;
     }
 
     fileInput.setCustomValidity("");
-    // TODO: Start the upload process
-    console.log("Files accepted:", Array.from(files).map(file => file.name).join(', '));
+
+    setFiles(fileArray);
   });
 </script>
 

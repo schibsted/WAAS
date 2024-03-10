@@ -1,7 +1,9 @@
 ---
 import z from "zod";
 
-const response = await fetch("http://api:3000/v1/stats");
+const baseApiUrl = import.meta.env.API_URL
+
+const response = await fetch(`${baseApiUrl}/v1/stats`);
 const data = await response.json();
 
 const transcriptionTimeMultiplier = 4;
