@@ -11,7 +11,7 @@ jobs:
     # Linux runner
     runs-on: ubuntu-latest
     # Container image that the job will run in
-    container: python:3.10
+    container: python:3.13
 
     # Service containers
     services:
