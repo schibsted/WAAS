@@ -1,0 +1,132 @@
+<section id="ChooseEmailStepSection" hidden>
+  <input type="email" placeholder="Email address" id="ChooseEmailInput" />
+
+  <button class="next-button" id="ChooseEmailNextButton" disabled
+    >Let's go!</button
+  >
+  <button class="advanced-button" id="ChooseEmailAdvancedButton" disabled>
+    Advanced options
+  </button>
+</section>
+
+<script>
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../../stores/uploadStore";
+  import { $emailStore } from "../../../stores/emailStore";
+
+  const nextButton = document.getElementById(
+    "ChooseEmailNextButton"
+  ) as HTMLButtonElement;
+  const advancedButton = document.getElementById(
+    "ChooseEmailAdvancedButton"
+  ) as HTMLButtonElement;
+  const input = document.getElementById("ChooseEmailInput") as HTMLInputElement;
+
+  const validateEmail = (email: string): boolean => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+  const checkEntry = () => {
+    const isValidEmail = validateEmail(input.value);
+    nextButton.disabled = !isValidEmail;
+    advancedButton.disabled = !isValidEmail;
+  };
+
+  input.addEventListener("input", () => {
+    $emailStore.set(input.value);
+    checkEntry();
+  });
+
+  nextButton.addEventListener("click", () => {
+    if (validateEmail(input.value)) {
+      $uploadStore.setKey("currentStep", Step.Uploading);
+    }
+  });
+
+  advancedButton.addEventListener("click", () => {
+    if (validateEmail(input.value)) {
+      $uploadStore.setKey("currentStep", Step.AdvancedOptions);
+    }
+  });
+
+  $emailStore.subscribe((value) => {
+    input.value = value || "";
+    checkEntry();
+  });
+
+  subscribeKeys($uploadStore, ["currentStep"], (value) => {
+    const section = document.getElementById(
+      "ChooseEmailStepSection"
+    ) as HTMLElement;
+
+    if (value.currentStep === Step.ChooseEmail) {
+      section.hidden = false;
+      input.focus();
+    } else {
+      section.hidden = true;
+    }
+  });
+</script>
+
+<style>
+  section {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  section[hidden] {
+    display: none;
+  }
+
+  input {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.17);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    color: rgba(255, 255, 255, 0.5);
+    filter: brightness(0.8);
+  }
+
+  .next-button {
+    margin: 0 0 16px 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.17);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .advanced-button {
+    padding: 8px;
+    border: none;
+    background: none;
+    color: #fff;
+    font-weight: 400;
+    font-size: 0.85rem;
+    cursor: pointer;
+    align-self: center;
+  }
+</style>

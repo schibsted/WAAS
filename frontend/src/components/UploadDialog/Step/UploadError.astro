@@ -1,0 +1,35 @@
+<section id="ErrorStepSection" hidden>
+  <code id="ErrorStepSectionPre"></code>
+</section>
+
+<script>
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../../stores/uploadStore";
+
+  const pre = document.getElementById("ErrorStepSectionPre") as HTMLPreElement;
+
+  $uploadStore.subscribe((value) => {
+    pre.textContent = JSON.stringify(value, null, 2);
+  });
+
+  subscribeKeys($uploadStore, ["currentStep"], (value) => {
+    const section = document.getElementById("ErrorStepSection") as HTMLElement;
+
+    if (value.currentStep === Step.Error) {
+      section.hidden = false;
+    } else {
+      section.hidden = true;
+    }
+  });
+</script>
+
+<style>
+  section {
+    margin-top: 16px;
+  }
+
+  code {
+    overflow: hidden;
+    word-break: break-word;
+  }
+</style>

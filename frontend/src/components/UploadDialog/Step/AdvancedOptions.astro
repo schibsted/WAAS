@@ -1,0 +1,116 @@
+---
+import { models } from '../../../utils/constants';
+---
+
+<section id="AdvancedOptionsStepSection" hidden>
+  <h2>Model</h2>
+  <p>
+    Select the model that you want to use for transcription. The large model is
+    more accurate but slower.
+  </p>
+
+  <select autofocus id="AdvancedOptionsSelect" name="model">
+    {models.map((model) => <option value={model}>{model}</option>)}
+  </select>
+
+  <button id="AdvancedOptionsNextButton">Let's go!</button>
+</section>
+
+<script>
+  import { models } from "../../../utils/constants";
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../../stores/uploadStore";
+  import { defaultModel } from "../../../utils/constants";
+
+  const nextButton = document.getElementById(
+    "AdvancedOptionsNextButton"
+  ) as HTMLButtonElement;
+  const select = document.getElementById(
+    "AdvancedOptionsSelect"
+  ) as HTMLSelectElement;
+
+  const isValidModel = (value: string): value is (typeof models)[number] => {
+    return models.includes(value as (typeof models)[number]);
+  };
+
+  nextButton.addEventListener("click", () => {
+    $uploadStore.setKey("currentStep", Step.Uploading);
+  });
+
+  select.addEventListener("change", () => {
+    $uploadStore.setKey(
+      "whisperModel",
+      isValidModel(select.value) ? select.value : defaultModel
+    );
+  });
+
+  subscribeKeys($uploadStore, ["whisperModel"], (value) => {
+    select.value = value.whisperModel || defaultModel;
+  });
+
+  subscribeKeys($uploadStore, ["currentStep"], (value) => {
+    const section = document.getElementById(
+      "AdvancedOptionsStepSection"
+    ) as HTMLElement;
+
+    if (value.currentStep === Step.AdvancedOptions) {
+      section.hidden = false;
+      select.focus();
+    } else {
+      section.hidden = true;
+    }
+  });
+</script>
+
+<style>
+  section {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  section[hidden] {
+    display: none;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  p {
+    font-size: 0.825rem;
+    font-weight: 400;
+  }
+
+  select {
+    padding: 10px 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.17);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+    text-transform: capitalize;
+  }
+
+  button {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.17);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+  }
+</style>

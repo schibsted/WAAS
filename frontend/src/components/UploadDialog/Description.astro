@@ -1,0 +1,35 @@
+<p id="dialogDescription">---</p>
+
+<script>
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../stores/uploadStore";
+
+  const stepToDescription: Record<Step, string> = {
+    [Step.AdvancedOptions]:
+      "Adjust advanced settings to fine-tune the transcription. Recommended for experienced users.",
+    [Step.ChooseEmail]:
+      "Select the email address where you'd like to receive the completed transcript.",
+    [Step.ChooseLanguage]:
+      "Pick the primary language spoken in the audio to improve transcription accuracy.",
+    [Step.Done]: "Upload complete! Redirecting you to the progress page...",
+    [Step.Uploading]: "This should take just a few seconds.",
+    [Step.Error]: "An error occurred. Please try again.",
+    [Step.SelectFile]: "---",
+  };
+
+  subscribeKeys($uploadStore, ["currentStep"], (value) => {
+    const descriptionElement = document.getElementById(
+      "dialogDescription"
+    ) as HTMLHeadingElement;
+
+    descriptionElement.textContent = stepToDescription[value.currentStep];
+  });
+</script>
+
+<style>
+  p {
+    font-size: 0.825rem;
+    font-weight: 400;
+    margin: 8px 0px;
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const { id } = Astro.params;
+
+if (!id) return new Response('Not Found', { status: 404 });
+
+// TODO: Fetch data from the API
+const tmp_fetchTranscription = (id: string) => {
+  if (id === 'no-id') return null;
+
+  return {
+    id,
+    name: 'file_example_MP3_5MG',
+    status: 'completed',
+    positionInQueue: null,
+    queueSize: null,
+    download: {
+      timecodes: 'https://example.com',
+      text: 'https://example.com',
+      jojo: 'https://example.com',
+      srt: 'https://example.com',
+      vtt: 'https://example.com',
+    },
+  };
+};
+
+const data = tmp_fetchTranscription(id);
+
+if (!data) return new Response('Not Found', { status: 404 });
+---
+
+<Layout
+  title={`${data.name} - Transcription - JoJo`}
+  description="Use the power of AI to transribe your audio files into text."
+>
+  <main>
+    <pre>
+      {JSON.stringify(data, null, 2)}
+    </pre>
+  </main>
+</Layout>

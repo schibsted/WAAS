@@ -8,29 +8,24 @@ on:
 
 jobs:
   test:
-    # Linux runner
     runs-on: ubuntu-latest
-    # Container image that the job will run in
-    container: python:3.10
-
-    # Service containers
-    services:
-      redis:
-        image: redis
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version-file: ".nvmrc"
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Install requirements (ffmpeg)
-        run: |
-          apt-get update
-          apt-get install -y ffmpeg
-      - name: Test with pytest
-        run: |
-          pytest
+        run: npm ci
+
+      - name: Run format
+        run: npm run format
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run check
+        run: npm run check

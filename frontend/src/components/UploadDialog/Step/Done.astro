@@ -1,0 +1,14 @@
+<script>
+  import { listenKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../../stores/uploadStore";
+
+  listenKeys($uploadStore, ["currentStep"], async (value) => {
+    if (value.currentStep === Step.Done) {
+      const id = $uploadStore.get().transcriptionId;
+
+      if (id) {
+        window.location.href = `/${id}`;
+      }
+    }
+  });
+</script>

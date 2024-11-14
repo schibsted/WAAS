@@ -1,0 +1,16 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "envMode": "strict",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".astro", "dist", "!.next/cache/**"],
+      "env": ["DISABLE_TELEMETRY"]
+    },
+    "dev": {
+      "persistent": true,
+      "cache": false
+    }
+  }
+}

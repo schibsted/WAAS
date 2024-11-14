@@ -1,0 +1,18 @@
+---
+import '@schibsted/data-controller/dist/styles.css';
+
+// TODO: Add Pulse tracking
+// TODO: Add TCF
+---
+
+<script>
+  import { init } from "@schibsted/data-controller";
+
+  const sdkInstance = init({
+    brandName: "VG",
+    layout: "footer",
+    language: "en_NO",
+  });
+
+  sdkInstance.render(document.querySelector("#data-controller"));
+</script>
