@@ -143,3 +143,5 @@ testfiles
 #Uploads
 upload-shared-tmp
 
+.turbo
+node_modules

@@ -1,0 +1,45 @@
+---
+export interface Props {
+  isFallback?: boolean;
+}
+
+const { isFallback } = Astro.props;
+
+const API_URL = new URL(`${import.meta.env.BASE_API_URL}/stats`);
+
+const getTimeSaved = async () => {
+  try {
+    const { hoursSaved } = await fetch(API_URL)
+      .then((res) => res.json())
+      .then((data) => data as { hoursSaved: number })
+      .catch((err) => {
+        console.error(err);
+        return { hoursSaved: 0 };
+      });
+
+    return hoursSaved;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
+const timeSaved = isFallback
+  ? '---'
+  : new Intl.NumberFormat('nb-NO').format(await getTimeSaved());
+---
+
+<p>{timeSaved} hours saved so you can do something else</p>
+
+<style>
+  p {
+    color: #fff;
+    font-weight: bold;
+    font-size: 2.5rem;
+    text-align: center;
+    text-wrap: balance;
+    max-inline-size: 24ch;
+    /* 8px margin left and right */
+    margin: 0 8px;
+  }
+</style>

@@ -1,0 +1,186 @@
+<form>
+  <legend>
+    <h1>Let us transcribe</h1>
+    <p>
+      Upload your audio or video file and let us transcribe it. Save countless
+      hours with the JOJO™ transcription service, so that you can put your mind
+      to more important things.
+    </p>
+    <p>
+      If you need to transcribe something very sensitive, please use the
+      <a target="_blank" href="https://www.vg.no/informasjon/jojo">Mac-app</a>!
+    </p>
+  </legend>
+
+  <div class="file-upload" tabindex="0" role="button" aria-label="Upload file">
+    <input
+      type="file"
+      id="file-input"
+      aria-hidden="true"
+      accept="audio/*, video/*, application/ogg"
+    />
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+      <path
+        stroke="#fff"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        d="M5 15v1a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-1m-7-1V5M9 8l3-3 3 3"
+      >
+      </path>
+    </svg>
+    <p>Drag & drop audio files here</p>
+    <p>or click to browse.</p>
+  </div>
+  <p id="select-file-error"></p>
+</form>
+
+<script>
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../stores/uploadStore";
+
+  const fileUpload = document.querySelector(".file-upload") as HTMLElement;
+  const fileInput = document.querySelector("#file-input") as HTMLInputElement;
+
+  fileUpload.addEventListener("click", () => {
+    fileInput.click();
+  });
+  fileUpload.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") fileInput.click();
+  });
+
+  fileUpload.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    if (!event.dataTransfer) return;
+    event.dataTransfer.dropEffect = "copy";
+    fileUpload.classList.add("drag-over");
+  });
+
+  fileUpload.addEventListener("dragleave", () => {
+    fileUpload.classList.remove("drag-over");
+  });
+
+  fileUpload.addEventListener("drop", (event) => {
+    event.preventDefault();
+    fileUpload.classList.remove("drag-over");
+    if (!event.dataTransfer) return;
+
+    const files = event.dataTransfer.files;
+
+    if (files.length > 1)
+      return $uploadStore.setKey(
+        "selectFileError",
+        "Only one file can be uploaded at a time."
+      );
+
+    fileInput.files = files;
+    handleFileSelect(files[0]);
+  });
+
+  fileInput.addEventListener("change", (event) => {
+    const fileInput = event.target as HTMLInputElement;
+    const file = fileInput.files?.[0];
+
+    handleFileSelect(file);
+  });
+
+  function handleFileSelect(file?: File) {
+    if (!file)
+      return $uploadStore.setKey(
+        "selectFileError",
+        "No files selected. Choose one file."
+      );
+    if (!file.type.includes("audio") && !file.type.includes("video"))
+      return $uploadStore.setKey(
+        "selectFileError",
+        `Invalid file type. (${file.type})`
+      );
+
+
+    $uploadStore.setKey("currentStep", Step.ChooseLanguage);
+    $uploadStore.setKey("file", file);
+    $uploadStore.setKey("selectFileError", null);
+    fileInput.files = null;
+    fileInput.value = "";
+  }
+
+  subscribeKeys($uploadStore, ["selectFileError"], (value) => {
+    const errorElement = document.querySelector("#select-file-error");
+    if (!errorElement)
+      throw new Error("Could not find select file error element");
+
+    if (value.selectFileError) {
+      fileInput.setCustomValidity(value.selectFileError);
+      errorElement.textContent = value.selectFileError;
+    } else {
+      fileInput.setCustomValidity("");
+      errorElement.textContent = "";
+    }
+    fileInput.reportValidity();
+  });
+</script>
+
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-self: center;
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    padding: 24px;
+    max-width: 480px;
+    height: 100%;
+  }
+
+  a {
+    font-weight: bold;
+    color: #fff;
+  }
+
+  legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  h1 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 24px;
+  }
+
+  .file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.17);
+    cursor: pointer;
+    width: 100%;
+    height: 160px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+  }
+
+  .file-upload p {
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .file-upload input[type="file"] {
+    display: none;
+  }
+
+  .file-upload.drag-over {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  #select-file-error {
+    color: #ff0000;
+    text-align: center;
+    font-size: 13px;
+  }
+</style>

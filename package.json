@@ -1,0 +1,27 @@
+{
+  "name": "waas",
+  "version": "2.0.0",
+  "description": "GUI and API for [OpenAI Whisper](https://github.com/openai/whisper)",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "packageManager": "npm@10.9.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
+  },
+  "engines": {
+    "node": "22",
+    "npm": "10"
+  },
+  "workspaces": ["backend", "frontend", "worker"],
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "turbo": "2.3.0"
+  }
+}

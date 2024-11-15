@@ -1,0 +1,53 @@
+<script>
+  import { listenKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../../stores/uploadStore";
+  import { $emailStore } from "../../../stores/emailStore";
+
+  listenKeys($uploadStore, ["currentStep"], async (value, prev) => {
+    const controller = new AbortController();
+
+    if (value.currentStep === Step.Uploading) {
+      const { file, whisperModel, fileLanguage } = $uploadStore.get();
+      const email = $emailStore.get();
+
+      const formData = new FormData();
+      formData.append("file", file as File);
+      formData.append("model", whisperModel || "");
+      formData.append("language", fileLanguage || "");
+      formData.append("filename", file?.name || "");
+      formData.append("callback", JSON.stringify({ type: "email", value: email }));
+
+      try {
+        // TODO: Replace with actual upload API
+        const response = await fetch("/api/xyz", {
+          signal: controller.signal,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `[${response.status}] Failed to upload: ${response.statusText}`
+          );
+        }
+
+        const data = await response.json();
+        $uploadStore.setKey("transcriptionId", data.id);
+        $uploadStore.setKey("currentStep", Step.Done);
+      } catch (error) {
+        let message = "Unknown Error";
+        if (error instanceof Error) message = error.message;
+        console.error(error);
+
+        $uploadStore.setKey("currentStep", Step.Error);
+        $uploadStore.setKey("uploadError", message);
+      }
+    } else if (prev.currentStep === Step.Uploading) {
+      controller.abort();
+      console.log("Aborted");
+    }
+  });
+</script>

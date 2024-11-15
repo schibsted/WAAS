@@ -1,0 +1,106 @@
+---
+const API_URL = new URL(`${import.meta.env.BASE_API_URL}/options/languages`);
+
+const languages = await fetch(API_URL)
+  .then((res) => res.json())
+  .then((data) => data as Array<string>)
+  .catch((err) => {
+    console.error(err);
+    return [];
+  });
+---
+
+<section id="ChooseLanguageStepSection" hidden>
+  <select autofocus id="ChooseLanguageSelect" name="language">
+    <option value="detect-language">Detect language</option>
+
+    {languages.map((language) => <option value={language}>{language}</option>)}
+  </select>
+
+  <button id="ChooseLanguageNextButton">Next</button>
+</section>
+
+<script>
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../../stores/uploadStore";
+
+  const nextButton = document.getElementById(
+    "ChooseLanguageNextButton"
+  ) as HTMLButtonElement;
+  const select = document.getElementById(
+    "ChooseLanguageSelect"
+  ) as HTMLSelectElement;
+
+  nextButton.addEventListener("click", () => {
+    $uploadStore.setKey("currentStep", Step.ChooseEmail);
+  });
+
+  select.addEventListener("change", () => {
+    if (select.value === "detect-language") {
+      $uploadStore.setKey("fileLanguage", null);
+      return;
+    }
+
+    $uploadStore.setKey("fileLanguage", select.value);
+  });
+
+  subscribeKeys($uploadStore, ["fileLanguage"], (value) => {
+    select.value = value.fileLanguage || "detect-language";
+  });
+
+  subscribeKeys($uploadStore, ["currentStep"], (value) => {
+    const section = document.getElementById(
+      "ChooseLanguageStepSection"
+    ) as HTMLElement;
+
+    if (value.currentStep === Step.ChooseLanguage) {
+      section.hidden = false;
+      select.focus();
+    } else {
+      section.hidden = true;
+    }
+  });
+</script>
+
+<style>
+  section {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  section[hidden] {
+    display: none;
+  }
+
+  select {
+    padding: 10px 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.17);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+    text-transform: capitalize;
+  }
+
+  button {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.17);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+  }
+</style>

@@ -1,0 +1,21 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "0.9.4",
+    "@astrojs/node": "8.3.4",
+    "@nanostores/persistent": "0.10.2",
+    "@schibsted/data-controller": "4.1.0",
+    "astro": "4.16.12",
+    "nanostores": "0.11.3",
+    "typescript": "5.6.3"
+  }
+}

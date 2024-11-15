@@ -1,0 +1,143 @@
+---
+import Description from './Description.astro';
+import File from './File.astro';
+import Title from './Title.astro';
+
+import AdvancedOptions from './Step/AdvancedOptions.astro';
+import ChooseEmail from './Step/ChooseEmail.astro';
+import ChooseLanguage from './Step/ChooseLanguage.astro';
+import Done from './Step/Done.astro';
+import UploadError from './Step/UploadError.astro';
+import Uploading from './Step/Uploading.astro';
+---
+
+<dialog id="uploadDialog">
+  <button class="close-button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+      <path
+        stroke="#fff"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        d="M17.3 6.8 6.7 17.1m0-10.4 10.6 10.4"></path>
+    </svg>
+  </button>
+  <Title />
+  <Description />
+  <File />
+
+  <AdvancedOptions />
+  <ChooseEmail />
+  <ChooseLanguage />
+  <Done />
+  <Uploading />
+  <UploadError />
+</dialog>
+
+<script>
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../stores/uploadStore";
+
+  const dialog = document.getElementById("uploadDialog") as HTMLDialogElement;
+  const closeButton = dialog?.querySelector(
+    ".close-button"
+  ) as HTMLButtonElement;
+  const stepToTitle: Record<Step, string> = {
+    [Step.AdvancedOptions]: "Advanced options",
+    [Step.ChooseEmail]: "Choose email",
+    [Step.ChooseLanguage]: "Choose language",
+    [Step.Done]: "Done",
+    [Step.SelectFile]: "Get started",
+    [Step.Uploading]: "Uploading...",
+    [Step.Error]: "Error!",
+  };
+
+  const handleClose = () => {
+    if (
+      $uploadStore.get().currentStep === Step.Uploading ||
+      $uploadStore.get().currentStep === Step.Done
+    )
+      return;
+
+    $uploadStore.set({
+      currentStep: Step.SelectFile,
+      file: null,
+      whisperModel: null,
+      selectFileError: null,
+      fileLanguage: null,
+      uploadError: null,
+      transcriptionId: null,
+    });
+
+    dialog.close();
+  };
+
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    handleClose();
+  });
+
+  dialog.addEventListener("close", (e) => {
+    e.preventDefault();
+    handleClose();
+  });
+
+  closeButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    handleClose();
+  });
+
+  subscribeKeys($uploadStore, ["currentStep"], (value) => {
+    if (
+      value.currentStep === Step.Uploading ||
+      value.currentStep === Step.Done
+    ) {
+      closeButton.hidden = true;
+    } else {
+      closeButton.hidden = false;
+    }
+
+    if (value.currentStep === Step.SelectFile) {
+      dialog.close();
+      document.title = `${stepToTitle[value.currentStep]} - JoJo`;
+    } else {
+      const isOpen = dialog.hasAttribute("open");
+      if (!isOpen) {
+        dialog.showModal();
+      }
+      document.title = `${stepToTitle[value.currentStep]} - JoJo`;
+    }
+  });
+</script>
+
+<style>
+  dialog {
+    margin: auto;
+    border: none;
+    max-width: 385px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    padding: 24px;
+    border-radius: max(0px, min(calc(100vw - 385px), 8px));
+  }
+
+  dialog::backdrop {
+    background-image: var(--background-url);
+    background-color: var(--accent-color);
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: multiply;
+  }
+
+  .close-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    background: none;
+    padding: 8px;
+    cursor: pointer;
+  }
+</style>

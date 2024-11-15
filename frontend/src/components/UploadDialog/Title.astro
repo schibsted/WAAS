@@ -1,0 +1,32 @@
+<h2 id="dialogTitle">---</h2>
+
+<script>
+  import { subscribeKeys } from "nanostores";
+  import { $uploadStore, Step } from "../../stores/uploadStore";
+
+  const stepToTitle: Record<Step, string> = {
+    [Step.AdvancedOptions]: "Advanced Settings",
+    [Step.ChooseEmail]: "Choose Email",
+    [Step.ChooseLanguage]: "Select Language",
+    [Step.Done]: "Upload Complete",
+    [Step.SelectFile]: "Select File",
+    [Step.Uploading]: "Uploading...",
+    [Step.Error]: "Error!",
+  };
+
+  subscribeKeys($uploadStore, ["currentStep"], (value) => {
+    const titleElement = document.getElementById(
+      "dialogTitle"
+    ) as HTMLHeadingElement;
+
+    titleElement.textContent = stepToTitle[value.currentStep];
+  });
+</script>
+
+<style>
+  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
