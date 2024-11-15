@@ -1,0 +1,28 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "nodemon --ext ts --exec 'npm run build && dotenv -- npm start'"
+  },
+  "dependencies": {
+    "@fastify/autoload": "6.0.2",
+    "@fastify/compress": "8.0.1",
+    "@fastify/sensible": "6.0.1",
+    "@promster/fastify": "14.0.0",
+    "dotenv": "16.4.5",
+    "fastify": "5.1.0",
+    "fastify-healthcheck": "5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.9.0",
+    "dotenv-cli": "7.4.2",
+    "nodemon": "3.1.7",
+    "ts-node-dev": "2.0.0",
+    "tsconfig": "*",
+    "typescript": "5.6.3"
+  }
+}

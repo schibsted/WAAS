@@ -1,5 +1,4 @@
 import { map } from 'nanostores';
-import { defaultModel, type models } from '../utils/constants';
 
 export enum Step {
   SelectFile = 'selectFile',
@@ -16,7 +15,7 @@ export interface UploadState {
   currentStep: Step;
   file: File | null;
   fileLanguage: string | null;
-  whisperModel: (typeof models)[number];
+  whisperModel: string | null;
   uploadError: string | null;
   transcriptionId: string | null;
 }
@@ -25,7 +24,7 @@ export const $uploadStore = map<UploadState>({
   selectFileError: null,
   currentStep: Step.SelectFile,
   fileLanguage: null,
-  whisperModel: defaultModel,
+  whisperModel: null,
   uploadError: null,
   transcriptionId: null,
   file: null,

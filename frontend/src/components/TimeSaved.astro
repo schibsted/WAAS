@@ -5,15 +5,28 @@ export interface Props {
 
 const { isFallback } = Astro.props;
 
-// TODO: Replace this with actual fetch to backend
-const tmp_fakeFetch = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2500));
-  return 32025;
+const API_URL = new URL(`${import.meta.env.BASE_API_URL}/stats`);
+
+const getTimeSaved = async () => {
+  try {
+    const { hoursSaved } = await fetch(API_URL)
+      .then((res) => res.json())
+      .then((data) => data as { hoursSaved: number })
+      .catch((err) => {
+        console.error(err);
+        return { hoursSaved: 0 };
+      });
+
+    return hoursSaved;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
 };
 
 const timeSaved = isFallback
   ? '---'
-  : new Intl.NumberFormat('nb-NO').format(await tmp_fakeFetch());
+  : new Intl.NumberFormat('nb-NO').format(await getTimeSaved());
 ---
 
 <p>{timeSaved} hours saved so you can do something else</p>

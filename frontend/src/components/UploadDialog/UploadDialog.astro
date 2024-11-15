@@ -37,7 +37,6 @@ import Uploading from './Step/Uploading.astro';
 <script>
   import { subscribeKeys } from "nanostores";
   import { $uploadStore, Step } from "../../stores/uploadStore";
-  import { defaultModel } from "../../utils/constants";
 
   const dialog = document.getElementById("uploadDialog") as HTMLDialogElement;
   const closeButton = dialog?.querySelector(
@@ -63,7 +62,7 @@ import Uploading from './Step/Uploading.astro';
     $uploadStore.set({
       currentStep: Step.SelectFile,
       file: null,
-      whisperModel: defaultModel,
+      whisperModel: null,
       selectFileError: null,
       fileLanguage: null,
       uploadError: null,

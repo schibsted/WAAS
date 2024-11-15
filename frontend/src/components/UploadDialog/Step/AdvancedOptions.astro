@@ -1,5 +1,14 @@
 ---
-import { models } from '../../../utils/constants';
+const API_URL = new URL(`${import.meta.env.BASE_API_URL}/options/models`);
+
+// TODO: Use the defaultModel from the API response as the default value
+const { models } = await fetch(API_URL)
+  .then((res) => res.json())
+  .then((data) => data as { models: Array<string>; defaultModel: string })
+  .catch((err) => {
+    console.error(err);
+    return { models: [], defaultModel: '' };
+  });
 ---
 
 <section id="AdvancedOptionsStepSection" hidden>
@@ -17,10 +26,8 @@ import { models } from '../../../utils/constants';
 </section>
 
 <script>
-  import { models } from "../../../utils/constants";
   import { subscribeKeys } from "nanostores";
   import { $uploadStore, Step } from "../../../stores/uploadStore";
-  import { defaultModel } from "../../../utils/constants";
 
   const nextButton = document.getElementById(
     "AdvancedOptionsNextButton"
@@ -29,23 +36,16 @@ import { models } from '../../../utils/constants';
     "AdvancedOptionsSelect"
   ) as HTMLSelectElement;
 
-  const isValidModel = (value: string): value is (typeof models)[number] => {
-    return models.includes(value as (typeof models)[number]);
-  };
-
   nextButton.addEventListener("click", () => {
     $uploadStore.setKey("currentStep", Step.Uploading);
   });
 
   select.addEventListener("change", () => {
-    $uploadStore.setKey(
-      "whisperModel",
-      isValidModel(select.value) ? select.value : defaultModel
-    );
+    $uploadStore.setKey("whisperModel", select.value);
   });
 
   subscribeKeys($uploadStore, ["whisperModel"], (value) => {
-    select.value = value.whisperModel || defaultModel;
+    select.value = value.whisperModel || "";
   });
 
   subscribeKeys($uploadStore, ["currentStep"], (value) => {

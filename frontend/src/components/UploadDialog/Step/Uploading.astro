@@ -12,7 +12,7 @@
 
       const formData = new FormData();
       formData.append("file", file as File);
-      formData.append("model", whisperModel);
+      formData.append("model", whisperModel || "");
       formData.append("language", fileLanguage || "");
       formData.append("filename", file?.name || "");
       formData.append("callback", JSON.stringify({ type: "email", value: email }));

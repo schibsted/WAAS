@@ -1,5 +1,13 @@
 ---
-import { languages } from '../../../utils/constants';
+const API_URL = new URL(`${import.meta.env.BASE_API_URL}/options/languages`);
+
+const languages = await fetch(API_URL)
+  .then((res) => res.json())
+  .then((data) => data as Array<string>)
+  .catch((err) => {
+    console.error(err);
+    return [];
+  });
 ---
 
 <section id="ChooseLanguageStepSection" hidden>
