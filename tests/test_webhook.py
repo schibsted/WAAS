@@ -31,7 +31,7 @@ def match_webhook_header_signature(request):
 # Mocking environment variables for testing
 @pytest.fixture
 def mock_env(monkeypatch):
-    monkeypatch.setenv("BASE_URL", "https://test")
+    monkeypatch.setenv("BASE_URL", "https://webhook")
     monkeypatch.setenv("ENVIRONMENT", "test")
     monkeypatch.setenv("ALLOWED_WEBHOOKS_FILE", "tests/fixtures/allowed_webhooks.json")
     reload(callbacks)
@@ -113,5 +113,3 @@ def test_timeout_from_webhook_destination(requests_mock, job, result, mock_env):
     webhook_store = WebhookService(file_path)
     with pytest.raises( requests.exceptions.Timeout):
         webhook_store.post_to_webhook(job.meta['webhook_id'], job.id, job.meta['uploaded_filename'], url=None, success=True)
-      
-      
