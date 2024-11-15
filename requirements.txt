@@ -3,7 +3,7 @@ openai-whisper==20231117
 pytest==7.4.4
 redis==5.0.1
 rq==1.16.2
-python-dotenv==1.0.0
+python-dotenv==1.0.1
 gunicorn==21.2.0
 sentry-sdk==1.39.1
 blinker==1.7.0
