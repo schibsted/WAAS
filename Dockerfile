@@ -1,4 +1,4 @@
-FROM python:3.10-buster
+FROM python:3.10-bookworm
 
 WORKDIR /workspace
 RUN apt-get update
