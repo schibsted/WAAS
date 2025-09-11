@@ -170,6 +170,7 @@ export EMAIL_SENDER_HOST=smtp.example.com
 export DISCLAIMER='This is a <a href="example.com">disclaimer</a>'
 
 export ALLOWED_WEBHOOKS_FILE='allowed_webhooks.json'
+export LOG_EMAIL=true // Optional, log email content to console
 ```
 
 Add a json file named `allowed_webhooks.json` to the root folder of the project. This file is ignored by git.

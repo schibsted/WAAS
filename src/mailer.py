@@ -2,6 +2,7 @@ import os
 import smtplib
 from email.message import EmailMessage
 
+LOG_EMAIL = os.environ.get("LOG_EMAIL", "false").lower() == "true"
 
 def send_mail(recipient: str, subject: str, body: str) -> None:
     # Sender email and password
@@ -45,6 +46,9 @@ def send_mail(recipient: str, subject: str, body: str) -> None:
 def send_success_email(email: str, filename: str, url: str) -> None:
     subject = filename + " is finished transcribing!"
     body = f'Your file is ready. You can download the text output here: \n\nFile with timecodes {url + "?output=timecode_txt"} \nFile without timecodes: {url + "?output=txt"} \n\n\nCaptions file for use in software: \n\n Jojo-document (mac-app) {url + "?output=jojo"} \n SRT file {url + "?output=srt"} \n VTT file {url + "?output=vtt"}'
+
+    print(subject);
+    print(body);
 
     send_mail(email, subject, body)
 
