@@ -6,48 +6,17 @@ from datetime import datetime
 from typing import Any, Tuple, Union
 
 import redis
-import sentry_sdk
 import whisper
 from flask import Flask, Request, Response, render_template, request
 from rq import Queue
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
-from sentry_sdk import set_user
-from sentry_sdk.integrations.flask import FlaskIntegration
-from sentry_sdk.integrations.rq import RqIntegration
-
 
 from src import callbacks
 from src.utils import (generate_jojo_doc, generate_srt, generate_text,
                        generate_vtt, get_total_time_transcribed,
                        sanitize_input)
 from src.services.webhook_service import WebhookService
-
-SENTRY_DSN = os.environ.get("SENTRY_DSN")
-ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
-
-if SENTRY_DSN:
-    print("Sentry detected, Using " + SENTRY_DSN)
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[
-            FlaskIntegration(),
-            RqIntegration()
-        ],
-        environment=ENVIRONMENT,
-
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
-        traces_sample_rate=1.0,
-
-        # By default the SDK will try to use the SENTRY_RELEASE
-        # environment variable, or infer a git commit
-        # SHA as release, however you may want to set
-        # something more human-readable.
-        # release="myapp@1.0.0",
-    )
-
 
 app = Flask(__name__)
 redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
@@ -96,7 +65,7 @@ def is_invalid_params(req: Request) -> Union[bool, Tuple[str, int]]:
 
 @app.route("/", methods=['GET'])
 def index() -> str:
-    return render_template("index.html", disclaimer=DISCLAIMER, sentry_dsn=SENTRY_DSN, environment=ENVIRONMENT)
+    return render_template("index.html", disclaimer=DISCLAIMER)
 
 
 @app.route("/v1/transcribe", methods=['POST', 'OPTIONS'])
@@ -162,7 +131,6 @@ def transcribe() -> Any:
             
             if quoted_email:
                 email = urllib.parse.unquote(quoted_email)
-                set_user({"email": email})
             else:
                 email = None
 
@@ -212,7 +180,6 @@ def jobs(job_id: str) -> Any:
         job = Job.fetch(job_id, connection=redis_connection)
     except NoSuchJobError:
         return "No such job",
-    set_user({"email": job.meta.get('email')})
 
     delta = datetime.now() - datetime.now()
 
@@ -269,7 +236,6 @@ def download(job_id: str) -> Any:
 
         except NoSuchJobError:
             return "No such job", 404
-        set_user({"email": job.meta.get('email')})
         if job.is_finished:
             filename = sanitize_input(job.meta.get("uploaded_filename") or '')
 
@@ -396,8 +362,3 @@ def detect() -> Any:
         finally:
             tempFile.close()
 
-
-@app.route('/debug-sentry')
-def trigger_error() -> Any:
-    division_by_zero = 1 / 0
-    return "Impossible"

@@ -22,29 +22,6 @@
     </script>
     <!-- hello -->
 
-    {% if sentry_dsn %}
-    <!-- Sentry integration -->
-    <script
-      src="https://browser.sentry-cdn.com/7.28.0/bundle.min.js"
-      integrity="sha384-qWZMHJ8aEyMyY977PcvgXTjW7wksFd1lNDZ1bMwpyO7Sy2Eiw3xMGCua7IfT4seD"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://browser.sentry-cdn.com/7.28.0/bundle.tracing.min.js"
-      integrity="sha384-zdoNQTTeWdXSuoI9ulC11XNWN1g9jvqQPfIy9/LMaI43S5kyHcCVhhRLcnv347dG"
-      crossorigin="anonymous"
-    ></script>
-
-    <script>
-      Sentry.init({
-        dsn: "{{sentry_dsn}}",
-        integrations: [new Sentry.BrowserTracing()],
-        tracesSampleRate: 1.0,
-        environment: "{{environment}}",
-      });
-    </script>
-    {% endif %}
-
     <!-- Disclaimer injection -->
     <script>
       window.disclaimer = "{{ disclaimer | safe }}";
