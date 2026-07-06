@@ -48,19 +48,9 @@ const AudioOrUpload = ({ audio, cursor, setAudio }) => {
 };
 
 const Editor = ({ jojoDoc }) => {
-  const { useState, useEffect } = preact;
+  const { useState } = preact;
   const [cursor, setCursor] = useState();
   const [audio, setAudio] = useState();
-
-  useEffect(() => {
-    window.pulse("trackPageView", {
-      object: {
-        id: "editor",
-        type: "Page",
-        name: "Editor",
-      },
-    });
-  }, []);
 
   const download = async (type) => {
     const a = document.createElement("a");

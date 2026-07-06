@@ -22,14 +22,6 @@ const SettingsEmail = ({
 
           localStorage.setItem("email", email);
 
-          pulse((sdk) => {
-            sdk.track("Engagement", {
-              type: "Engagement",
-              action: "Click",
-              object: { id: "transcribe-button" },
-            });
-          });
-
           uploadHandler({
             file: fileStored,
             setJobId,
