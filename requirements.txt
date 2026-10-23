@@ -10,5 +10,5 @@ blinker==1.7.0
 Werkzeug==3.0.1
 Unidecode==1.3.8
 requests==2.31.0
-requests-mock==1.11.0
+requests-mock==1.12.1
 autopep8==2.0.4
